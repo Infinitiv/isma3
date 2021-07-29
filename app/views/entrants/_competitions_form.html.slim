@@ -13,10 +13,11 @@ fieldset
           strong= "{{ specialityName(admission_volume.direction_id) }}"
         .row(v-for="competitive_group in findCampaign(entrant_application.campaign_id).competitive_groups" v-if="competitive_group.direction_id == admission_volume.direction_id && isApplicable(competitive_group)")
           .large-1.small-1.columns
-            input.error(type="checkbox" v-bind:id="'competitive_group_' + competitive_group.id" v-bind:name="'competitive_groups[][id]'" v-bind:value="competitive_group.id" v-model="entrant_application.competitive_group_ids" v-on:change="sendData('competitive_group', entrant_application.competitive_group_ids)" v-bind:disabled == "findCompetitiveGroup(competitive_group.id) && entrant_application.status_id != 0")
+            input.error(type="checkbox" v-bind:id="'competitive_group_' + competitive_group.id" v-bind:name="'competitive_groups[][id]'" v-bind:value="competitive_group.id" v-model="entrant_application.competitive_group_ids" v-on:change="sendData('competitive_group', entrant_application.competitive_group_ids)" v-bind:disabled == "findCompetitiveGroup(competitive_group.id) && entrant_application.status_id != 0 || egeDate(competitive_group)")
           .large-11.small-11.columns
             label(v-bind:for="competitive_group.id")
-              span = "{{ competitive_group.name }} (количество мест: {{ competitive_group.number }})"
+              span= "{{ competitive_group.name }} (количество мест: {{ competitive_group.number }})"
+              span(v-if="egeDate(competitive_group)")= " - прием документов завершен"
 fieldset(v-bind:disabled = 'isDisabled')
   legend Выбор вступительных испытаний
   .(v-if="entrant_application.campaign_id != '' && findCampaign(entrant_application.campaign_id).campaign_type_id == 1") 

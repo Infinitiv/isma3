@@ -316,7 +316,7 @@ var entrants = new Vue({
       if(this.entrant_application.personal.birth_date){
         var numbers = this.entrant_application.personal.birth_date.split('-');
         var birthYear = Number(numbers[0]);
-        var birthMonth = Number(numbers[1]);
+        var birthMonth = Number(numbers[1]) - 1;
         var birthDay = Number(numbers[2]);
         var message = [];
         var year = (new Date()).getFullYear();
@@ -347,7 +347,7 @@ var entrants = new Vue({
         if(element.identity_document_date){
           var numbers = element.identity_document_date.split('-');
           var birthYear = Number(numbers[0]);
-          var birthMonth = Number(numbers[1]);
+          var birthMonth = Number(numbers[1]) - 1;
           var birthDay = Number(numbers[2]);
           var message = [];
           var year = (new Date()).getFullYear();
@@ -364,7 +364,7 @@ var entrants = new Vue({
       if(this.entrant_application.education_document.education_document_date){
         var numbers = this.entrant_application.education_document.education_document_date.split('-');
         var birthYear = Number(numbers[0]);
-        var birthMonth = Number(numbers[1]);
+        var birthMonth = Number(numbers[1]) - 1;
         var birthDay = Number(numbers[2]);
         var message = [];
         var year = (new Date()).getFullYear() + 1;
@@ -412,10 +412,10 @@ var entrants = new Vue({
       var minAge = 18;
       var numbers = this.entrant_application.personal.birth_date.split('-');
       var birthYear = Number(numbers[0]);
-      var birthMonth = Number(numbers[1]);
+      var birthMonth = Number(numbers[1]) - 1;
       var birthDay = Number(numbers[2]);
       var birthDate = new Date(birthYear, birthMonth, birthDay)
-      var tempDate = new Date(birthDate.getFullYear() + minAge, birthDate.getMonth(), birthDate.getDate());
+      var tempDate = new Date(birthDate.getFullYear() + minAge, birthDate.getMonth(), birthDate);
       return (tempDate <= new Date());
     },
     examDate: function() {
@@ -424,10 +424,10 @@ var entrants = new Vue({
       this.findCampaign(this.entrant_application.campaign_id).competitive_groups.find(function(element){
         var numbers = element.application_end_exam_date.split('-');
         var year = Number(numbers[0]);
-        var month = Number(numbers[1]);
+        var month = Number(numbers[1]) - 1;
         var day = Number(numbers[2]);
-        var date = new Date(year, month, day)
-        if(currentDate >= date) {
+        var date = new Date(year, month, day, 23, 59, 59)
+        if(currentDate <= date) {
           examDate = true;
         }
       })
@@ -435,6 +435,19 @@ var entrants = new Vue({
     },
   },
   methods: {
+    egeDate: function(competitive_group) {
+      var egeDate = false;
+      var currentDate = new Date();
+      var numbers = competitive_group.application_end_ege_date.split('-');
+      var year = Number(numbers[0]);
+      var month = Number(numbers[1]) - 1;
+      var day = Number(numbers[2]);
+      var date = new Date(year, month, day, 23, 59, 59)
+      if(currentDate > date) {
+          egeDate = true;
+        }
+      return egeDate;
+    },
     consentCount: function() {
       var consentCount = 0;
       this.entrant_application.attachments.find(function(element) {
