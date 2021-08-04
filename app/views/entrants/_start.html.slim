@@ -76,7 +76,7 @@ fieldset
         option(v-for="competitive_group in entrant_application.competitive_groups" v-bind:value="competitive_group.id") {{ competitive_group.name }}
   .row
     br
-    .large-12.small-12.columns(v-if="!findAttachment(entrant_application.budget_agr, 'consent_application', false)")
+    .large-12.small-12.columns(v-if="!findAttachment(entrant_application.budget_agr, 'consent_application', false) || consentCount() == withdrawCount()")
       .(v-if="findAttachment(entrant_application.budget_agr, 'consent_application', true)")
         p
           strong Шаг 2. Скачайте бланк
@@ -121,7 +121,7 @@ fieldset
   h3 Отзыв согласия на зачисление
   p Для отзыва заявления о согласии на зачисление, необходимо скачать бланк, распечатать, подписать и прикрепить в соответствующее поле. Заявление будет обработано приемной комиссией, после чего согласие в базе будет удалено. Вы продолжаете участвовать в заявленных Вами конкурсах, но без подачи нового заявления о согласии не сможете быть зачисленными в ИвГМА.
   .row(v-if="entrant_application.budget_agr")
-    .large-12.small-12.columns(v-if="!findAttachment(entrant_application.budget_agr, 'withdraw_application', false)")
+    .large-12.small-12.columns(v-if="!findAttachment(entrant_application.budget_agr, 'withdraw_application', false) || consentCount() > withdrawCount()")
       .(v-if="findAttachment(entrant_application.budget_agr, 'withdraw_application', true) && findAttachment(entrant_application.budget_agr, 'consent_application', false)")
         p
           strong Шаг 1. Скачайте бланк
