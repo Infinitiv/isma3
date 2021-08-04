@@ -414,8 +414,7 @@ var entrants = new Vue({
       var birthYear = Number(numbers[0]);
       var birthMonth = Number(numbers[1]) - 1;
       var birthDay = Number(numbers[2]);
-      var birthDate = new Date(birthYear, birthMonth, birthDay)
-      var tempDate = new Date(birthDate.getFullYear() + minAge, birthDate.getMonth(), birthDate);
+      var tempDate = new Date(birthYear + minAge, birthMonth, birthDay);
       return (tempDate <= new Date());
     },
     examDate: function() {
