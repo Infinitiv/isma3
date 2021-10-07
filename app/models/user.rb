@@ -63,10 +63,6 @@ class User < ActiveRecord::Base
           if row['password']
             if user.save!
               user.profile.import(row)
-              if user_groups
-                user.groups = []
-                user_groups.each{|group| user.groups << Group.where(name: group)}
-              end
               if row['name']
                 Division.import_from_row(row, user)
               end
@@ -76,6 +72,10 @@ class User < ActiveRecord::Base
             if row['name']
               Division.import_from_row(row, user)
             end
+          end
+          if user_groups
+            user.groups = []
+            user_groups.each{|group| user.groups << Group.where(name: group)}
           end
 	end
       end

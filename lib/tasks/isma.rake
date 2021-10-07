@@ -331,7 +331,7 @@ namespace :isma do
           s << row['Группа']
           s << 'очная'
           s << (faculty == 'ординатура' ? 'кадры высшей квалификации' : 'специалитет')
-          file.write((s.join(';') + ";\n").encode('Windows-1251', invalid: :replace, undef: :replace, replade: ''))
+          file.write((s.join(';') + ";\n").encode('Windows-1251', invalid: :replace, undef: :replace, replace: ''))
           s << (student.profile.email.strip if student.profile.email)
         end
       end
