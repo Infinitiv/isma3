@@ -160,7 +160,7 @@ section.panel
             ul
               - educational_program.subjects.each do |subject|
                 - if subject.full_text_attachment
-                  li(itemprop='educationAnnotation')= link_to subject.name, subject.full_text_attachment, target: 'blank'
+                  li(itemprop='educationRpd')= link_to subject.name, subject.full_text_attachment, target: 'blank'
           td(style="vertical-align: top;")
             ul
               - educational_program.academic_schedules.each do |academic_schedule|
@@ -216,7 +216,7 @@ section.panel
             ul
               - educational_program.subjects.each do |subject|
                 - if subject.full_text_attachment
-                  li(itemprop='educationAnnotation')= link_to subject.name, subject.full_text_attachment, target: 'blank'
+                  li(itemprop='educationRpd')= link_to subject.name, subject.full_text_attachment, target: 'blank'
           td(style="vertical-align: top;")
             ul
               - educational_program.academic_schedules.each do |academic_schedule|
