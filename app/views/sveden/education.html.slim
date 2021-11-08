@@ -130,9 +130,10 @@ section.panel
         th Наименование специальности, направления подготовки
         th Уровень образования
         th Реализуемые формы обучения
-        th Ссылка на описание образовательной программы с приложением ее копии (в том числе РПД)
+        th Ссылка на описание образовательной программы с приложением ее копии
         th Ссылка на учебный план
         th Ссылка на аннотации к рабочим программам дисциплин (по каждой дисциплине в составе образовательной программы)
+        th Ссылки на рабочие программы (по каждой дисциплине в составе образовательной программы)
         th Ссылка на календарный учебный график
         th Ссылка на методические ииные документы, разработанные образовательной организацией для обеспечения образовательного процесса
         th Ссылка на рабочие программы практик, предусмотренных соответствующей образовательной программой
@@ -146,10 +147,6 @@ section.panel
           td(itemprop="eduForm", style="vertical-align: top;")= educational_program.form
           td(itemprop='opMain', style="vertical-align: top;")
             = link_to educational_program.full_name, educational_program.attachment, target: 'blank' if educational_program.full_name
-            ul
-              - educational_program.subjects.each do |subject|
-                - if subject.full_text_attachment
-                  li(itemprop='educationAnnotation')= link_to subject.name, subject.full_text_attachment, target: 'blank'
           td(style="vertical-align: top;")
             ul
               - educational_program.academic_plans.each do |academic_plan|
@@ -159,6 +156,11 @@ section.panel
               - educational_program.subjects.each do |subject|
                 - if subject.annotation_attachment
                   li(itemprop='educationAnnotation')= link_to subject.name, subject.annotation_attachment, target: 'blank'
+          td(style="vertical-align: top;")
+            ul
+              - educational_program.subjects.each do |subject|
+                - if subject.full_text_attachment
+                  li(itemprop='educationAnnotation')= link_to subject.name, subject.full_text_attachment, target: 'blank'
           td(style="vertical-align: top;")
             ul
               - educational_program.academic_schedules.each do |academic_schedule|
@@ -180,9 +182,10 @@ section.panel
         th Наименование специальности, направления подготовки
         th Уровень образования
         th Реализуемые формы обучения
-        th Ссылка на описание образовательной программы с приложением ее копии (в том числе РПД)
+        th Ссылка на описание образовательной программы с приложением ее копии
         th Ссылка на учебный план
         th Ссылка на аннотации к рабочим программам дисциплин (по каждой дисциплине в составе образовательной программы)
+        th Ссылки на рабочие программы (по каждой дисциплине в составе образовательной программы)
         th Ссылка на календарный учебный график
         th Ссылка на методические ииные документы, разработанные образовательной организацией для обеспечения образовательного процесса
         th Ссылка на рабочие программы практик, предусмотренных соответствующей образовательной программой
@@ -209,6 +212,11 @@ section.panel
             ul
               - educational_program.subjects.each do |subject|
                 li(itemprop='educationAnnotation')= link_to subject.name, subject.annotation_attachment, target: 'blank'
+          td(style="vertical-align: top;")
+            ul
+              - educational_program.subjects.each do |subject|
+                - if subject.full_text_attachment
+                  li(itemprop='educationAnnotation')= link_to subject.name, subject.full_text_attachment, target: 'blank'
           td(style="vertical-align: top;")
             ul
               - educational_program.academic_schedules.each do |academic_schedule|
