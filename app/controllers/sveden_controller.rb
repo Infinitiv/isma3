@@ -54,7 +54,6 @@ class SvedenController < ApplicationController
   end
   
   def paid_edu
-    redirect_to article_path(1150)
   end
   
   def budget
