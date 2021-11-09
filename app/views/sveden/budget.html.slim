@@ -14,7 +14,7 @@ section.panel
           th за счёт бюджетных ассигнований федерального бюджета (тыс. руб.)
           th за счёт бюджетов субъектов Российской Федерации (тыс. руб.)
           th за счёт местных бюджетов (тыс. руб.)
-          th по договорам об образовании за счет средств физических и (или) юридических лиц (тыс. руб.)
+          th по договорам об оказании платных образовательных услуг (тыс. руб.)
       tbody
         tr
           td(itemprop='finBFVolume')= last_financial_activity.federal_volume
@@ -34,3 +34,4 @@ section.panel
             td(itemprop = 'finYear')= financial_activity.year
             td(itemprop = 'finPost')= financial_activity.fin_post
             td(itemprop = 'finRas')= financial_activity.fin_ras
+  p= link_to "Страница вуза на Официальном сайте для размещения информации о государственных, (муниципиальных) учреждениях", 'https://bus.gov.ru/info-card/326173', target: :blank
