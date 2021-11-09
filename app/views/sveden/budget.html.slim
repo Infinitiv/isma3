@@ -34,4 +34,5 @@ section.panel
             td(itemprop = 'finYear')= financial_activity.year
             td(itemprop = 'finPost')= financial_activity.fin_post
             td(itemprop = 'finRas')= financial_activity.fin_ras
+  p(itemprop='finPlanDocLink')= link_to "План финансово-хозяйственной деятельности образовательной организации", '/attachments/54543', target: :blank
   p= link_to "Страница вуза на Официальном сайте для размещения информации о государственных, (муниципиальных) учреждениях", 'https://bus.gov.ru/info-card/326173', target: :blank
