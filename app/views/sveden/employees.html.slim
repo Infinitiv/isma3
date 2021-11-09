@@ -51,71 +51,32 @@ section.panel
         th Электронная почта
     tbody
       tr(itemprop='rucovodstvoRep')
-        td(itemprop='nameRep') филиалы отсутствуют
-        td(itemprop='fio') филиалы отсутствуют
-        td(itemprop='post') филиалы отсутствуют
-        td(itemprop='telephone') филиалы отсутствуют
-        td(itemprop='email') филиалы отсутствуют
+        td(itemprop='nameRep') представительства отсутствуют
+        td(itemprop='fio') представительства отсутствуют
+        td(itemprop='post') представительства отсутствуют
+        td(itemprop='telephone') представительства отсутствуют
+        td(itemprop='email') представительства отсутствуют
   - if @administrator_permission
     = link_to "Скачать список ППС", "/sveden/employees.xls"
-  - @educational_programs.each do |educational_program|
-    - unless @employees_educational_programs.where(educational_programs: {id: educational_program.id}).empty?
-      table
-        caption= "Информация о составе педагогических (научно-педагогических) работников образовательной организации по образовательной программе: #{educational_program.full_name}"
-        thead
-          tr
-            th Ф.И.О. преподавателя, реализующего программу
-            th Должность преподавателя
-            th Перечень преподаваемых дисциплин
-            th Уровень образования
-            th Квалификация
-            th Учёная степень педагогического работника (при наличии) 
-            th Учёное звание педагогического работника (при наличии)
-            th Наименование направления подготовки и (или) специальности педагогического работника
-            th Сведения о повышении квалификации и (или) профессиональной переподготовке педагогического работника (при наличии)
-            th Общий стаж работы
-            th Стаж работы педагогического работника по специальности
-        tbody
-          - @employees_educational_programs.where(educational_programs: {id: educational_program.id}).sort_by(&:full_name).each do |employee|
-              tr(itemprop='teachingStaff')
-                td= link_to employee.full_name, user_profile_path(employee.user), itemprop: 'fio'
-                td itemprop='post'= @posts_hash[employee.user.id][:posts]
-                td itemprop='teachingDiscipline'= employee.subjects.where(educational_program_id: educational_program.id).uniq.map(&:name).compact.join(', ')
-                td itemprop='teachingLevel'= employee.teaching_level
-                td itemprop='teachingQual'= employee.qualification
-                td itemprop='degree'= employee.degree ? employee.degree.name : 'нет'
-                td itemprop='academStat'= employee.academic_title ? employee.academic_title.name : 'нет'
-                td itemprop='employeeQualification'= employee.employee_qualification
-                td itemprop='profDevelopment'= employee.development
-                td itemprop='genExperience'= employee.general_experience
-                td itemprop='specExperience'= employee.special_experience
-  - unless @employees_not_educational_programs.empty?
-    table
-      caption Информация о составе педагогических (научно-педагогических) работников образовательной организации
-      thead
-        tr
-          th Ф.И.О. преподавателя, реализующего программу
-          th Должность преподавателя
-          th Перечень преподаваемых дисциплин
-          th Уровень образования
-          th Квалификация
-          th Учёная степень педагогического работника (при наличии) 
-          th Учёное звание педагогического работника (при наличии)
-          th Наименование направления подготовки и (или) специальности педагогического работника
-          th Сведения о повышении квалификации и (или) профессиональной переподготовке педагогического работника (при наличии)
-          th Общий стаж работы
-          th Стаж работы педагогического работника по специальности
-      tbody
+  table
+    caption Информации о персональном составе педагогических работников образовательной программы
+    thead
+      tr
+        th Код
+        th Наименование профессии, специальности, направления подготовки
+        th Ссылка на страницу о персональном составе педагогических работников образовательной программы
+    tbody
+      - @educational_programs.each do |educational_program|
+        tr(itemprop='teachingOp')
+          td(itemprop='eduCode')
+            = educational_program.code
+            - if educational_program.adaptive
+              .warning.label Адаптированная
+          td(itemprop='eduName')= educational_program.name
+          td= link_to "Персональный состав педагогических работников образовательной программы #{educational_program.full_name}", educational_program, itemprop: 'optRef'
+  - if @administrator_permission
+    - unless @employees_not_educational_programs.empty?
+      h2 Сотрудники без привязки к дисциплинам
+      ul
         - @employees_not_educational_programs.sort_by(&:full_name).each do |employee|
-            tr(itemprop='teachingStaff')
-              td= link_to employee.full_name, user_profile_path(employee.user), itemprop: 'fio'
-              td itemprop='post'= @posts_hash[employee.user.id][:posts]
-              td itemprop='teachingDiscipline'= employee.discipline
-              td itemprop='teachingLevel'= employee.teaching_level
-              td itemprop='teachingQual'= employee.qualification
-              td itemprop='degree'= employee.degree ? employee.degree.name : 'нет'
-              td itemprop='academStat'= employee.academic_title ? employee.academic_title.name : 'нет'
-              td itemprop='employeeQualification'= employee.employee_qualification
-              td itemprop='profDevelopment'= employee.development
-              td itemprop='genExperience'= employee.general_experience
-              td itemprop='specExperience'= employee.special_experience
+            li= link_to employee.full_name, user_profile_path(employee.user)

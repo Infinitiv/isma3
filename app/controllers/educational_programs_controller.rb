@@ -11,6 +11,13 @@ class EducationalProgramsController < ApplicationController
   end
   
   def show
+    @employees_educational_programs = Profile.includes([:user, :degree, :academic_title]).joins(:divisions, :educational_programs).where(divisions: {division_type_id: 3}, educational_programs: {id: @educational_program}).uniq
+    @posts_hash = {}
+    Post.includes(:profile, :division).joins(:profile, :division).where(profiles: {id: @employees_educational_programs}).where(divisions: {division_type_id: 3}).group_by(&:user_id).each do |k, v|
+      @posts_hash[k] = {}
+      @posts_hash[k][:posts] = {}
+      @posts_hash[k][:posts] = v.map{|p| [p.name, p.division.name].join(' ')}.each{|item| (item =~ /заведую/ ? item.gsub!('кафедра', '') : item.gsub!('кафедра', 'кафедры'))}.join(', ')
+    end
     @methodological_supports = @educational_program.methodological_supports.includes(:attachment).sort_by{|ms| ms.attachment.title}
     @subjects = @educational_program.subjects.order(:name)
     @methodological_support = MethodologicalSupport.new
