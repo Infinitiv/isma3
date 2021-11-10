@@ -47,8 +47,8 @@ section.panel
         th rowspan=2 Наименование специальности, направления подготовки
         th rowspan=2 Уровень образования
         th rowspan=2 Формы обучения
-        th colspan=4 Численность обучающихся за счет (количество человек):
-        th rowspan=2 Численность обучающихся, являющихся иностранными гражданами
+        th colspan=4 Численность обучающихся/из них иностранных граждан за счет (количество человек):
+        th rowspan=2 Общая численность обучающихся
       tr
         th бюджетных ассигнований федерального бюджета
         th бюджетов субъектов Российской Федерации
@@ -63,11 +63,23 @@ section.panel
             td(itemprop='eduName')= link_to educational_program.full_name, educational_program if educational_program.full_name
             td(itemprop='eduLevel')= educational_program.level if educational_program.level
             td(itemprop='eduForm')= educational_program.form if educational_program.form
-            td(itemprop='numberBF')= educational_program_number.number_federal if educational_program_number.number_federal
-            td(itemprop='numberBR')= educational_program_number.number_regional if educational_program_number.number_regional
-            td(itemprop='numberBM')= educational_program_number.number_local if educational_program_number.number_local
-            td(itemprop='numberP')= educational_program_number.number_personal if educational_program_number.number_personal
-            td(itemprop='numberF')= educational_program_number.number_foreign if educational_program_number.number_foreign
+            td
+              span(itemprop='numberBF')= educational_program_number.number_federal
+              span= '/'
+              span(itemprop='numberBFF')= educational_program_number.number_foreign_budget
+            td
+              span(itemprop='numberBR')= educational_program_number.number_regional
+              span= '/'
+              span(itemprop='numberBRF')= educational_program_number.number_regional
+            td
+              span(itemprop='numberBM')= educational_program_number.number_local
+              span= '/'
+              span(itemprop='numberBMF')= educational_program_number.number_local
+            td
+              span(itemprop='numberP')= educational_program_number.number_personal
+              span= '/'
+              span(itemprop='numberPF')= educational_program_number.number_foreign_paid
+            td(itemprop='numberAll')= [educational_program_number.number_federal, educational_program_number.number_regional, educational_program_number.number_local, educational_program_number.number_personal].compact.sum
   table
     caption Информация о результатах приема
     thead

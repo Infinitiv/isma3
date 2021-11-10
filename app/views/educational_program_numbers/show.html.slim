@@ -12,7 +12,8 @@ section.panel
       tr
         th rowspan=2 Образовательная программа
         th colspan=4 Численность обучающихся за счет (количество человек):
-        th rowspan=2 Численность обучающихся, являющихся иностранными гражданами
+        th rowspan=2 Численность обучающихся, являющихся иностранными гражданами на бюджете
+        th rowspan=2 Численность обучающихся, являющихся иностранными гражданами на внебюджете
         th rowspan=2 Дата
       tr
         th бюджетных ассигнований федерального бюджета
@@ -30,5 +31,6 @@ section.panel
           td= @educational_program_number.number_regional
           td= @educational_program_number.number_local
           td= @educational_program_number.number_personal
-          td= @educational_program_number.number_foreign
+          td= @educational_program_number.number_foreign_budget
+          td= @educational_program_number.number_foreign_paid
           td= @educational_program_number.date.strftime('%e.%m.%Y')

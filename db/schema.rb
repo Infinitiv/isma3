@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20210518081646) do
+ActiveRecord::Schema.define(version: 20211109143417) do
 
   create_table "academic_plans", force: :cascade do |t|
     t.string   "name",                   limit: 255
@@ -218,7 +218,8 @@ ActiveRecord::Schema.define(version: 20210518081646) do
     t.date     "date"
     t.datetime "created_at",                                   null: false
     t.datetime "updated_at",                                   null: false
-    t.integer  "number_foreign",         limit: 4, default: 0
+    t.integer  "number_foreign_paid",    limit: 4, default: 0
+    t.integer  "number_foreign_budget",  limit: 4, default: 0
   end
 
   add_index "educational_program_numbers", ["educational_program_id"], name: "index_educational_program_numbers_on_educational_program_id", using: :btree
