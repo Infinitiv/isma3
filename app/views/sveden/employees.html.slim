@@ -73,7 +73,7 @@ section.panel
             - if educational_program.adaptive
               .warning.label Адаптированная
           td(itemprop='eduName')= educational_program.name
-          td= link_to "Персональный состав педагогических работников образовательной программы #{educational_program.full_name}", educational_program, itemprop: 'optRef'
+          td= link_to "Персональный состав педагогических работников образовательной программы #{educational_program.full_name}", educational_program, itemprop: 'optRef addRef'
   - if @administrator_permission
     - unless @employees_not_educational_programs.empty?
       h2 Сотрудники без привязки к дисциплинам
