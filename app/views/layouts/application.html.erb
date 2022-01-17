@@ -217,7 +217,7 @@
   <div class="row">
     <div class="large-10 columns show-for-medium-up">
     <%= image_tag('gerb.png', size: '48x48', class: "left", style: "padding-top: 7px;") %>
-          <h1 class="title" style="padding-top: 20px;" title="<%= @details_hash['Полное наименование академии'][:value] %>">Ивановская государственная медицинская академия</h1>
+          <h1 class="title" style="padding-top: 20px;" title="<%= @details_hash['Полное наименование академии'][:value].html_safe %>">Ивановская государственная медицинская академия</h1>
     </div>
     <div class="large-2 small-12 columns" style="padding-top: 20px;">
       <%= form_tag("/search", method: "get") do %>
@@ -286,10 +286,10 @@
 	<div class="large-12 columns">
 	  <address>
 	  <div itemscope itemtype="https://schema.org/Organization">
-            <span itemprop="name"><%= @details_hash['Полное наименование академии'][:value] %></span>
+            <span itemprop="name"><%= @details_hash['Полное наименование академии'][:value].html_safe %></span>
             <div itemprop="address" itemscope itemtype="https://schema.org/PostalAddress">
-              <span itemprop="streetAddress"><%= @details_hash['Адрес'][:value] %>, </span>
-              телефон: <span itemprop="telephone"><%= @details_hash['Телефон'][:value] %></span>
+              <span itemprop="streetAddress"><%= @details_hash['Адрес'][:value].html_safe %>, </span>
+              телефон: <span itemprop="telephone"><%= @details_hash['Телефон'][:value].html_safe %></span>
             </div>
 	  </div>
 	  </address>

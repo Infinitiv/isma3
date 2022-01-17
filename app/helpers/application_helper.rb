@@ -69,7 +69,7 @@ module ApplicationHelper
   def sanitize_truncate(text)
     remove_youtube(text)
     remove_googleform(text)
-    truncate(Sanitize.clean(text), :length => 300, :omission => '... ', :separator => ' ')
+    truncate(Sanitize.clean(text), :length => 300, :omission => '... ', :separator => ' ', escape: false)
   end
   
   def first_letter_upcase(string)
