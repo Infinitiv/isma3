@@ -8,10 +8,7 @@
     <% end %>
     <title><%= content_for?(:title) ? yield(:title) : "ИвГМА" %></title>
     <meta name="description" content="<%= content_for?(:description)? yield(:description) : "Официальный сайт Ивановской медицинской академии" %>">
-    <%= yield(:twitter_card) if content_for?(:twitter_card) %>
-    <%= yield(:vk_card) if content_for?(:vk_card) %>
     <%= favicon_link_tag 'favicon.ico' %>
-    <%= auto_discovery_link_tag(:atom, root_url + 'feed.atom', {title: "ИвГМА"}) %>
     <%= stylesheet_link_tag    "application_blind" %>
     <%= csrf_meta_tags %>
   </head>
