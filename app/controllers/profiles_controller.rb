@@ -1,6 +1,7 @@
 class ProfilesController < UsersController
   skip_before_filter :authenticate_user!, only: [:show]
   skip_before_filter :require_administrator, only: [:show, :edit, :update, :destroy]
+  before_action :require_isma
   before_action :set_user, only: [:show, :edit, :update, :destroy, :new, :create, :published_toggle]
   before_action :set_profile, only: [:show, :edit, :update, :destroy, :published_toggle]
   before_action :can, only: [:edit, :update, :destroy]

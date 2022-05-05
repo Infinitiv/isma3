@@ -17,9 +17,11 @@
   <br />
   <%= link_to 'К подразделению', @post.division, class: "superscript right" %>
   <h1><%= @post.division.name == @post.name ? "#{@post.name}" : "#{@post.division.name} - #{@post.name}" %></h1>
-  <%= render partial: 'articles/first_image_attachment', locals: {image_attachment: @last_image_attachment, dimension: '150x150' } if @last_image_attachment %>
-  <p><%= link_to @profile.full_name_reg, user_profile_path(@profile.user) if @profile %>
-  <div class="text-justify"><%= sanitize_full(autosub_details @profile.about) if @profile && @profile.about %></div>
+  <% if @moderator_permission || @isma_permission %>
+    <%= render partial: 'articles/first_image_attachment', locals: {image_attachment: @last_image_attachment, dimension: '150x150' } if @last_image_attachment %>
+    <p><%= link_to @profile.full_name_reg, user_profile_path(@profile.user) if @profile %>
+    <div class="text-justify"><%= sanitize_full(autosub_details @profile.about) if @profile && @profile.about %></div>
+  <% end %>
 <% if @division.division_type_id == 3 %>
   <% if @administrator_permission %>
     <% unless @post.subjects.empty? %>
@@ -57,7 +59,7 @@
   <% unless @division.email.empty? || @post.phone.empty? %>
   <dl>
     <dt>Контакты</dt>
-    <dd><p><%= mail_to @division.email, 'Написать письмо', encode: "javascript", subject: "Для #{@profile.full_name if @profile}" unless @division.email.empty? %></dd>
+    <dd><p><%= mail_to @division.email, 'Написать письмо', encode: "javascript", subject: "Для кого: #{@post.name}" unless @division.email.empty? %></dd>
     <dd><p><%= "Телефон: #{multi_number_to_phone(@post.phone, country_code: 7, area_code: true)}" unless @post.phone.empty? %></dd>
   </dl>
   <% end %>

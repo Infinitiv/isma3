@@ -53,6 +53,13 @@ class ApplicationController < ActionController::Base
     end
   end 
   
+  def require_isma
+    unless current_user_moderator? || current_user_isma?
+      flash[:error] = "You must have isma`s permissions"
+      redirect_to root_path
+    end
+  end 
+  
   def current_user_groups
     current_user.groups unless current_user.nil?
   end
@@ -71,6 +78,11 @@ class ApplicationController < ActionController::Base
 
   def current_user_administrator?
     current_user_groups.where(administrator: true).count > 0 unless current_user.nil?
+  end
+  
+  def current_user_isma?
+    isma_group = Group.find_by_name('isma')
+    current_user_groups.where(parent: isma_group).count > 0 unless current_user.nil?
   end
   
   def set_menus
@@ -104,6 +116,7 @@ class ApplicationController < ActionController::Base
     @moderator_permission = current_user_moderator?
     @writer_permission = current_user_writer?
     @commentator_permission = current_user_commentator?
+    @isma_permission = current_user_isma?
   end
   
   def set_details
