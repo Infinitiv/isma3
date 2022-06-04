@@ -1,33 +1,33 @@
 Isma::Application.routes.draw do
 
-  #namespace :api, defaults: {format: 'json'}, path: '/api' do
-    #resources :entrant_applications, only: [:show, :create, :update] do
-      #collection do
-        #post 'check_email'
-      #end
-      #member do
-        #put 'check_pin'
-        #put 'remove_pin'
-        #put 'generate_entrant_application'
-        #put 'generate_consent_applications'
-        #put 'generate_withdraw_applications'
-        #put 'generate_contracts'
-        #put 'send_welcome_email'
-      #end
-    #end
-    #resources :attachments, only: [:show, :create, :destroy]
-    #resources 'stats' do
-      #member do
-        #get 'entrants'
-        #get 'marks'
-      #end
-      #collection do
-        #get 'campaigns'
-      #end
-    #end
-    #resources :dictionaries, only: [:index, :show]
-    #resources :campaigns, only: [:index, :show]
-  #end
+  namespace :api, defaults: {format: 'json'}, path: '/api' do
+    resources :entrant_applications, only: [:show, :create, :update] do
+      collection do
+        post 'check_email'
+      end
+      member do
+        put 'check_pin'
+        put 'remove_pin'
+        put 'generate_entrant_application'
+        put 'generate_consent_applications'
+        put 'generate_withdraw_applications'
+        put 'generate_contracts'
+        put 'send_welcome_email'
+      end
+    end
+    resources :attachments, only: [:show, :create, :destroy]
+    resources 'stats' do
+      member do
+        get 'entrants'
+        get 'marks'
+      end
+      collection do
+        get 'campaigns'
+      end
+    end
+    resources :dictionaries, only: [:index, :show]
+    resources :campaigns, only: [:index, :show]
+  end
   
   get "sitemaps/sitemap"
   
