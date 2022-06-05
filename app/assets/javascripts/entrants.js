@@ -985,12 +985,12 @@ var entrants = new Vue({
       .get('/api/campaigns')
       .then(response => (this.api.dictionaries.campaigns = response.data.campaigns));
     axios
-      .get('/api/entrant_applications/' + this.api.hash)
+      .get('/api/entrants/' + this.api.hash)
       .then(
         response => {
-          this.entrant_application = response.data.entrant_application;
-          if(this.entrant_application.status_id != 0) this.api.current_tab = 'start';
-          if(this.entrant_application.identity_documents.length == 0) this.entrant_application.identity_documents.push({
+          this.entrant = response.data.entrant;
+          if(this.application.status != 'новый') this.api.current_tab = 'start';
+          if(this.entrant.identity_documents.length == 0) this.entrant.identity_documents.push({
             id: null,
             identity_document_type: '',
             identity_document_series: '',
@@ -1003,7 +1003,7 @@ var entrants = new Vue({
             alt_entrant_first_name: '',
             alt_entrant_middle_name: ''
           });
-          if(!this.entrant_application.education_document) this.entrant_application.education_document = {
+          if(!this.entrant.education_document) this.entrant.education_document = {
             id: null,
             education_document_type: '',
             education_document_number: '',

@@ -3,7 +3,7 @@
   = javascript_include_tag 'vue@2.6.12.js'
 - else
   = javascript_include_tag 'vue.js'
-section.panel#entrant_application
+section.panel#entrant
   - if current_user && current_user.groups.map(&:name).include?('priem')
     = hidden_field_tag :clerk, '', ref: 'clerk', data: {clerk: current_user.login}
   - else

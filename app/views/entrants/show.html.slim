@@ -3,7 +3,7 @@
   = javascript_include_tag 'vue@2.6.12.js'
 - else
   = javascript_include_tag 'vue.js'
-section.panel#entrant_application
+section.panel#entrant
   . v-if="entrant_application.id"
     .row(v-if="errors.length")
       .large-12.small-12.columns.label.warning

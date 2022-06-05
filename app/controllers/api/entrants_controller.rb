@@ -1,8 +1,8 @@
-class Api::EntrantApplicationsController < ApplicationController
+class Api::EntrantsController < ApplicationController
   skip_before_filter :authenticate_user!
   skip_before_action :verify_authenticity_token
   def show
-    method = 'entrant_applications/'
+    method = 'entrants/'
     http_params = http_params()
     http = Net::HTTP.new(http_params[:uri_host], http_params[:uri_port], http_params[:proxy_ip], http_params[:proxy_port])
     http.use_ssl = true if Rails.env == 'production'
@@ -11,7 +11,7 @@ class Api::EntrantApplicationsController < ApplicationController
   end
 
   def create
-    method = 'entrant_applications/'
+    method = 'entrants/'
     http_params = http_params()
     http = Net::HTTP.new(http_params[:uri_host], http_params[:uri_port], http_params[:proxy_ip], http_params[:proxy_port])
     http.use_ssl = true if Rails.env == 'production'
@@ -21,7 +21,7 @@ class Api::EntrantApplicationsController < ApplicationController
   end
 
   def update
-    method = 'entrant_applications/'
+    method = 'entrants/'
     http_params = http_params()
     http = Net::HTTP.new(http_params[:uri_host], http_params[:uri_port], http_params[:proxy_ip], http_params[:proxy_port])
     http.use_ssl = true if Rails.env == 'production'
@@ -31,7 +31,7 @@ class Api::EntrantApplicationsController < ApplicationController
   end
 
   def check_email
-    method = "entrant_applications/check_email"
+    method = "entrants/check_email"
     http_params = http_params()
     http = Net::HTTP.new(http_params[:uri_host], http_params[:uri_port], http_params[:proxy_ip], http_params[:proxy_port])
     http.use_ssl = true if Rails.env == 'production'
@@ -41,7 +41,7 @@ class Api::EntrantApplicationsController < ApplicationController
   end
   
   def check_pin
-    method = "entrant_applications/#{params[:id]}/check_pin"
+    method = "entrants/#{params[:id]}/check_pin"
     http_params = http_params()
     http = Net::HTTP.new(http_params[:uri_host], http_params[:uri_port], http_params[:proxy_ip], http_params[:proxy_port])
     http.use_ssl = true if Rails.env == 'production'
@@ -51,7 +51,7 @@ class Api::EntrantApplicationsController < ApplicationController
   end
 
   def remove_pin
-    method = "entrant_applications/#{params[:id]}/remove_pin"
+    method = "entrants/#{params[:id]}/remove_pin"
     http_params = http_params()
     http = Net::HTTP.new(http_params[:uri_host], http_params[:uri_port], http_params[:proxy_ip], http_params[:proxy_port])
     http.use_ssl = true if Rails.env == 'production'
@@ -61,7 +61,7 @@ class Api::EntrantApplicationsController < ApplicationController
   end
   
   def generate_entrant_application
-    method = "entrant_applications/#{params[:id]}/generate_entrant_application"
+    method = "entrants/#{params[:id]}/generate_entrant_application"
     http_params = http_params()
     http = Net::HTTP.new(http_params[:uri_host], http_params[:uri_port], http_params[:proxy_ip], http_params[:proxy_port])
     http.use_ssl = true if Rails.env == 'production'
@@ -71,7 +71,7 @@ class Api::EntrantApplicationsController < ApplicationController
   end
   
   def generate_consent_applications
-    method = "entrant_applications/#{params[:id]}/generate_consent_applications"
+    method = "entrants/#{params[:id]}/generate_consent_applications"
     http_params = http_params()
     http = Net::HTTP.new(http_params[:uri_host], http_params[:uri_port], http_params[:proxy_ip], http_params[:proxy_port])
     http.use_ssl = true if Rails.env == 'production'
@@ -81,7 +81,7 @@ class Api::EntrantApplicationsController < ApplicationController
   end
   
   def generate_withdraw_applications
-    method = "entrant_applications/#{params[:id]}/generate_withdraw_applications"
+    method = "entrants/#{params[:id]}/generate_withdraw_applications"
     http_params = http_params()
     http = Net::HTTP.new(http_params[:uri_host], http_params[:uri_port], http_params[:proxy_ip], http_params[:proxy_port])
     http.use_ssl = true if Rails.env == 'production'
@@ -91,7 +91,7 @@ class Api::EntrantApplicationsController < ApplicationController
   end
   
   def generate_contracts
-    method = "entrant_applications/#{params[:id]}/generate_contracts"
+    method = "entrants/#{params[:id]}/generate_contracts"
     http_params = http_params()
     http = Net::HTTP.new(http_params[:uri_host], http_params[:uri_port], http_params[:proxy_ip], http_params[:proxy_port])
     http.use_ssl = true if Rails.env == 'production'
@@ -101,7 +101,7 @@ class Api::EntrantApplicationsController < ApplicationController
   end
   
   def send_welcome_email
-    method = "entrant_applications/#{params[:id]}/send_welcome_email"
+    method = "entrants/#{params[:id]}/send_welcome_email"
     http_params = http_params()
     http = Net::HTTP.new(http_params[:uri_host], http_params[:uri_port], http_params[:proxy_ip], http_params[:proxy_port])
     http.use_ssl = true if Rails.env == 'production'

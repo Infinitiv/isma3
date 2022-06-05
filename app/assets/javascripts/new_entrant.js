@@ -1,5 +1,5 @@
 var entrants = new Vue({
-  el: '#entrant_application',
+  el: '#entrant',
   data: {
     api: {
       campaigns: null
@@ -36,7 +36,7 @@ var entrants = new Vue({
   methods: {
     sendWelcomeEmail: function() {
       axios
-        .put('/api/entrant_applications/' + this.hash + '/send_welcome_email', {id: this.hash})
+        .put('/api/entrants/' + this.hash + '/send_welcome_email', {id: this.hash})
         .then(response => {
           console.log(response.data.message);
         })
@@ -66,7 +66,7 @@ var entrants = new Vue({
     checkEmail: function() {
       this.errors = [];
       axios
-        .post('/api/entrant_applications/check_email', {campaign_id: this.campaign_id, email: this.email})
+        .post('/api/entrants/check_email', {email: this.email})
         .then(response => {
           if(response.data.status == 'faild') {
             this.errors.push({element: 'email', message: 'Адрес электронной почты уже зарегистрирован в системе. Личный кабинет Вами уже создан. Для входа в личный кабинет необходимо использовать ссылку, полученную по почте. Если нет письма со ссылкой, обратитесь в приемную комиссию по телефону или электронной почте. Не создавайте дублирующиеся личные кабинеты.', level: 'red'});
@@ -79,11 +79,11 @@ var entrants = new Vue({
     },
     sendCode: function() {
       axios
-        .post('/api/entrant_applications', {campaign_id: this.campaign_id, email: this.email, clerk: this.$refs.clerk.dataset.clerk})
+        .post('/api/entrants', { campaign_id: this.campaign_id, email: this.email, clerk: this.$refs.clerk.dataset.clerk })
         .then(response => {
           if(response.data.status == 'success') {
             this.hash = response.data.hash;
-            this.entrant_application_id = response.data.id
+            this.entrant_id = response.data.id
           }
           if(response.data.status == 'faild') {
             console.log('что-то пошло не так')
@@ -101,7 +101,7 @@ var entrants = new Vue({
     },
     confirmEmail: function () {
       axios
-        .put( '/api/entrant_applications/' + this.hash + '/check_pin', { hash: this.hash, pin: this.pin } )
+        .put( '/api/entrants/' + this.hash + '/check_pin', { hash: this.hash, pin: this.pin } )
         .then(response => {
           if(response.data.status == 'success') {
             this.email_confirmed = true;
@@ -122,7 +122,7 @@ var entrants = new Vue({
     },
     checkEmailDecline: function() {
       axios
-        .put( '/api/entrant_applications/' + this.hash + '/remove_pin', { hash: this.hash } )
+        .put( '/api/entrants/' + this.hash + '/remove_pin', { hash: this.hash } )
         .then(response => {
           if(response.data.status == 'success') {
             this.email_confirmed = true;
