@@ -2,37 +2,37 @@ fieldset
   .row
     .large-12.small-12.columns
       h3.right
-        = "{{ entrant_application.personal.entrant_first_name + ' ' + entrant_application.personal.entrant_last_name }}"
+        = "{{ entrant.personal.entrant_first_name + ' ' + entrant.personal.entrant_last_name }}"
     .large-12.small-12.columns
-      .label.info(v-if="entrant_application.status_id == 2") Ваше обращение зарегистрировано и находится на рассмотрении
-      .label.success(v-if="entrant_application.status_id == 4") Ваше заявление допущено к участию в конкурсе. Номер личного дела {{entrant_application.application_number}}.
-      .label.alert(v-if="entrant_application.status_id == 6") Ваше заявление отзвано
+      .label.info(v-if="entrant.status == 2") Ваше обращение зарегистрировано и находится на рассмотрении
+      .label.success(v-if="entrant.status == 4") Ваше заявление допущено к участию в конкурсе. Номер личного дела {{entrant.application_number}}.
+      .label.alert(v-if="entrant.status == 6") Ваше заявление отзвано
   .row
     .large-12.small-12.columns
       br
-      =link_to 'Список лиц, подавших документы', '/storage/data/entrants/current_entrants_spec.html', target: '_blank', 'v-if': 'findCampaign(entrant_application.campaign_id).campaign_type_id == 1'
-      =link_to 'Список лиц, подавших документы', '/storage/data/entrants/current_entrants_ord.html', target: '_blank', 'v-if': 'findCampaign(entrant_application.campaign_id).campaign_type_id == 4'
+      =link_to 'Список лиц, подавших документы', '/storage/data/entrants/current_entrants_spec.html', target: '_blank', 'v-if': 'findCampaign(entrant.campaign_id).campaign_type == "Прием на обучение на бакалавриат/специалитет"'
+      =link_to 'Список лиц, подавших документы', '/storage/data/entrants/current_entrants_ord.html', target: '_blank', 'v-if': 'findCampaign(entrant.campaign_id).campaign_type == "Прием на подготовку кадров высшей квалификации"'
     .large-12.small-12.columns
       p= "(обновляется не реже, чем раз в сутки)"
-  .row(v-if="findCampaign(entrant_application.campaign_id).campaign_type_id == 1")
+  .row(v-if="findCampaign(entrant.campaign_id).campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
     .large-12.small-12.columns
       br
       =link_to 'Ранжированный конкурсный список', '/storage/data/competitions/current_competitions_spec.html', target: '_blank'
     .large-12.small-12.columns
       p= "(обновляется не реже, чем 5 раз в сутки)"
-  .row(v-if="findCampaign(entrant_application.campaign_id).campaign_type_id == 4")
+  .row(v-if="findCampaign(entrant.campaign_id).campaign_type == 'Прием на подготовку кадров высшей квалификации'")
     .large-12.small-12.columns
       br
       =link_to 'Ранжированный конкурсный список', '/storage/data/competitions/current_competitions_ord.html', target: '_blank'
-  .row(v-if="entrant_application.comment")
+  .row(v-if="entrant.comment")
     .large-12.small-12.columns
       br
       h3 Внимание! При рассмотрении Вашего дела выявлены следующие замечания
       p
-        strong= "{{entrant_application.comment}}"
-      p(v-if="entrant_application.status != 'прошу проверить'")
+        strong= "{{entrant.comment}}"
+      p(v-if="entrant.status != 'прошу проверить'")
         = link_to 'Сообщить об исправлении замечаний', '#', class: 'button tiny', '@click.prevent': 'sendData("status", "прошу проверить")'
-      .label.warning(v-if="entrant_application.status == 'прошу проверить'") Исправления находятся на рассмотрении
+      .label.warning(v-if="entrant.status == 'прошу проверить'") Исправления находятся на рассмотрении
 fieldset
   legend Вступительные испытания
   .row
@@ -41,20 +41,20 @@ fieldset
         caption Конкурсные баллы
         thead
           tr
-            th(v-for="mark in entrant_application.marks") = "{{ mark.subject }}"
+            th(v-for="mark in entrant.marks") = "{{ mark.subject }}"
             th Сумма
             th С учетом достижений
         tbody
           tr
-            td(v-for="mark in entrant_application.marks")
+            td(v-for="mark in entrant.marks")
               span(v-if="mark.value == 0") {{ mark.form }}
               span(v-else) 
                 span= "{{ mark.value }}"
                 sup= "{{ mark.form }}"
-            td= "{{ entrant_application.sum }}"
-            td= "{{ entrant_application.full_sum }}"
+            td= "{{ entrant.sum }}"
+            td= "{{ entrant.full_sum }}"
 fieldset(v-if="checkPaidCompetitiveGroups")
-  p Если Вы подали документы на один или несколько внебюджетных конкурсов, Вам необходимо заполнить со своей стороны договор (договоры) об оказании платных образовательных услуг. Если Вы поступите на бюджетное место, данный договор не вступит в силу и оплата обучения не потребуется. Если Вы поступите на внебюджетное место и будете зачислены в вуз, договор вступит в силу с момента начала обучения. Оплата по договору должна быть произведена до 25 сентября {{ findCampaign(entrant_application.campaign_id).year_start }} года (за семестр или за учебный год). То есть заранее (до зачисления) Вы платить не обязаны.
+  p Если Вы подали документы на один или несколько внебюджетных конкурсов, Вам необходимо заполнить со своей стороны договор (договоры) об оказании платных образовательных услуг. Если Вы поступите на бюджетное место, данный договор не вступит в силу и оплата обучения не потребуется. Если Вы поступите на внебюджетное место и будете зачислены в вуз, договор вступит в силу с момента начала обучения. Оплата по договору должна быть произведена до 25 сентября {{ findCampaign(entrant.campaign_id).year_start }} года (за семестр или за учебный год). То есть заранее (до зачисления) Вы платить не обязаны.
   p(v-if="checkAge") Поскольку Вам уже есть 18 лет, то Вы можете сами быть заказчиком по данному договору и оплачивать образовательные услуги. Однако, это может быть и иное дееспособное лицо. Чаще всего заказчиком выступает один из родителей или кто-то из родственников. Учите, что согласно законодательству Российской Федерации в некоторых случаях, заказчик может получить налоговый вычет за оплату образовательных услуг или использовать материнский капитал, поэтому подумайте, кто может выступить заказчиком Вашего обучения.
   p(v-if="!checkAge") Поскольку Вам еще нет 18 лет, то Вы не можете сами быть заказчиком по данному договору и оплачивать образовательные услуги. Чаще всего заказчиком выступает один из родителей, кто-то из родственников или любое дееспособное лицо, согласное оплачивать обучение.
   p Для заполнения бланка договора необходимо указать данные заказчика.
@@ -63,92 +63,92 @@ fieldset
   legend Действия с заявлениями
   h3 Заявление о согласии на зачисление
   p Вы можете участвовать в нескольких конкурсах на поступление в наш вуз. Но зачислены Вы будете лишь на одну специальность и либо на бюджетные места, либо на места по договору об оказании платных образовательных услуг. Поэтому, оценив конкурсную ситуацию, Вы должны будете сделать свой выбор и подать заявление о согласии на зачисление. Это не обязательно делать сейчас, то есть сразу при подаче документов, но необходимо перед изданием приказов о зачислении.
-  .(v-if="entrant_application.campaign_id != '' && findCampaign(entrant_application.campaign_id).campaign_type_id == 1")
+  .(v-if="entrant.campaign_id != '' && findCampaign(entrant.campaign_id).campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
     p Если Вы не предоставите заявление о согласии на зачисление в установленные сроки (пункты 10.10, 10.11 Правил приема), Вы не будете зачислены в наш вуз, даже если пройдете по конкурсу. Если Вы считаете, что окончательно определились со своим выбором, Вы можете сразу при подаче документов представить заявление о согласии. Для этого отметьте тот конкурс, по результатам которого Вы согласны быть зачислены. В последующем (но обязательно ДО истечения вышеуказанных сроков) Вы сможете изменить свое мнение и переписать заявление о согласии на зачисление (переписать три раза - если поступаете на бюджетные места, неограниченное число раз - если поступаете по внебюджету).
   .row
     .large-12.small-1.columns
       p 
         strong Шаг 1. Выберите конкурс.
-      select.error#competitive_group_id(name="competitive_group_id" v-model='entrant_application.budget_agr' v-bind:disabled="consentCount() > withdrawCount() ? 'disabled' : false")
+      select.error#competitive_group_id(name="competitive_group_id" v-model='entrant.budget_agr' v-bind:disabled="consentCount() > withdrawCount() ? 'disabled' : false")
         option(value)
-        option(v-for="competitive_group in entrant_application.competitive_groups" v-bind:value="competitive_group.id") {{ competitive_group.name }}
+        option(v-for="competitive_group in entrant.competitive_groups" v-bind:value="competitive_group.id") {{ competitive_group.name }}
   .row
     br
-    .large-12.small-12.columns(v-if="!findAttachment(entrant_application.budget_agr, 'consent_application', false) || consentCount() == withdrawCount()")
-      .(v-if="findAttachment(entrant_application.budget_agr, 'consent_application', true)")
+    .large-12.small-12.columns(v-if="!findAttachment(entrant.budget_agr, 'consent_application', false) || consentCount() == withdrawCount()")
+      .(v-if="findAttachment(entrant.budget_agr, 'consent_application', true)")
         p
           strong Шаг 2. Скачайте бланк
         p
-          a v-bind:href = "'/api/attachments/' + findAttachment(entrant_application.budget_agr, 'consent_application', true).data_hash + '?filename=' + findAttachment(entrant_application.budget_agr, 'consent_application', true).filename" target = '_blank' Скачать бланк заявления о согласии на зачисление
-      .(v-if="entrant_application.budget_agr")
+          a v-bind:href = "'/api/attachments/' + findAttachment(entrant.budget_agr, 'consent_application', true).data_hash + '?filename=' + findAttachment(entrant.budget_agr, 'consent_application', true).filename" target = '_blank' Скачать бланк заявления о согласии на зачисление
+      .(v-if="entrant.budget_agr")
         p
           strong Шаг 3. Распечатайте и подпишите
-        = render partial: 'add_attachment', locals: { message: 'Загрузите подписанное заявление о согласии на зачисление.', document_type: 'consent_application', document_id: 'entrant_application.budget_agr', entrant_application_id: 'entrant_application.id', ref_name: 'consent_application', id: 'consent_application'}
+        = render partial: 'add_attachment', locals: { message: 'Загрузите подписанное заявление о согласии на зачисление.', document_type: 'consent_application', document_id: 'entrant.budget_agr', entrant_id: 'entrant.id', ref_name: 'consent_application', id: 'consent_application'}
   .row
     .large-12.small-12.columns(v-if="consentCount() > 0")
       p
         strong Поданные согласия на зачисление
       ul.no-bullet
-        li(v-for="attachment in entrant_application.attachments" v-if="attachment.document_type == 'consent_application' && !attachment.template")
+        li(v-for="attachment in entrant.attachments" v-if="attachment.document_type == 'consent_application' && !attachment.template")
           a v-bind:href = "'/api/attachments/' + attachment.data_hash + '?filename=' + attachment.filename" target = '_blank' {{ attachment.filename }}
   .row
-    .large-12.small-12.columns(v-if="entrant_application.budget_agr && findCompetitiveGroup(entrant_application.budget_agr).education_source_id == 15")
+    .large-12.small-12.columns(v-if="entrant.budget_agr && findCompetitiveGroup(campaign_id, entrant.budget_agr).education_source == 'С оплатой обучения'")
       p Вы решили подать согласие на зачисление на внебюджетный конкурс. Вторым обязательным условием зачисления, кроме согласия, является подписание договора на оказание платных образовательных услуг.
       .(v-if="checkContragent")
         p= "{{ checkContragent }}"
         =link_to 'Указать данные заказчика', '#', '@click.prevent': 'openContragentModal', class: 'button tiny'
-      .(v-if="!checkContragent && !findAttachment(entrant_application.budget_agr, 'contract', true)")
+      .(v-if="!checkContragent && !findAttachment(entrant.budget_agr, 'contract', true)")
         #contract_button
-          =link_to 'Сформировать бланк договора', '#', class: 'button tiny', '@click.prevent': 'generateContract(entrant_application.budget_agr)'
+          =link_to 'Сформировать бланк договора', '#', class: 'button tiny', '@click.prevent': 'generateContract(entrant.budget_agr)'
         p.hide#contract_link Формируется договор...
-      .(v-if="findAttachment(entrant_application.budget_agr, 'contract', true)")
+      .(v-if="findAttachment(entrant.budget_agr, 'contract', true)")
         p
           strong Шаг 4. Скачайте бланк
         p
-          a v-bind:href = "'/api/attachments/' + findAttachment(entrant_application.budget_agr, 'contract', true).data_hash + '?filename=' + findAttachment(entrant_application.budget_agr, 'contract', true).filename" target = '_blank' Скачать бланк договора на платную образовательную услугу'
+          a v-bind:href = "'/api/attachments/' + findAttachment(entrant.budget_agr, 'contract', true).data_hash + '?filename=' + findAttachment(entrant.budget_agr, 'contract', true).filename" target = '_blank' Скачать бланк договора на платную образовательную услугу'
         p
           strong Шаг 5. Распечатайте и подпишите
-        = render partial: 'add_attachment', locals: { message: 'Загрузите подписанный договор на платную образовательную услугу.', document_type: 'contract', document_id: 'entrant_application.budget_agr', entrant_application_id: 'entrant_application.id', ref_name: 'contract', id: 'contract'}
+        = render partial: 'add_attachment', locals: { message: 'Загрузите подписанный договор на платную образовательную услугу.', document_type: 'contract', document_id: 'entrant.budget_agr', entrant_id: 'entrant.id', ref_name: 'contract', id: 'contract'}
   .row
-    .large-12.small-12.columns(v-if="findAttachment(entrant_application.budget_agr, 'contract', false)")
+    .large-12.small-12.columns(v-if="findAttachment(entrant.budget_agr, 'contract', false)")
       p
         strong Загруженные договоры
       ul.no-bullet
-        li(v-for="attachment in entrant_application.attachments" v-if="attachment.document_type == 'contract' && !attachment.template")
+        li(v-for="attachment in entrant.attachments" v-if="attachment.document_type == 'contract' && !attachment.template")
           a v-bind:href = "'/api/attachments/' + attachment.data_hash + '?filename=' + attachment.filename" target = '_blank' {{ attachment.filename }}
   h3 Отзыв согласия на зачисление
   p Для отзыва заявления о согласии на зачисление, необходимо скачать бланк, распечатать, подписать и прикрепить в соответствующее поле. Заявление будет обработано приемной комиссией, после чего согласие в базе будет удалено. Вы продолжаете участвовать в заявленных Вами конкурсах, но без подачи нового заявления о согласии не сможете быть зачисленными в ИвГМА.
-  .row(v-if="entrant_application.budget_agr")
-    .large-12.small-12.columns(v-if="!findAttachment(entrant_application.budget_agr, 'withdraw_application', false) || consentCount() > withdrawCount()")
-      .(v-if="findAttachment(entrant_application.budget_agr, 'withdraw_application', true) && findAttachment(entrant_application.budget_agr, 'consent_application', false)")
+  .row(v-if="entrant.budget_agr")
+    .large-12.small-12.columns(v-if="!findAttachment(entrant.budget_agr, 'withdraw_application', false) || consentCount() > withdrawCount()")
+      .(v-if="findAttachment(entrant.budget_agr, 'withdraw_application', true) && findAttachment(entrant.budget_agr, 'consent_application', false)")
         p
           strong Шаг 1. Скачайте бланк
         p
-          a v-bind:href = "'/api/attachments/' + findAttachment(entrant_application.budget_agr, 'withdraw_application', true).data_hash + '?filename=' + findAttachment(entrant_application.budget_agr, 'withdraw_application', true).filename" target = '_blank' Скачать бланк заявления об отзыве согласия на зачисление
+          a v-bind:href = "'/api/attachments/' + findAttachment(entrant.budget_agr, 'withdraw_application', true).data_hash + '?filename=' + findAttachment(entrant.budget_agr, 'withdraw_application', true).filename" target = '_blank' Скачать бланк заявления об отзыве согласия на зачисление
         p
           strong Шаг 2. Распечатайте и подпишите
-        = render partial: 'add_attachment', locals: { message: 'Загрузите подписанное заявление об отказе от согласия на зачисление.', document_type: 'withdraw_application', document_id: 'entrant_application.budget_agr', entrant_application_id: 'entrant_application.id', ref_name: 'withdraw_application', id: 'withdraw_application'}
+        = render partial: 'add_attachment', locals: { message: 'Загрузите подписанное заявление об отказе от согласия на зачисление.', document_type: 'withdraw_application', document_id: 'entrant.budget_agr', entrant_id: 'entrant.id', ref_name: 'withdraw_application', id: 'withdraw_application'}
   .row
     .large-12.small-12.columns(v-if="withdrawCount() > 0")
       p
         strong Поданные отзывы согласия на зачисление
       ul.no-bullet
-        li(v-for="attachment in entrant_application.attachments" v-if="attachment.document_type == 'withdraw_application' && !attachment.template")
+        li(v-for="attachment in entrant.attachments" v-if="attachment.document_type == 'withdraw_application' && !attachment.template")
           a v-bind:href = "'/api/attachments/' + attachment.data_hash + '?filename=' + attachment.filename" target = '_blank' {{ attachment.filename }}
-  .(v-if="entrant_application.status_id == 4")
+  .(v-if="entrant.status == 4")
     h3 Отзыв пакета документов
     p Для отзыва документов из ИвГМА необходимо скачать, распечатать, подписать и прикрепить заявление об отзыве документов в соответствующее поле. Заявление будет обработано приемной комиссией, после чего Вы будете исключены из списков поступающих.
-    .row(v-if="entrant_application.attachments.length > 0")
+    .row(v-if="entrant.attachments.length > 0")
       .large-12.small-12.columns
         ul.no-bullet
-          li(v-for="attachment in entrant_application.attachments" v-if="attachment.document_type == 'recall_application' && attachment.template")
+          li(v-for="attachment in entrant.attachments" v-if="attachment.document_type == 'recall_application' && attachment.template")
             span Скачать&nbsp;
             a v-bind:href = "'/api/attachments/' + attachment.data_hash + '?filename=' + attachment.filename" target = '_blank' Бланк заявления об отзыве документов
       .large-12.small-12.columns
-        = render partial: 'add_attachment', locals: { message: 'Выберите и прикрепите файл(ы).', document_type: 'recall_application', document_id: 'entrant_application.id', entrant_application_id: 'entrant_application.id', ref_name: 'recall_application', id: 'recall_application'}
-      .large-12.small-12.columns(v-if="entrant_application.attachments.length > 0")
+        = render partial: 'add_attachment', locals: { message: 'Выберите и прикрепите файл(ы).', document_type: 'recall_application', document_id: 'entrant.id', entrant_id: 'entrant.id', ref_name: 'recall_application', id: 'recall_application'}
+      .large-12.small-12.columns(v-if="entrant.attachments.length > 0")
         ul.no-bullet
-          li(v-for="attachment in entrant_application.attachments" v-if="attachment.document_type == 'recall_application' && !attachment.template")
+          li(v-for="attachment in entrant.attachments" v-if="attachment.document_type == 'recall_application' && !attachment.template")
             span Загружено&nbsp;
             a v-bind:href = "'/api/attachments/' + attachment.data_hash + '?filename=' + attachment.filename" target = '_blank' {{ attachment.filename }}
 .reveal-modal.full id='contragent' data-reveal = true
@@ -160,63 +160,63 @@ fieldset
       .large-4.small-12.columns
         = label_tag :last_name
           span Фамилия
-          = text_field_tag :last_name, nil, placeholder: 'Как в паспорте', 'v-model.trim': 'entrant_application.contragent.last_name', class: 'error', 'v-on:change': 'sendData("contragent", entrant_application.contragent)'
+          = text_field_tag :last_name, nil, placeholder: 'Как в паспорте', 'v-model.trim': 'entrant.contragent.last_name', class: 'error', 'v-on:change': 'sendData("contragent", entrant.contragent)'
         small.error v-if="checkLastName" == "{{ checkLastName }}"
         small.error v-if="findErrorMessage('last_name')" == "{{ findErrorMessage('last_name') }}"
       .large-4.small-12.columns
         = label_tag :first_name
           span Имя
-          = text_field_tag :first_name, nil, placeholder: 'Как в паспорте', 'v-model.trim': 'entrant_application.contragent.first_name', class: 'error', 'v-on:change': 'sendData("contragent", entrant_application.contragent)'
+          = text_field_tag :first_name, nil, placeholder: 'Как в паспорте', 'v-model.trim': 'entrant.contragent.first_name', class: 'error', 'v-on:change': 'sendData("contragent", entrant.contragent)'
         small.error v-if="checkFirstName" == "{{ checkFirstName }}"
         small.error v-if="findErrorMessage('first_name')" == "{{ findErrorMessage('first_name') }}"
       .large-4.small-12.columns
         = label_tag :middle_name
           span Отчество
-          = text_field_tag :middle_name, nil, placeholder: 'Как в паспорте, если есть', 'v-model.trim': 'entrant_application.contragent.middle_name', class: 'error', 'v-on:change': 'sendData("contragent", entrant_application.contragent)'
+          = text_field_tag :middle_name, nil, placeholder: 'Как в паспорте, если есть', 'v-model.trim': 'entrant.contragent.middle_name', class: 'error', 'v-on:change': 'sendData("contragent", entrant.contragent)'
         small.error v-if="checkMiddleName" == "{{ checkMiddleName }}"
         small.error v-if="findErrorMessage('middle_name')" == "{{ findErrorMessage('middle_name') }}"
     .row
       .large-4.small-12.columns
         = label_tag :birth_date
           span Дата рождения
-          = date_field_tag :birth_date, nil, 'v-model': 'entrant_application.contragent.birth_date', class: 'error', 'v-on:change': 'sendData("contragent", entrant_application.contragent)'
+          = date_field_tag :birth_date, nil, 'v-model': 'entrant.contragent.birth_date', class: 'error', 'v-on:change': 'sendData("contragent", entrant.contragent)'
         small.error v-if="findErrorMessage('birth_date')" == "{{ findErrorMessage('birth_date') }}"
       .large-4.small-12.columns
         = label_tag :phone
           span Мобильный телефон
-          = phone_field_tag :phone, nil, placeholder: '+79999999999', 'v-model.trim': 'entrant_application.contragent.phone', class: 'error', 'v-on:change': "sendData('contragent', entrant_application.contragent)"
-        small.error v-if="findErrorMessage('entrant_application.contragent.phone')" == "{{ findErrorMessage('entrant_application.contragent.phone') }}"
+          = phone_field_tag :phone, nil, placeholder: '+79999999999', 'v-model.trim': 'entrant.contragent.phone', class: 'error', 'v-on:change': "sendData('contragent', entrant.contragent)"
+        small.error v-if="findErrorMessage('entrant.contragent.phone')" == "{{ findErrorMessage('entrant.contragent.phone') }}"
       .large-4.small-12.columns
         = label_tag :email
           span Электронная почта
-          = email_field_tag :email, nil, placeholder: 'user@example.com', 'v-model.trim': 'entrant_application.contragent.email', class: 'error', 'v-on:change': "sendData('contragent', entrant_application.contragent)"
-        small.error v-if="findErrorMessage('entrant_application.contragent.email')" == "{{ findErrorMessage('entrant_application.contragent.email') }}"
+          = email_field_tag :email, nil, placeholder: 'user@example.com', 'v-model.trim': 'entrant.contragent.email', class: 'error', 'v-on:change': "sendData('contragent', entrant.contragent)"
+        small.error v-if="findErrorMessage('entrant.contragent.email')" == "{{ findErrorMessage('entrant.contragent.email') }}"
       .large-12.small-12.columns
         = label_tag :address
           span Адрес регистрации
-          = email_field_tag :address, nil, 'v-model.trim': 'entrant_application.contragent.address', class: 'error', 'v-on:change': "sendData('contragent', entrant_application.contragent)"
-        small.error v-if="findErrorMessage('entrant_application.contragent.address')" == "{{ findErrorMessage('entrant_application.contragent.address') }}"
+          = email_field_tag :address, nil, 'v-model.trim': 'entrant.contragent.address', class: 'error', 'v-on:change': "sendData('contragent', entrant.contragent)"
+        small.error v-if="findErrorMessage('entrant.contragent.address')" == "{{ findErrorMessage('entrant.contragent.address') }}"
   fieldset
     legend Данные паспорта
     .row
       .large-4.small-12.columns
         = label_tag :identity_document_series
           span Серия документа
-          = text_field_tag 'contragents[][identity_document_serie]', nil, placeholder: 'Укажите серию документа', 'v-model.trim': 'entrant_application.contragent.identity_document_serie', class: 'error', 'v-on:change': "sendData('contragent', entrant_application.contragent)"
+          = text_field_tag 'contragents[][identity_document_serie]', nil, placeholder: 'Укажите серию документа', 'v-model.trim': 'entrant.contragent.identity_document_serie', class: 'error', 'v-on:change': "sendData('contragent', entrant.contragent)"
       .large-4.small-12.columns
         = label_tag :identity_document_number
           span Номер документа
-          = text_field_tag 'contragents[][identity_document_number]', nil, placeholder: 'Укажите номер документа', 'v-model.trim': 'entrant_application.contragent.identity_document_number', class: 'error', 'v-on:change': "sendData('contragent', entrant_application.contragent)"
+          = text_field_tag 'contragents[][identity_document_number]', nil, placeholder: 'Укажите номер документа', 'v-model.trim': 'entrant.contragent.identity_document_number', class: 'error', 'v-on:change': "sendData('contragent', entrant.contragent)"
       .large-4.small-12.columns
         = label_tag :identity_document_date
           span Дата выдачи документа
-          = date_field_tag 'contragents[][identity_document_date]', nil, placeholder: 'Дата выдачи документа', 'v-model.trim': 'entrant_application.contragent.identity_document_date', class: 'error', 'v-on:change': "sendData('contragent', entrant_application.contragent)"
+          = date_field_tag 'contragents[][identity_document_date]', nil, placeholder: 'Дата выдачи документа', 'v-model.trim': 'entrant.contragent.identity_document_date', class: 'error', 'v-on:change': "sendData('contragent', entrant.contragent)"
         small.error v-if="checkIdentityDocumentDate" == "{{ checkIdentityDocumentDate }}"
     .row
       .large-12.small-12.columns
         = label_tag :identity_document_issuer
           span Кем выдан документ
-          = text_field_tag 'contragents[][identity_document_issuer]', nil, placeholder: 'Укажите, кто выдал документ', 'v-model.trim': 'entrant_application.contragent.identity_document_issuer', class: 'error', 'v-on:change': "sendData('contragent', entrant_application.contragent)"
+          = text_field_tag 'contragents[][identity_document_issuer]', nil, placeholder: 'Укажите, кто выдал документ', 'v-model.trim': 'entrant.contragent.identity_document_issuer', class: 'error', 'v-on:change': "sendData('contragent', entrant.contragent)"
     .row
       .large-12.small-12.columns
         br

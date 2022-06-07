@@ -1,7 +1,7 @@
 fieldset
   legend Сообщить о проблеме или задать вопрос
   .row
-    . v-for="(ticket, index) in entrant_application.tickets"
+    . v-for="(ticket, index) in entrant.tickets"
       .large-12.small-12.columns
         .panel.callout.radius.large-12.small-12.columns(v-if="ticket.id")
           p
@@ -25,7 +25,7 @@ fieldset
             .panel.callout.radius(v-if="child.id")
               p= "{{ child.message }}"
               p.right
-                small= "{{ entrant_application.personal.entrant_first_name + ' ' + entrant_application.personal.entrant_last_name }}"
+                small= "{{ entrant.personal.entrant_first_name + ' ' + entrant.personal.last_name }}"
             . v-if="!child.id && ticket.id && !ticket.solved"
               = label_tag :message
                 span Добавить сообщение к текущей проблеме
