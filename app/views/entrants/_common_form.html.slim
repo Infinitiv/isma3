@@ -75,7 +75,7 @@ fieldset
       .large-4.small-12.columns
         label
           span Вид документа
-        select.error#type(name="identity_documents[][document_category]" v-model='document.document_category' v-on:change="sendData('identity_document', document, index)" v-bind:disabled = 'isDisabled')
+        select.error#category(name="identity_documents[][document_category]" v-model='document.document_category' v-on:change="sendData('identity_document', document, index)" v-bind:disabled = 'isDisabled')
           option(disabled value) Выберите вид документа
           option(v-for="identity_document_category in api.dictionaries.identity_document_categories" v-bind:value="identity_document_category.Name") {{ identity_document_category.Name }}
       .large-4.small-12.columns
@@ -120,52 +120,52 @@ fieldset
       .large-12.small-12.columns
         p(v-if="attachment.document_type == 'identity_document' && attachment.document_id == document.id")
           a v-bind:href = "'/api/attachments/' + attachment.data_hash + '?filename=' + attachment.filename" target = '_blank' {{ attachment.filename }}
-  .row v-if="entrant.status_id == 0"
+  .row v-if="entrant.status == 'новый'"
     .button.tiny @click="addIdentityDocument" Указать данные дополнительного документа
     span &nbsp;
     .button.tiny(v-if="entrant.identity_documents.length > 1" @click="deleteIdentityDocument") Удалить документ
 fieldset
   legend Документ об образовании
-  p(v-if="entrant.campaign_id != '' && findCampaign(entrant.campaign_id).campaign_type_id == 1") Сведения о документе об образовании — это данные того документа, который будет подан в приемную комиссию. При поступлении по результатам ЕГЭ обычно это аттестат, но при наличии у Вас нескольких документов об образовании (аттестата и диплома), Вы можете выбрать, какой из них подать. При поступлении по результатам внутренних экзаменов абитуриент подает диплом о среднем профессиональном или высшем образовании.
-  .row
-    .large-6.small-12.columns
-      label
-        span Вид документа
-      select.education_document_type(name="education_document[education_document_type]" v-model='entrant.education_document.education_document_type' v-on:change = "sendData('education_document', entrant.education_document)" v-bind:disabled = 'isDisabled')
-        option(disabled value) Выберите вид документа
-        option(v-for="education_document_type in api.dictionaries.education_document_types" v-bind:value="education_document_type.id") {{ education_document_type.name }}
-      small.error v-if="findErrorMessage('education_document_type')" == "{{ findErrorMessage('education_document_type') }}"
-    .large-6.small-12.columns
-      = label_tag :education_document_number
-        span Серия и номер документа
-        = text_field_tag 'education_document[education_document_number]', nil, placeholder: 'Укажите серию и номер документа', 'v-model.trim': 'entrant.education_document.education_document_number', class: 'error', 'v-on:change': "sendData('education_document', entrant.education_document)", 'v-bind:disabled': 'isDisabled'
-      small.error v-if="findErrorMessage('education_document_number')" == "{{ findErrorMessage('education_document_number') }}"
-  .row
-    .large-4.small-12.columns
-      = label_tag :education_document_date
-        span Дата выдачи документа
-        = date_field_tag 'education_document[education_document_date]', nil, placeholder: 'Дата выдачи документа', 'v-model.trim': 'entrant.education_document.education_document_date', class: 'error', 'v-on:change': "sendData('education_document', entrant.education_document)", 'v-bind:disabled': 'isDisabled'
-      small.error v-if="checkEducationDocumentDate" == "{{ checkEducationDocumentDate }}"
-      small.error v-if="findErrorMessage('education_document_date')" == "{{ findErrorMessage('education_document_date') }}"
-    .large-8.small-12.columns
-      = label_tag :education_document_issuer
-        span Кем выдан документ
-        = text_field_tag 'education_document[education_document_issuer]', nil, placeholder: 'Укажите, кто выдал документ', 'v-model.trim': 'entrant.education_document.education_document_issuer', class: 'error', 'v-on:change': "sendData('education_document', entrant.education_document)", 'v-bind:disabled': 'isDisabled'
-      small.error v-if="findErrorMessage('education_document_issuer')" == "{{ findErrorMessage('education_document_issuer') }}"
-    .large-4.small-12.columns(v-if="entrant.campaign_id != '' && findCampaign(entrant.campaign_id).campaign_type_id == 4")
-      label
-        span Специальность по диплому
-      select.error#education_speciality_code(name="education_document[education_speciality_code]" v-model='entrant.education_document.education_speciality_code' v-on:change = "sendData('education_document', entrant.education_document)")
-        option(disabled value) Выберите специальность
-        option(v-for="education_speciality_code in api.dictionaries.education_speciality_codes" v-bind:value="education_speciality_code.code") {{ education_speciality_code.name }}
-  .row(v-if="entrant.education_document.id")
-    .large-12.small-12.columns
-      br
-      dd= render partial: 'add_attachment', locals: { message: 'Выберите и прикрепите файл(ы). Сканируются / фотографируются и прикрепляются ВСЕ страницы аттестата или диплома и ВСЕ страницы приложения.', document_type: 'education_document', document_id: 'entrant.education_document.id', entrant_id: 'entrant.id', ref_name: 'education_document', id: 'education_document'}
-  .row(v-for="attachment in entrant.attachments")
-    .large-12.small-12.columns
-      p(v-if="attachment.document_type == 'education_document'")
-        a v-bind:href = "'/api/attachments/' + attachment.data_hash + '?filename=' + attachment.filename" target = '_blank' {{ attachment.filename }}
+  p (v-if="entrant.questionnaire['current_campaign'] != '' && findCampaign(entrant.questionnaire['current_campaign']).campaign_type == 'Прием на обучение на бакалавриат/специалитет'") Сведения о документе об образовании — это данные того документа, который будет подан в приемную комиссию. При поступлении по результатам ЕГЭ обычно это аттестат, но при наличии у Вас нескольких документов об образовании (аттестата и диплома), Вы можете выбрать, какой из них подать. При поступлении по результатам внутренних экзаменов абитуриент подает диплом о высшем образовании.
+  . v-for="(document, index) in entrant.education_documents"
+    .row
+      .large-6.small-12.columns
+        label
+          span Вид документа
+        select.error#category(name="education_documents[][document_category]" v-model='document.document_category' v-on:change = "sendData('education_document', document)" v-bind:disabled = 'isDisabled')
+          option(disabled value) Выберите вид документа
+          option(v-for="education_document_category in api.dictionaries.education_document_categories" v-bind:value="education_document_category.name") {{ education_document_category.name }}
+        small.error v-if="findErrorMessage('education_document_type')" == "{{ findErrorMessage('education_document_type') }}"
+      .large-6.small-12.columns
+        = label_tag :number
+          span Серия и номер документа
+          = text_field_tag 'education_documents[][number]', nil, placeholder: 'Укажите серию и номер документа', 'v-model.trim': 'document.number', class: 'error', 'v-on:change': "sendData('education_document', document, index)", 'v-bind:disabled': 'isDisabled'
+        small.error v-if="findErrorMessage('education_document_number')" == "{{ findErrorMessage('education_document_number') }}"
+    .row
+      .large-4.small-12.columns
+        = label_tag :date
+          span Дата выдачи документа
+          = date_field_tag 'education_documents[][date]', nil, placeholder: 'Дата выдачи документа', 'v-model.trim': 'document.date', class: 'error', 'v-on:change': "sendData('education_document', document, index)", 'v-bind:disabled': 'isDisabled'
+        small.error v-if="checkEducationDocumentDate" == "{{ checkEducationDocumentDate }}"
+      .large-8.small-12.columns
+        = label_tag :issuer
+          span Кем выдан документ
+          = text_field_tag 'education_documents[][issuer]', nil, placeholder: 'Укажите, кто выдал документ', 'v-model.trim': 'document.issuer', class: 'error', 'v-on:change': "sendData('education_document', document, index)", 'v-bind:disabled': 'isDisabled'
+        small.error v-if="findErrorMessage('education_document_issuer')" == "{{ findErrorMessage('education_document_issuer') }}"
+      .large-4.small-12.columns(v-if="entrant.questionnaire['current_campaign'] != '' && findCampaign(entrant.questionnaire['current_campaign']).campaign_type == 'Прием на подготовку кадров высшей квалификации'")
+        label
+          span Специальность по диплому
+        select.error#education_speciality_code(name="education_documents[][code]" v-model='document.code' v-on:change = "sendData('education_document', document, index)")
+          option(disabled value) Выберите специальность
+          option(v-for="education_speciality_code in api.dictionaries.education_speciality_codes" v-bind:value="education_speciality_code.code") {{ education_speciality_code.name }}
+    .row(v-if="document.id")
+      .large-12.small-12.columns
+        br
+        dd= render partial: 'add_attachment', locals: { message: 'Выберите и прикрепите файл(ы). Сканируются / фотографируются и прикрепляются ВСЕ страницы аттестата или диплома и ВСЕ страницы приложения.', document_type: 'education_document', document_id: 'document.id', entrant_id: 'entrant.id', ref_name: 'education_document', id: 'education_document'}
+    .row(v-for="attachment in entrant.attachments")
+      .large-12.small-12.columns
+        p(v-if="attachment.document_type == 'education_document'")
+          a v-bind:href = "'/api/attachments/' + attachment.data_hash + '?filename=' + attachment.filename" target = '_blank' {{ attachment.filename }}
 fieldset
   legend Страховое свидетельство обязательного пенсионного страхования (СНИЛС)
   .row

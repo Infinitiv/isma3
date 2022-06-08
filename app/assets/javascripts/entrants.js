@@ -54,7 +54,7 @@ var entrants = new Vue({
             name: "Диплом победителя/призера всероссийской олимпиады школьников"
           }
         ],
-        education_document_types: [
+        education_document_categories: [
           {
             id: 'SchoolCertificateDocument',
             name: "Аттестат о среднем (полном) общем образовании"
@@ -326,7 +326,7 @@ var entrants = new Vue({
     },
     checkIdentityDocumentDate: function() {
       if(this.entrant.identity_documents.find(function(element) {
-        if(element.identity_document_date){
+        if(element.date){
           var numbers = element.date.split('-');
           var birthYear = Number(numbers[0]);
           var birthMonth = Number(numbers[1]) - 1;
@@ -343,8 +343,9 @@ var entrants = new Vue({
       }));
     },
     checkEducationDocumentDate: function() {
-      if(this.entrant.education_document.date){
-        var numbers = this.entrant.education_document.date.split('-');
+      if(this.entrant.identity_documents.find(function(element) {
+        if(element.education_document_date){
+        var numbers = element.date.split('-');
         var birthYear = Number(numbers[0]);
         var birthMonth = Number(numbers[1]) - 1;
         var birthDay = Number(numbers[2]);
@@ -354,9 +355,10 @@ var entrants = new Vue({
           if(!(Number(numbers[0]) > 0 && Number(numbers[0]) < Number(year))) message.push('Неверный год');
           if(!(Number(numbers[1]) > 0 && Number(numbers[1]) < 13)) message.push('Неверный месяц');
           if(!(Number(numbers[2]) > 0 && Number(numbers[2]) < 32)) message.push('Неверный день');
-          return message.join(', ')
+        };
+        return message.join(', ')
         }
-      }
+      }));
     },
     checkContactInformationZipCode: function() {
       if(this.entrant.contact_information.zip_code == '') return 'Необходимо указать почтовый индекс';
@@ -565,7 +567,7 @@ var entrants = new Vue({
             this.entrant.identity_documents[index].id = response.data.identity_document.id;
           };
           if(sub == 'education_document') {
-            this.entrant.education_document.id = response.data.education_document.id;
+            this.entrant.education_documents[index].id = response.data.education_document.id;
           };
           if(sub == 'benefit_document') {
             this.entrant.benefit_documents[index].id = response.data.benefit_document.id;
@@ -621,10 +623,6 @@ var entrants = new Vue({
         this.files = this.$refs.recall_application.files;
         this.dataset = this.$refs.recall_application.dataset;
       }
-      if(this.$refs.education_document && this.$refs.education_document.files.length > 0) {
-        this.files = this.$refs.education_document.files;
-        this.dataset = this.$refs.education_document.dataset;
-      }
       if(this.$refs.consent_application && this.$refs.consent_application.files.length > 0) {
         this.files = this.$refs.consent_application.files;
         this.dataset = this.$refs.consent_application.dataset;
@@ -636,6 +634,14 @@ var entrants = new Vue({
       if(this.$refs.contract && this.$refs.contract.files.length > 0) {
         this.files = this.$refs.contract.files;
         this.dataset = this.$refs.contract.dataset;
+      }
+      if(this.$refs.education_document && this.$refs.education_document.length > 0) {
+        for(var i = 0; i < this.$refs.education_document.length; i++) {
+          if(this.$refs.education_document[i].files.length > 0) {
+          this.files = this.$refs.education_document[i].files;
+          this.dataset = this.$refs.education_document[i].dataset;
+          }
+        }
       }
       if(this.$refs.identity_document && this.$refs.identity_document.length > 0) {
         for(var i = 0; i < this.$refs.identity_document.length; i++) {
@@ -794,25 +800,38 @@ var entrants = new Vue({
         if(this.entrant.personal.gender_id == '') this.errors.push({element: 'gender_id', message: 'Необходимо указать пол', level: 'red'});
         if(this.entrant.contact_information.phone == '') this.errors.push({element: 'phone', message: 'Необходимо контактный телефон', level: 'red'});
         if(this.entrant.identity_documents.find(function(element) {
-          if(element.identity_document_type == ''){
-            entrants.errors.push({element: 'identity_document_type', message: 'Необходимо выбрать тип документа, удостоверяющего личность', level: 'red'});
+          if(element.document_category == ''){
+            entrants.errors.push({element: 'identity_document_category', message: 'Необходимо выбрать тип документа, удостоверяющего личность', level: 'red'});
           };
-          if(element.identity_document_type == 1 && element.identity_document_series.length != 4){
-            entrants.errors.push({element: 'identity_document_series', message: 'Выбран тип документа Российский паспорт, но серия указана неправильно', level: 'red'});
+          if(element.document_category == 'Паспорт гражданина РФ' && element.serie.length != 4){
+            entrants.errors.push({element: 'identity_document_serie', message: 'Выбран тип документа Российский паспорт, но серия указана неправильно', level: 'red'});
           };
-          if(element.identity_document_type == 1 && element.identity_document_number.length != 6){
+          if(element.document_category == 'Паспорт гражданина РФ' && element.number.length != 6){
             entrants.errors.push({element: 'identity_document_number', message: 'Выбран тип документа Российский паспорт, но номер указан неправильно', level: 'red'});
           };
-          if(element.identity_document_date == ''){
+          if(element.date == ''){
             entrants.errors.push({element: 'identity_document_date', message: 'Необходимо указать дату выдачи документа, удостоверяющего личность', level: 'red'});
+          };
+          if(element.issuer == ''){
+            entrants.errors.push({element: 'identity_document_issuer', message: 'Необходимо указать кем выдан документ, удостоверяющий личность', level: 'red'});
           };
           if(!entrants.findAttachment(element.id, 'identity_document', false)) entrants.errors.push({element: 'identity_document_attachment', message: 'Необходимо прикрепить копию документа, удостоверяющего личность', level: 'red'});
         }));
-        if(this.entrant.education_document.education_document_type == '') this.errors.push({element: 'education_document_type', message: 'Необходимо выбрать тип документа об образовании', level: 'red'});
-        if(this.entrant.education_document.education_document_number == '') this.errors.push({element: 'education_document_number', message: 'Необходимо указать номер документа об образовании', level: 'red'});
-        if(this.entrant.education_document.education_document_date == '') this.errors.push({element: 'education_document_date', message: 'Необходимо указать дату выдачи документа об образовании', level: 'red'});
-        if(this.entrant.education_document.education_document_issuer == '') this.errors.push({element: 'education_document_issuer', message: 'Необходимо указать кем выдан документ об образовании', level: 'red'});
-        if(!this.findAttachment(this.entrant.education_document.id, 'education_document', false)) this.errors.push({element: 'education_document_attachment', message: 'Необходимо прикрепить документ об образовании', level: 'red'});
+        if(this.entrant.education_documents.find(function(element) {
+          if(element.document_category == ''){
+            entrants.errors.push({element: 'education_document_category', message: 'Необходимо выбрать тип документа об образовании', level: 'red'});
+          };
+          if(element.number == ''){
+            entrants.errors.push({element: 'education_document_number', message: 'Необходимо указать номер документа об образовании', level: 'red'});
+          };
+          if(element.date == ''){
+            entrants.errors.push({element: 'education_document_date', message: 'Необходимо указать дату выдачи документа об образовании', level: 'red'});
+          };
+          if(element.issuer == ''){
+            entrants.errors.push({element: 'education_document_issuer', message: 'Необходимо указать кем выдан документ об образовании', level: 'red'});
+          };
+          if(!entrants.findAttachment(element.id, 'education_document', false)) entrants.errors.push({element: 'education_document_attachment', message: 'Необходимо прикрепить документ об образовании', level: 'red'});
+        }));
         if(this.entrant.snils == '' && !this.entrant.snils_absent) this.errors.push({element: 'snils', message: 'Необходимо указать номер СНИЛС, либо отметить, что он отсутствует', level: 'red'});
         if(!this.findAttachment(this.entrant.id, 'snils', false) && !this.entrant.snils_absent) this.errors.push({element: 'snils_attachment', message: 'Необходимо прикрепить копию СНИЛСа', level: 'red'});
       }
@@ -979,7 +998,7 @@ var entrants = new Vue({
             first_name: '',
             middle_name: ''
           });
-          if(!this.entrant.education_document) this.entrant.education_document = {
+          if(this.entrant.education_documents.length == 0) this.entrant.education_documents.push({
             id: null,
             document_type: '',
             document_category: '',
@@ -987,7 +1006,7 @@ var entrants = new Vue({
             date: '',
             issuer: '',
             original: '',
-          };
+          });
           if(this.entrant.marks.length == 0) this.entrant.marks.push({
             id: null,
             value: null,

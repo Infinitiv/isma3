@@ -11,7 +11,7 @@ class Api::AttachmentsController < ApplicationController
   end
   
   def create
-    if params[:entrant_application_id].blank? || params[:files].nil?
+    if params[:entrant_id].blank? || params[:files].nil?
       flash[:alert] = 'Необходимо выбрать файл'
     else
       method = 'attachments/'
