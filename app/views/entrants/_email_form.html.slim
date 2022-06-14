@@ -5,36 +5,51 @@ fieldset
       label
         span При поступлении на первый курс для получения диплома врача необходимо выбрать Специалитет,
         br для последипломного обучения в ординатуре - Кадры высшей квалификации
-        select.error#campaign_id(name="campaign_id" v-model='campaign_id' v-bind:disabled='email_confirmed')
+        select.error#campaign_id(name="campaign_id" v-model='entrant.campaign_id' v-bind:disabled='entrant.email_confirmed')
           option(value = '')
           option(v-for="campaign_item in api.campaigns" v-bind:value="campaign_item.id") {{ campaign_item.name }}
         small.error v-if="findErrorMessage('campaign_id')" == "{{ findErrorMessage('campaign_id') }}"
+          
 fieldset
   legend Укажите адрес электронной почты
   .row
     .large-12.small-12.columns
       p Перед переходом непосредственно к подаче заявления о поступлении в ИвГМА, нам необходимо убедиться в корректности адреса электронной почты. На указанный адрес Вам будет отправлен код проверки, который будет необходимо внести в соответствующее поле.
-      = email_field_tag :email, nil, placeholder: 'user@example.com', 'v-model.trim': 'email', class: 'error', required: true, 'v-bind:disabled': 'email_confirmed'
+      = email_field_tag :email, nil, placeholder: 'user@example.com', 'v-model.trim': 'entrant.email', class: 'error', required: true, 'v-bind:disabled': 'entrant.email_confirmed'
       small.error v-if="findErrorMessage('email')" == "{{ findErrorMessage('email') }}"
       br
-      = submit_tag 'Получить код проверки', class: 'button tiny', '@click': 'checkEmail', 'v-bind:disabled': 'isSendCodeDisabled', 'v-if': '!email_confirmed'
-fieldset(v-if='!isNextDisabled')
-  legend(v-if="errors.length") Исправьте ошибки и повторно нажмите кнопку Отправить
-  .row(v-if="errors.length")
-    .large-12.small-12.columns.label.warning
-      ul.no-bullet
-        li v-for='error in errors' v-if='error.level == "red"' == '{{ error.message }}'
+      = submit_tag 'Получить код проверки', class: 'button tiny', '@click': 'checkEmail', 'v-bind:disabled': 'isSendCodeDisabled', 'v-if': '!entrant.email_confirmed'
+
+fieldset(v-if='entrant.hash')
+  legend Анкета
   .row
     .large-12.small-12.columns
-      a.button.tiny v-bind:href="hash" Перейти к заполнению анкеты
-
+      label
+        p Просим Вас ответить на несколько вопросов для упрощения процедуры подачи заявления
+        .row(v-for="item in api.questionnaire")
+          .large-1.small-1.columns
+            input(type="checkbox" v-bind:id="item.key" v-bind:name="item.key" v-bind:value="item.key" v-model="entrant.questionnaire" v-on:change="sendData('questionnaire', entrant.questionnaire)")
+          .large-11.small-11.columns
+            label(v-bind:for="item.key")
+              span= "{{ item.value }}"
+              
+fieldset(v-if='!isNextDisabled')
+  legend(v-if="entrant.errors.length") Исправьте ошибки и повторно нажмите кнопку Отправить
+  .row(v-if="entrant.errors.length")
+    .large-12.small-12.columns.label.warning
+      ul.no-bullet
+        li v-for='error in entrant.errors' v-if='entrant.error.level == "red"' == '{{ entrant.error.message }}'
+  .row
+    .large-12.small-12.columns
+      a.button.tiny v-bind:href="entrant.hash" Перейти к заполнению анкеты
+      
 .reveal-modal.full id = 'email_code_field' data-reveal = true
   .row
     .large-12.small-12.columns
-      p= "Мы отправили сообщение с кодом на почту {{email}}"
+      p= "Мы отправили сообщение с кодом на почту {{entrant.email}}"
     .large-4.small-12.columns
       label Введите код
-      = number_field_tag :pin, nil, 'v-model.trim': 'pin', 'v-on:input': 'checkPin', class: 'error'
+      = number_field_tag :pin, nil, 'v-model.trim': 'entrant.pin', 'v-on:input': 'checkPin', class: 'error'
       small.error v-if="findErrorMessage('pin')" == "{{ findErrorMessage('pin') }}"
     .large-12.small-12.columns
       p Если Вы не получили в течение нескольких минут код проверки, проверьте папку Спам. В случае технических трудностей с получением кода, если Вы полностью уверены в корректности указанного адреса электронной почты, Вы можете отказаться от проверки и продолжить подачу заявления о поступлении, нажав на кнопку ниже.

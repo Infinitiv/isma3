@@ -27,7 +27,7 @@ section.panel#entrant
         = render partial: 'common_form'
         = link_to 'Назад', '#', class: 'button tiny', '@click.prevent': 'setCurrentTab("start")'
         span &nbsp;
-        = link_to 'Далее', '#', class: 'button tiny', '@click.prevent': 'setCurrentTab("benefits")', 'v-if': 'findCampaign(entrant.campaign_id).campaign_type_id == 1'
+        = link_to 'Далее', '#', class: 'button tiny', '@click.prevent': 'setCurrentTab("benefits")', 'v-if': 'findCampaign(entrant.questionnaire["current_campaign"]).campaign_type == "Прием на обучение на бакалавриат/специалитет"'
         = link_to 'Далее', '#', class: 'button tiny', '@click.prevent': 'setCurrentTab("target")', 'v-if': 'findCampaign(entrant.campaign_id).campaign_type_id == 4'
       .content#benefits v-bind:class = "[api.current_tab == 'benefits' ? 'active' : '']"
         = render partial: 'benefits_form'

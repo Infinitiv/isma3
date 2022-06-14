@@ -148,6 +148,7 @@ var entrants = new Vue({
         }
       ],
       status: '',
+      stage: 0,
       need_hostel: false,
       special_entrant: false,
       special_conditions: '',
@@ -179,6 +180,13 @@ var entrants = new Vue({
           date: '',
           issuer: '',
           original: '',
+        }
+      ],
+      snils: [
+        {
+          id: null,
+          document_type: '',
+          number: '',
         }
       ],
       marks: [
@@ -569,6 +577,9 @@ var entrants = new Vue({
           if(sub == 'education_document') {
             this.entrant.education_documents[index].id = response.data.education_document.id;
           };
+          if(sub == 'snils') {
+            this.entrant.snils[index].id = response.data.snils.id;
+          };
           if(sub == 'benefit_document') {
             this.entrant.benefit_documents[index].id = response.data.benefit_document.id;
           };
@@ -607,10 +618,6 @@ var entrants = new Vue({
       });
     },
     handleFiles: function(e){
-      if(this.$refs.snils && this.$refs.snils.files.length > 0) {
-        this.files = this.$refs.snils.files;
-        this.dataset = this.$refs.snils.dataset;
-      }
       if(this.$refs.data_processing_consent && this.$refs.data_processing_consent.files.length > 0) {
         this.files = this.$refs.data_processing_consent.files;
         this.dataset = this.$refs.data_processing_consent.dataset;
@@ -640,6 +647,14 @@ var entrants = new Vue({
           if(this.$refs.education_document[i].files.length > 0) {
           this.files = this.$refs.education_document[i].files;
           this.dataset = this.$refs.education_document[i].dataset;
+          }
+        }
+      }
+      if(this.$refs.snils && this.$refs.snils.length > 0) {
+        for(var i = 0; i < this.$refs.snils.length; i++) {
+          if(this.$refs.snils[i].files.length > 0) {
+          this.files = this.$refs.snils[i].files;
+          this.dataset = this.$refs.snils[i].dataset;
           }
         }
       }
@@ -712,17 +727,11 @@ var entrants = new Vue({
         response => {
         this.entrant.attachments = response.data.attachments;
         console.log(response.data.message);
-        if(this.dataset.documentType == 'snils') {
-          this.$refs.snils.value = null
-        }
         if(this.dataset.documentType == 'data_processing_consent') {
           this.$refs.data_processing_consent.value = null
         }
         if(this.dataset.documentType == 'entrant') {
           this.$refs.entrant.value = null
-        }
-        if(this.dataset.documentType == 'education_document') {
-          this.$refs.education_document.value = null
         }
         if(this.dataset.documentType == 'consent_application') {
           this.$refs.consent_application.value = null
@@ -736,6 +745,16 @@ var entrants = new Vue({
         if(this.dataset.documentType == 'identity_document') {
           for(var i = 0; i < this.$refs.identity_document.length; i++) {
             this.$refs.identity_document[i].value = null
+          }
+        }
+        if(this.dataset.documentType == 'snils') {
+          for(var i = 0; i < this.$refs.snils.length; i++) {
+            this.$refs.snils[i].value = null
+          }
+        }
+        if(this.dataset.documentType == 'education_document') {
+          for(var i = 0; i < this.$refs.education_document.length; i++) {
+            this.$refs.education_document[i].value = null
           }
         }
         if(this.dataset.documentType == 'benefit_document') {
@@ -887,16 +906,15 @@ var entrants = new Vue({
     addIdentityDocument: function() {
       this.entrant.identity_documents.push({
         id: null,
-        identity_document_type: '',
-        identity_document_series: '',
-        identity_document_number: '',
-        identity_document_date: '',
-        identity_document_issuer: '',
-        status: null,
-        identity_document_data: '',
-        alt_entrant_last_name: '',
-        alt_first_name: '',
-        alt_entrant_middle_name: ''
+        document_type: 'identity_document',
+        document_category: '',
+        serie: '',
+        number: '',
+        date: '',
+        issuer: '',
+        last_name: '',
+        first_name: '',
+        middle_name: ''
       });
     },
     deleteIdentityDocument: function() {
@@ -988,7 +1006,7 @@ var entrants = new Vue({
           if(this.entrant.status != 'новый') this.api.current_tab = 'start';
           if(this.entrant.identity_documents.length == 0) this.entrant.identity_documents.push({
             id: null,
-            document_type: '',
+            document_type: 'identity_document',
             document_category: '',
             serie: '',
             number: '',
@@ -1000,12 +1018,17 @@ var entrants = new Vue({
           });
           if(this.entrant.education_documents.length == 0) this.entrant.education_documents.push({
             id: null,
-            document_type: '',
+            document_type: 'education_document',
             document_category: '',
             number: '',
             date: '',
             issuer: '',
             original: '',
+          });
+          if(this.entrant.snils.length == 0) this.entrant.snils.push({
+            id: null,
+            document_type: 'snils',
+            number: '',
           });
           if(this.entrant.marks.length == 0) this.entrant.marks.push({
             id: null,

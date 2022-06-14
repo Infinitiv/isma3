@@ -2,26 +2,47 @@ var entrants = new Vue({
   el: '#entrant',
   data: {
     api: {
-      campaigns: null
+      campaigns: null,
+      questionnaire: [
+        {
+          key: 'olympionic',
+          value: "Являюсь победителем или призером финального этапа всероссийской олимпиады школьников или олимпиады школьников по химии, биологии, русскому языку или медицине"
+        },
+        {
+          key: 'benefit',
+          value: "Имею льготы, предусмотренные федеральным законодательством"
+        },
+        {
+          key: 'target',
+          value: "Заключил договор о целевом обучении"
+        },
+        {
+          key: 'hostel',
+          value: "Нуждаюсь в предоставлении общежития"
+        },
+        {
+          key: 'egpu',
+          value: "Согласен на передачу данных о заявлении на Единый портал государственных услуг для управления заявлением через личный кабинет"
+        }
+      ],
     },
-    campaign_id: '',
-    entrant_application_id: null,
-    email: '',
-    pin: '',
-    response: null,
-    error: null,
-    files: '',
-    dataset: '',
-    message: '',
-    email_confirmed: false,
-    hash: '',
-    errors: [],
-    attachments: [],
-    clerk: '',
+    entrant: {
+      campaign_id: '',
+      email: '',
+      pin: '',
+      response: null,
+      error: null,
+      message: '',
+      email_confirmed: false,
+      hash: null,
+      errors: [],
+      clerk: '',
+      questionnaire: [],
+    },
   },
   computed: {
     isNextDisabled: function() {
-      if(this.email_confirmed && this.hash) {
+      if(this.entrant.email_confirmed && this.entrant.hash) {
         return false
       }
       else {
@@ -30,13 +51,31 @@ var entrants = new Vue({
     },
     isSendCodeDisabled: function() {
       const expression = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      return !expression.test(String(this.email).toLowerCase());
+      return !expression.test(String(this.entrant.email).toLowerCase()) || this.entrant.campaign_id == '';
     }
   },
   methods: {
+    sendData: function(sub, subData) {
+      let data = {};
+      data[sub] = subData;
+      axios
+      .put('/api/entrants/' + this.entrant.hash, data)
+      .then(response => {
+        if(response.data.result == 'success') {
+//           if(sub == 'questionnaire') {
+//             this.entrant.questionnaire = response.data.questionnaire;
+//           };
+          console.log('успешно обновлено');
+        }
+        else
+        {
+          console.log('что-то пошло не так');
+        }
+      });
+    },
     sendWelcomeEmail: function() {
       axios
-        .put('/api/entrants/' + this.hash + '/send_welcome_email', {id: this.hash})
+        .put('/api/entrants/' + this.entrant.hash + '/send_welcome_email', {id: this.entrant.hash})
         .then(response => {
           console.log(response.data.message);
         })
@@ -51,25 +90,25 @@ var entrants = new Vue({
       return find_campaign;
     },
     checkPin: function() {
-      if(this.pin.length == 4) {
-        console.log(this.pin);
+      if(this.entrant.pin.length == 4) {
+        console.log(this.entrant.pin);
         this.confirmEmail();
       };
     },
     checkForm: function(e) {
-      this.errors = [];
-      if(this.email == '') this.errors.push({element: 'email', message: 'Необходимо указать адрес электронной почты', level: 'red'});
-      if(this.campaign_id == '') this.errors.push({element: 'campaign_id', message: 'Необходимо выбрать приемную кампанию', level: 'red'});
-      if(this.errors.length == 0) return true;
+      this.entrant.errors = [];
+      if(this.entrant.email == '') this.entrant.errors.push({element: 'email', message: 'Необходимо указать адрес электронной почты', level: 'red'});
+      if(this.entrant.campaign_id == '') this.entrant.errors.push({element: 'campaign_id', message: 'Необходимо выбрать приемную кампанию', level: 'red'});
+      if(this.entrant.errors.length == 0) return true;
       e.preventDefault();
     },
     checkEmail: function() {
-      this.errors = [];
+      this.entrant.errors = [];
       axios
-        .post('/api/entrants/check_email', {email: this.email})
+        .post('/api/entrants/check_email', {email: this.entrant.email})
         .then(response => {
           if(response.data.status == 'faild') {
-            this.errors.push({element: 'email', message: 'Адрес электронной почты уже зарегистрирован в системе. Личный кабинет Вами уже создан. Для входа в личный кабинет необходимо использовать ссылку, полученную по почте. Если нет письма со ссылкой, обратитесь в приемную комиссию по телефону или электронной почте. Не создавайте дублирующиеся личные кабинеты.', level: 'red'});
+            this.entrant.errors.push({element: 'email', message: 'Адрес электронной почты уже зарегистрирован в системе. Личный кабинет Вами уже создан. Для входа в личный кабинет необходимо использовать ссылку, полученную по почте. Если нет письма со ссылкой, обратитесь в приемную комиссию по телефону или электронной почте. Не создавайте дублирующиеся личные кабинеты.', level: 'red'});
           }
           if(response.data.status == 'success'){
             $('#email_code_field').foundation('reveal', 'open');
@@ -79,11 +118,11 @@ var entrants = new Vue({
     },
     sendCode: function() {
       axios
-        .post('/api/entrants', { campaign_id: this.campaign_id, email: this.email, clerk: this.$refs.clerk.dataset.clerk })
+        .post('/api/entrants', { campaign_id: this.entrant.campaign_id, email: this.entrant.email, clerk: this.$refs.clerk.dataset.clerk })
         .then(response => {
           if(response.data.status == 'success') {
-            this.hash = response.data.hash;
-            this.entrant_id = response.data.id
+            this.entrant.hash = response.data.hash;
+            this.entrant.entrant_id = response.data.id
           }
           if(response.data.status == 'faild') {
             console.log('что-то пошло не так')
@@ -92,7 +131,7 @@ var entrants = new Vue({
     },
     findErrorMessage: function(fieldName) {
       var message = '';
-      this.errors.find(function(element) {
+      this.entrant.errors.find(function(element) {
         if(fieldName == element.element) {
           message = element.message;
         }
@@ -101,19 +140,19 @@ var entrants = new Vue({
     },
     confirmEmail: function () {
       axios
-        .put( '/api/entrants/' + this.hash + '/check_pin', { hash: this.hash, pin: this.pin } )
+        .put( '/api/entrants/' + this.entrant.hash + '/check_pin', { hash: this.entrant.hash, pin: this.entrant.pin } )
         .then(response => {
           if(response.data.status == 'success') {
-            this.email_confirmed = true;
-            this.message = 'код подтверждения успешно проверен';
+            this.entrant.email_confirmed = true;
+            this.entrant.message = 'код подтверждения успешно проверен';
             $('#email_code_field').foundation('reveal', 'close');
             this.sendWelcomeEmail();
           }
           else
           {
-            this.email_confirmed = false;
-            this.message = 'код подтверждения введен неверно';
-            this.errors.push({element: 'pin', message: 'Код подтверждения введен неверно', level: 'red'});
+            this.entrant.email_confirmed = false;
+            this.entrant.message = 'код подтверждения введен неверно';
+            this.entrant.errors.push({element: 'pin', message: 'Код подтверждения введен неверно', level: 'red'});
           }
         })
         .catch(function (error) {
@@ -122,11 +161,11 @@ var entrants = new Vue({
     },
     checkEmailDecline: function() {
       axios
-        .put( '/api/entrants/' + this.hash + '/remove_pin', { hash: this.hash } )
+        .put( '/api/entrants/' + this.entrant.hash + '/remove_pin', { hash: this.entrant.hash } )
         .then(response => {
           if(response.data.status == 'success') {
-            this.email_confirmed = true;
-            this.message = 'отказ от проверки подтвержден';
+            this.entrant.email_confirmed = true;
+            this.entrant.message = 'отказ от проверки подтвержден';
             $('#email_code_field').foundation('reveal', 'close');
             this.sendWelcomeEmail();
           }
