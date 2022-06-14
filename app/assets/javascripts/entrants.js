@@ -156,6 +156,12 @@ var entrants = new Vue({
       snils_absent: false,
       language: '',
       questionnaire: [],
+      data_processing_consent_documents: [
+        {
+          id: null,
+          document_type: '',
+        }
+      ],
       identity_documents: [
         {
           id: null,
@@ -618,10 +624,6 @@ var entrants = new Vue({
       });
     },
     handleFiles: function(e){
-      if(this.$refs.data_processing_consent && this.$refs.data_processing_consent.files.length > 0) {
-        this.files = this.$refs.data_processing_consent.files;
-        this.dataset = this.$refs.data_processing_consent.dataset;
-      }
       if(this.$refs.entrant && this.$refs.entrant.files.length > 0) {
         this.files = this.$refs.entrant.files;
         this.dataset = this.$refs.entrant.dataset;
@@ -642,6 +644,22 @@ var entrants = new Vue({
         this.files = this.$refs.contract.files;
         this.dataset = this.$refs.contract.dataset;
       }
+      if(this.$refs.data_processing_consent_document && this.$refs.data_processing_consent_document.length > 0) {
+        for(var i = 0; i < this.$refs.data_processing_consent_document.length; i++) {
+          if(this.$refs.data_processing_consent_document[i].files.length > 0) {
+          this.files = this.$refs.data_processing_consent_document[i].files;
+          this.dataset = this.$refs.data_processing_consent_document[i].dataset;
+          }
+        }
+      }
+      if(this.$refs.identity_document && this.$refs.identity_document.length > 0) {
+        for(var i = 0; i < this.$refs.identity_document.length; i++) {
+          if(this.$refs.identity_document[i].files.length > 0) {
+          this.files = this.$refs.identity_document[i].files;
+          this.dataset = this.$refs.identity_document[i].dataset;
+          }
+        }
+      }
       if(this.$refs.education_document && this.$refs.education_document.length > 0) {
         for(var i = 0; i < this.$refs.education_document.length; i++) {
           if(this.$refs.education_document[i].files.length > 0) {
@@ -655,14 +673,6 @@ var entrants = new Vue({
           if(this.$refs.snils[i].files.length > 0) {
           this.files = this.$refs.snils[i].files;
           this.dataset = this.$refs.snils[i].dataset;
-          }
-        }
-      }
-      if(this.$refs.identity_document && this.$refs.identity_document.length > 0) {
-        for(var i = 0; i < this.$refs.identity_document.length; i++) {
-          if(this.$refs.identity_document[i].files.length > 0) {
-          this.files = this.$refs.identity_document[i].files;
-          this.dataset = this.$refs.identity_document[i].dataset;
           }
         }
       }
@@ -727,9 +737,6 @@ var entrants = new Vue({
         response => {
         this.entrant.attachments = response.data.attachments;
         console.log(response.data.message);
-        if(this.dataset.documentType == 'data_processing_consent') {
-          this.$refs.data_processing_consent.value = null
-        }
         if(this.dataset.documentType == 'entrant') {
           this.$refs.entrant.value = null
         }
@@ -741,6 +748,11 @@ var entrants = new Vue({
         }
         if(this.dataset.documentType == 'contract') {
           this.$refs.contract.value = null
+        }
+        if(this.dataset.documentType == 'data_processing_consent_document') {
+          for(var i = 0; i < this.$refs.data_processing_consent_document.length; i++) {
+            this.$refs.data_processing_consent_document[i].value = null
+          }
         }
         if(this.dataset.documentType == 'identity_document') {
           for(var i = 0; i < this.$refs.identity_document.length; i++) {
@@ -812,12 +824,20 @@ var entrants = new Vue({
     checkForm: function(tab) {
       this.errors = [];
       if(tab == 'benefits' || tab == 'target' || tab == 'competitions' || tab == 'others' || tab == 'applications'){
-        if(!this.findAttachment(this.entrant.id, 'data_processing_consent', false)) this.errors.push({element: 'data_processing_consent', message: 'Необходимо прикрепить сканы согласий на обработку и распространение персональных данных', level: 'red'});
         if(this.entrant.personal.entrant_last_name == '') this.errors.push({element: 'entrant_last_name', message: 'Необходимо указать фамилию', level: 'red'});
         if(this.entrant.personal.first_name == '') this.errors.push({element: 'first_name', message: 'Необходимо указать имя', level: 'red'});
         if(this.entrant.personal.birth_date == '') this.errors.push({element: 'birth_date', message: 'Необходимо указать дату рождения', level: 'red'});
         if(this.entrant.personal.gender_id == '') this.errors.push({element: 'gender_id', message: 'Необходимо указать пол', level: 'red'});
         if(this.entrant.contact_information.phone == '') this.errors.push({element: 'phone', message: 'Необходимо контактный телефон', level: 'red'});
+        if(this.entrant.data_processing_consent_documents.find(function(element) {
+          if(!entrants.findAttachment(element.id, 'data_processing_consent_document', false)) entrants.errors.push({element: 'data_processing_consent_document_attachment', message: 'Необходимо прикрепить сканы согласий на обработку и распространение персональных данных', level: 'red'});
+        }));
+        if(this.entrant.snils.find(function(element) {
+          if(element.number == ''){
+            entrants.errors.push({element: 'snils', message: 'Необходимо указать номер СНИЛС, либо отметить, что он отсутствует', level: 'red'});
+          };
+          if(!entrants.findAttachment(element.id, 'snils', false)) entrants.errors.push({element: 'snils_attachment', message: 'Необходимо прикрепить копию СНИЛС', level: 'red'});
+        }));
         if(this.entrant.identity_documents.find(function(element) {
           if(element.document_category == ''){
             entrants.errors.push({element: 'identity_document_category', message: 'Необходимо выбрать тип документа, удостоверяющего личность', level: 'red'});
@@ -851,8 +871,6 @@ var entrants = new Vue({
           };
           if(!entrants.findAttachment(element.id, 'education_document', false)) entrants.errors.push({element: 'education_document_attachment', message: 'Необходимо прикрепить документ об образовании', level: 'red'});
         }));
-        if(this.entrant.snils == '' && !this.entrant.snils_absent) this.errors.push({element: 'snils', message: 'Необходимо указать номер СНИЛС, либо отметить, что он отсутствует', level: 'red'});
-        if(!this.findAttachment(this.entrant.id, 'snils', false) && !this.entrant.snils_absent) this.errors.push({element: 'snils_attachment', message: 'Необходимо прикрепить копию СНИЛСа', level: 'red'});
       }
       if(tab == 'target' || tab == 'others' || tab == 'applications'){
         if(this.entrant.benefit_documents.find(function(element) {
