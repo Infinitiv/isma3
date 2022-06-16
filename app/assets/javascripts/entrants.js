@@ -462,7 +462,7 @@ var entrants = new Vue({
     },
     generateTemplates: function(){
       axios
-      .put('/api/entrants/' + this.entrant.hash + '/generate_entrant', {id: this.entrant.id})
+      .put('/api/entrants/' + this.entrant.hash + '/generate_entrant_application', {id: this.entrant.id})
       .then(response => {
         console.log(response.data.message);
         this.entrant.attachments = response.data.attachments
@@ -644,6 +644,10 @@ var entrants = new Vue({
         this.files = this.$refs.data_processing_consent.files;
         this.dataset = this.$refs.data_processing_consent.dataset;
       }
+      if(this.$refs.medical_document && this.$refs.medical_document.files.length > 0) {
+        this.files = this.$refs.medical_document.files;
+        this.dataset = this.$refs.medical_document.dataset;
+      }
       if(this.$refs.identity_document && this.$refs.identity_document.length > 0) {
         for(var i = 0; i < this.$refs.identity_document.length; i++) {
           if(this.$refs.identity_document[i].files.length > 0) {
@@ -743,6 +747,9 @@ var entrants = new Vue({
         }
         if(this.dataset.documentType == 'data_processing_consent') {
           this.$refs.data_processing_consent.value = null
+        }
+        if(this.dataset.documentType == 'medical_document') {
+          this.$refs.medical_document.value = null
         }
         if(this.dataset.documentType == 'identity_document') {
           for(var i = 0; i < this.$refs.identity_document.length; i++) {
@@ -910,7 +917,7 @@ var entrants = new Vue({
         if(this.entrant.special_entrant && this.entrant.special_conditions == '') this.errors.push({element: 'special_conditions', message: 'Указана необходимость создания специальных условий для сдачи вступительных испытаний, но не указан перечень условий', level: 'red'});
       }
       if(tab == 'start'){
-        if(!this.findAttachment(this.entrant.id, 'entrant', false)) this.errors.push({element: 'entrant_attachment', message: 'Необходимо прикрепить заявление о поступлении', level: 'red'});
+        if(!this.findAttachment(this.entrant.id, 'entrant_application', false)) this.errors.push({element: 'entrant_application_attachment', message: 'Необходимо прикрепить заявление о поступлении', level: 'red'});
       }
     },
     addIdentityDocument: function() {
@@ -1026,11 +1033,11 @@ var entrants = new Vue({
       this.checkForm(tab);
       if(this.errors.length == 0){
         this.api.current_tab = tab;
-        if(this.api.current_tab == 'applications' && this.entrant.status_id < 4){
+        if(this.api.current_tab == 'applications' && this.entrant.stage < 4){
           this.generateTemplates();
         }
-        if(this.api.current_tab == 'start' && this.entrant.status_id == 0){
-          this.sendData('status_id', this.entrant.status_id);
+        if(this.api.current_tab == 'start' && this.entrant.stage == 0){
+          this.sendData('stage', this.entrant.stage);
         }
         window.scrollTo({ top: 0, behavior: 'smooth' });
       };

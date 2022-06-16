@@ -56,8 +56,8 @@ fieldset(v-bind:disabled = 'isDisabled')
 fieldset
   legend Документы, удостоверяющие личность
   p Указываются данные действующего документа, удостоверяющего личность.
-  p (v-if="entrant.questionnaire['current_campaign'] != '' && findCampaign(entrant.questionnaire['current_campaign']).campaign_type == 'Прием на обучение на бакалавриат/специалитет'") Если паспорт меняли после сдачи ЕГЭ, то необходимо также указать данные ранее выданного паспорта, нажав на кнопку "Указать данные дополнительного документа". Эти сведения используются при проверке результатов ЕГЭ.
-  p (v-if="entrant.questionnaire['current_campaign'] != '' && findCampaign(entrant.questionnaire['current_campaign']).campaign_type == 'Прием на подготовку кадров высшей квалификации'") Если сдавали аккредитацию и сменили паспорт после ее сдачи, то необходимо также указать данные ранее выданного паспорта, нажав на кнопку "Указать данные дополнительного документа". Эти сведения используются при проверке результатов теста.
+  p (v-if="entrant.current_campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'") Если паспорт меняли после сдачи ЕГЭ, то необходимо также указать данные ранее выданного паспорта, нажав на кнопку "Указать данные дополнительного документа". Эти сведения используются при проверке результатов ЕГЭ.
+  p (v-if="entrant.current_campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации'") Если сдавали аккредитацию и сменили паспорт после ее сдачи, то необходимо также указать данные ранее выданного паспорта, нажав на кнопку "Указать данные дополнительного документа". Эти сведения используются при проверке результатов теста.
   . v-for="(document, index) in entrant.identity_documents"
     .row
       .(v-show="entrant.identity_documents.indexOf(document) > 0") Предыдущий документ
@@ -115,7 +115,7 @@ fieldset
     .button.tiny(v-if="entrant.identity_documents.length > 1" @click="deleteIdentityDocument") Удалить документ
 fieldset
   legend Документ об образовании
-  p (v-if="entrant.questionnaire['current_campaign'] != '' && findCampaign(entrant.questionnaire['current_campaign']).campaign_type == 'Прием на обучение на бакалавриат/специалитет'") Сведения о документе об образовании — это данные того документа, который будет подан в приемную комиссию. При поступлении по результатам ЕГЭ обычно это аттестат, но при наличии у Вас нескольких документов об образовании (аттестата и диплома), Вы можете выбрать, какой из них подать.
+  p (v-if="entrant.current_campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'") Сведения о документе об образовании — это данные того документа, который будет подан в приемную комиссию. При поступлении по результатам ЕГЭ обычно это аттестат, но при наличии у Вас нескольких документов об образовании (аттестата и диплома), Вы можете выбрать, какой из них подать.
   . v-for="(document, index) in entrant.education_documents"
     .row
       .large-6.small-12.columns
@@ -141,7 +141,7 @@ fieldset
           span Кем выдан документ
           = text_field_tag 'education_documents[][issuer]', nil, placeholder: 'Укажите, кто выдал документ', 'v-model.trim': 'document.issuer', class: 'error', 'v-on:change': "sendData('education_document', document, index)", 'v-bind:disabled': 'isDisabled'
         small.error v-if="findErrorMessage('education_document_issuer')" == "{{ findErrorMessage('education_document_issuer') }}"
-      .large-4.small-12.columns(v-if="entrant.questionnaire['current_campaign'] != '' && findCampaign(entrant.questionnaire['current_campaign']).campaign_type == 'Прием на подготовку кадров высшей квалификации'")
+      .large-4.small-12.columns(v-if="entrant.current_campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации'")
         label
           span Специальность по диплому
         select.error#speciality(name="education_documents[][code]" v-model='document.code' v-on:change = "sendData('education_document', document, index)")
