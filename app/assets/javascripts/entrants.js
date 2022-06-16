@@ -14,57 +14,48 @@ var entrants = new Vue({
           'Французский',
           'Немецкий',
         ],
-        benefit_document_types: [
+        benefit_document_categories: [
           {
-            id: 11,
             name: "Справка об установлении инвалидности"
           },
           {
-            id: 30,
             name: "Документ, подтверждающий принадлежность к детям-сиротам и детям, оставшимся без попечения родителей"
           },
           {
-            id: 31,
             name: "Документ, подтверждающий принадлежность к ветеранам боевых действий"
           },
           {
-            id: 32,
             name: "Документ, подтверждающий наличие только одного родителя - инвалида I группы и принадлежность к числу малоимущих семей"
           },
           {
-            id: 33,
             name: "Документ, подтверждающий принадлежность родителей и опекунов к погибшим в связи с исполнением служебных обязанностей"
           },
           {
-            id: 34,
             name: "Документ, подтверждающий принадлежность к сотрудникам государственных органов Российской Федерации"
           },
           {
-            id: 35,
             name: "Документ, подтверждающий участие в работах на радиационных объектах или воздействие радиации"
-          }
-        ],
-        olympic_document_types: [
+          },
           {
-            id: 9,
+            name: "Документ, подтверждающий право поступления по специальной квоте"
+          },
+        ],
+        olympic_document_catgories: [
+          {
             name: "Диплом победителя/призера олимпиады школьников"
           },
           {
-            id: 10,
             name: "Диплом победителя/призера всероссийской олимпиады школьников"
           }
         ],
         education_document_categories: [
           {
-            id: 'SchoolCertificateDocument',
             name: "Аттестат о среднем (полном) общем образовании"
           },
           {
-            id: 'MiddleEduDiplomaDocument',
             name: "Диплом о среднем профессиональном образовании"
           },
           {
-            id: 'HighEduDiplomaDocument',
             name: "Диплом о высшем профессиональном образовании"
           }
         ],
@@ -156,7 +147,7 @@ var entrants = new Vue({
       snils_absent: false,
       language: '',
       questionnaire: [],
-      data_processing_consent_documents: [
+      data_processing_consents: [
         {
           id: null,
           document_type: '',
@@ -225,7 +216,7 @@ var entrants = new Vue({
           document_category: '',
           number: '',
           date: '',
-          issuer: '',
+          class_number: '',
           original: ''
         }
       ],
@@ -245,11 +236,7 @@ var entrants = new Vue({
         {
           id: null,
           document_type: '',
-          document_category: '',
-          serie: '',
-          number: '',
-          date: '',
-          issuer: '',
+          competitive_group_id: '',
           original: ''
         }
       ],
@@ -399,11 +386,11 @@ var entrants = new Vue({
     },
     checkPaidCompetitiveGroups: function(){
       var checkPaidCompetitiveGroups = false;
-      this.entrant.entrant_applications.find(function(element){
-        if(element.competitive_group.education_source == 'С оплатой обучения') {
-          checkPaidCompetitiveGroups = true;
-        }
-      })
+//       this.entrant.entrant_applications.find(function(element){
+//         if(entrants.findCompetitiveGroup(element.campaign_id, element.competitive_group_id).education_source == 'С оплатой обучения') {
+//           checkPaidCompetitiveGroups = true;
+//         }
+//       })
       return checkPaidCompetitiveGroups;
     },
     checkAge: function() {
@@ -432,19 +419,19 @@ var entrants = new Vue({
 //     },
   },
   methods: {
-//     egeDate: function(competitive_group) {
-//       var egeDate = false;
-//       var currentDate = new Date();
-//       var numbers = competitive_group.application_end_ege_date.split('-');
-//       var year = Number(numbers[0]);
-//       var month = Number(numbers[1]) - 1;
-//       var day = Number(numbers[2]);
-//       var date = new Date(year, month, day, 23, 59, 59)
-//       if(currentDate > date) {
-//           egeDate = true;
-//         }
-//       return egeDate;
-//     },
+    egeDate: function(competitive_group) {
+      var egeDate = false;
+      var currentDate = new Date();
+      var termAdmissionDate = competitive_group.term_admissions.find(function(element) {
+        if(element.name == 'Прием заявлений и документов без прохождения ДВИ и ВИ вуза') {
+          return element.end_date
+        }
+      })
+      if(currentDate > termAdmissionDate) {
+          egeDate = true;
+        }
+      return egeDate;
+    },
     consentCount: function() {
       var consentCount = 0;
       this.entrant.attachments.find(function(element) {
@@ -493,22 +480,28 @@ var entrants = new Vue({
         this.entrant.attachments = response.data.attachments
       })
     },
-//     isApplicable: function(competitiveGroup) {
-//       if(competitiveGroup.education_source_id == 14 || competitiveGroup.education_source_id == 15) {
-//         return true;
-//       };
-//       if(competitiveGroup.education_source_id == 20 && this.entrant.benefit) {
-//         return true;
-//       };
-//       if(competitiveGroup.education_source_id == 16) {
-//         for( var i = 0; i < this.entrant.target_contracts.length; i++ ) {
-//           if(competitiveGroup.id == this.entrant.target_contracts[i].competitive_group_id){
-//             return true;
-//           };
-//         };
-//       };
-//       return false;
-//     },
+    isApplicable: function(competitiveGroup) {
+      if(competitiveGroup.education_source == 'С оплатой обучения' && competitiveGroup.entrance_category == 'Для иностранных граждан — обучение на русском языке' && this.entrant.nationality != 'Российская Федерация') {
+        return true;
+      };
+      if(competitiveGroup.education_source == 'Квота приема лиц, имеющих особое право' && competitiveGroup.entrance_category == 'Специальная квота' && this.entrant.questionnaire['special']) {
+        return true;
+      };
+      if(competitiveGroup.education_source == 'Квота приема лиц, имеющих особое право' && competitiveGroup.entrance_category == null && this.entrant.questionnaire['benefit']) {
+        return true;
+      };
+      if(competitiveGroup.education_source == 'Основные места в рамках КЦП' || (competitiveGroup.education_source == 'С оплатой обучения' && competitiveGroup.entrance_category == null)) {
+        return true;
+      };
+      if(competitiveGroup.education_source == 'Квота приема на целевое обучение') {
+        for( var i = 0; i < this.entrant.target_contracts.length; i++ ) {
+          if(competitiveGroup.id == this.entrant.target_contracts[i].competitive_group_id){
+            return true;
+          };
+        };
+      };
+      return false;
+    },
     findEntranceTestItem: function(subjectId) {
 //       var findEntranceTestItem = {
 //         subject_id: null,
@@ -522,15 +515,15 @@ var entrants = new Vue({
 //       });
       return findEntranceTestItem;
     },
-//     findAchievement: function(institutionAchievementId) {
-//       var findAchievement = null;
-//       this.entrant.achievement_ids.find(function(element) {
-//         if(element == institutionAchievementId){
-//           findAchievement = element;
-//         };
-//       });
-//       return findAchievement;
-//     },
+    findAchievement: function(institutionAchievementId) {
+      var findAchievement = null;
+      this.entrant.achievement_ids.find(function(element) {
+        if(element == institutionAchievementId){
+          findAchievement = element;
+        };
+      });
+      return findAchievement;
+    },
     findAttachment: function(document_id, document_type, template) {
       var findAttachment = null;
       this.entrant.attachments.find(function(element) {
@@ -542,16 +535,15 @@ var entrants = new Vue({
     },
     findCompetitiveGroup: function(campaignId, competitiveGgroupId) {
       var findCompetitiveGroup = null;
-//       this.dictionaries.campaings.find(function(campaign) {
-//         if(campaign.id == campaignId) {
-//           campaign.competitivet_groups.find(function(competitive_group) {
-//             if(competitive_group.id == competitiveGgroupId) {
-//               findCompetitiveGroup = competitive_group
-//             };
-//           };
-//                                             );
-//         };
-//       });
+      this.api.dictionaries.campaigns.find(function(campaign) {
+        if(campaign.id == campaignId) {
+          campaign.competitive_groups.find(function(competitive_group) {
+            if(competitive_group.id == competitiveGgroupId) {
+              findCompetitiveGroup = competitive_group
+            };
+          });
+        };
+      });
       return findCompetitiveGroup;
     },
     openContragentModal: function(){
@@ -589,25 +581,29 @@ var entrants = new Vue({
           if(sub == 'benefit_document') {
             this.entrant.benefit_documents[index].id = response.data.benefit_document.id;
           };
+          if(sub == 'olympic_document') {
+            this.entrant.olympic_documents[index].id = response.data.olympic_document.id;
+          };
+          if(sub == 'target_contract') {
+            this.entrant.target_contracts[index].id = response.data.target_contract.id;
+          };
           if(sub == 'other_document') {
             this.entrant.other_documents[index].id = response.data.other_document.id;
           };
           if(sub == 'ticket') {
             this.entrant.tickets = response.data.tickets;
           };
-          if(sub == 'olympic_document') {
-            this.entrant.olympic_documents[index].id = response.data.olympic_document.id;
-          };
           if(sub == 'mark') {
             this.entrant.marks[index].id = response.data.mark.id;
           };
-//           if(sub == 'competitive_group') {
-//             this.entrant.competitive_groups = response.data.competitive_groups;
-//             this.entrant.status_id = response.data.status_id;
-//             this.entrant.status = response.data.status;
-//           };
-          if(sub == 'achievement') {
+          if(sub == 'competitive_group_ids') {
+            this.entrant.entrant_applications = response.data.entrant_applications;
+            this.entrant.stage = response.data.stage;
+            this.entrant.status = response.data.status;
+          };
+          if(sub == 'institution_achievement_ids') {
             this.entrant.achievements = response.data.achievements;
+            this.entrant.attachments = response.data.attachments;
           };
           if(sub == 'status') {
             this.entrant.status = response.data.status;
@@ -644,13 +640,9 @@ var entrants = new Vue({
         this.files = this.$refs.contract.files;
         this.dataset = this.$refs.contract.dataset;
       }
-      if(this.$refs.data_processing_consent_document && this.$refs.data_processing_consent_document.length > 0) {
-        for(var i = 0; i < this.$refs.data_processing_consent_document.length; i++) {
-          if(this.$refs.data_processing_consent_document[i].files.length > 0) {
-          this.files = this.$refs.data_processing_consent_document[i].files;
-          this.dataset = this.$refs.data_processing_consent_document[i].dataset;
-          }
-        }
+      if(this.$refs.data_processing_consent && this.$refs.data_processing_consent.files.length > 0) {
+        this.files = this.$refs.data_processing_consent.files;
+        this.dataset = this.$refs.data_processing_consent.dataset;
       }
       if(this.$refs.identity_document && this.$refs.identity_document.length > 0) {
         for(var i = 0; i < this.$refs.identity_document.length; i++) {
@@ -749,10 +741,8 @@ var entrants = new Vue({
         if(this.dataset.documentType == 'contract') {
           this.$refs.contract.value = null
         }
-        if(this.dataset.documentType == 'data_processing_consent_document') {
-          for(var i = 0; i < this.$refs.data_processing_consent_document.length; i++) {
-            this.$refs.data_processing_consent_document[i].value = null
-          }
+        if(this.dataset.documentType == 'data_processing_consent') {
+          this.$refs.data_processing_consent.value = null
         }
         if(this.dataset.documentType == 'identity_document') {
           for(var i = 0; i < this.$refs.identity_document.length; i++) {
@@ -829,9 +819,7 @@ var entrants = new Vue({
         if(this.entrant.personal.birth_date == '') this.errors.push({element: 'birth_date', message: 'Необходимо указать дату рождения', level: 'red'});
         if(this.entrant.personal.gender_id == '') this.errors.push({element: 'gender_id', message: 'Необходимо указать пол', level: 'red'});
         if(this.entrant.contact_information.phone == '') this.errors.push({element: 'phone', message: 'Необходимо контактный телефон', level: 'red'});
-        if(this.entrant.data_processing_consent_documents.find(function(element) {
-          if(!entrants.findAttachment(element.id, 'data_processing_consent_document', false)) entrants.errors.push({element: 'data_processing_consent_document_attachment', message: 'Необходимо прикрепить сканы согласий на обработку и распространение персональных данных', level: 'red'});
-        }));
+        if(!entrants.findAttachment(this.entrant.id, 'data_processing_consent', false)) entrants.errors.push({element: 'data_processing_consent_attachment', message: 'Необходимо прикрепить сканы согласий на обработку и распространение персональных данных', level: 'red'});
         if(this.entrant.snils.find(function(element) {
           if(element.number == ''){
             entrants.errors.push({element: 'snils', message: 'Необходимо указать номер СНИЛС, либо отметить, что он отсутствует', level: 'red'});
@@ -874,22 +862,22 @@ var entrants = new Vue({
       }
       if(tab == 'target' || tab == 'others' || tab == 'applications'){
         if(this.entrant.benefit_documents.find(function(element) {
-          if(element.benefit_document_type == '' && entrants.entrant.benefit){
+          if(element.benefit_document_type == '' && entrants.entrant.questionnaire['benefit']){
             entrants.errors.push({element: 'benefit_document_type', message: 'Необходимо выбрать тип документа, подтверждающего льготу', level: 'red'});
           };
-          if(element.benefit_document_series == '' && entrants.entrant.benefit){
+          if(element.benefit_document_series == '' && entrants.entrant.questionnaire['benefit']){
             entrants.errors.push({element: 'benefit_document_series', message: 'Не указана серия документа, подтверждающего льготу. Если серия отсутствует, напишите "нет"', level: 'red'});
           };
-          if(element.benefit_document_number == '' && entrants.entrant.benefit){
+          if(element.benefit_document_number == '' && entrants.entrant.questionnaire['benefit']){
             entrants.errors.push({element: 'benefit_document_number', message: 'Не указан номер документа, подтверждающего льготу. Если номер отсутствует, напишите "нет"', level: 'red'});
           };
-          if(element.benefit_document_date == '' && entrants.entrant.benefit){
+          if(element.benefit_document_date == '' && entrants.entrant.questionnaire['benefit']){
             entrants.errors.push({element: 'benefit_document_date', message: 'Необходимо указать дату выдачи документа, подтверждающего льготу', level: 'red'});
           };
-          if(element.benefit_document_organization == '' && entrants.entrant.benefit){
+          if(element.benefit_document_organization == '' && entrants.entrant.questionnaire['benefit']){
             entrants.errors.push({element: 'benefit_document_organization', message: 'Необходимо указать кем выдан документ, подтверждающий льготу', level: 'red'});
           };
-          if(!entrants.findAttachment(element.id, 'benefit_document', false) && entrants.entrant.benefit) entrants.errors.push({element: 'benefit_document', message: 'Необходимо прикрепить копию документа, подтверждающего льготу', level: 'red'});
+          if(!entrants.findAttachment(element.id, 'benefit_document', false) && entrants.entrant.questionnaire['benefit']) entrants.errors.push({element: 'benefit_document', message: 'Необходимо прикрепить копию документа, подтверждающего льготу', level: 'red'});
         }));
         if(this.entrant.olympic_documents.find(function(element) {
           if(element.olympic_document_series == '' && entrants.entrant.olympionic){
@@ -905,16 +893,20 @@ var entrants = new Vue({
         }));
       }
       if(tab == 'others' || tab == 'applications'){
-        if(this.entrant.competitive_group_ids.length == 0) this.errors.push({element: 'competitive_group_ids', message: 'Необходимо отметить участие хотя бы в одном конкурсе', level: 'red'});
-        if(this.entrant.marks.find(function(element) {
-          if(!element.form){
-            entrants.errors.push({element: 'form', message: 'Не выбрана форма вступительного испытания', level: 'red'});
+        if(this.entrant.target_contracts.find(function(element) {
+          if(element.document_type == ''){
+            entrants.errors.push({element: 'target_contract_type', message: 'Необходимо выбрать конкурсную группу', level: 'red'});
           };
+          if(element.date == ''){
+            entrants.errors.push({element: 'target_contract_date', message: 'Необходимо указать дату заключения договора о целевом обучении', level: 'red'});
+          };
+          if(!entrants.findAttachment(element.id, 'target_contract', false)) entrants.errors.push({element: 'target_contract', message: 'Необходимо прикрепить копию договора о целевом обучении', level: 'red'});
         }));
+        if(this.entrant.competitive_group_ids.length == 0) this.errors.push({element: 'competitive_group_ids', message: 'Необходимо отметить участие хотя бы в одном конкурсе', level: 'red'});
       }
       if(tab == 'applications'){
         if(!this.entrant.contact_information.address) this.errors.push({element: 'address', message: 'Необходимо указать адрес', level: 'red'});
-        if(this.entrant.special_entrant && !this.entrant.benefit) this.errors.push({element: 'special_entrant', message: 'Указана необходимость создания специальных условий для сдачи вступительных испытаний, но не указано наличие льготы на вкладке Льготы', level: 'red'});
+        if(this.entrant.special_entrant && !this.entrant.questionnaire['benefit']) this.errors.push({element: 'special_entrant', message: 'Указана необходимость создания специальных условий для сдачи вступительных испытаний, но не указано наличие льготы на вкладке Льготы', level: 'red'});
         if(this.entrant.special_entrant && this.entrant.special_conditions == '') this.errors.push({element: 'special_conditions', message: 'Указана необходимость создания специальных условий для сдачи вступительных испытаний, но не указан перечень условий', level: 'red'});
       }
       if(tab == 'start'){
@@ -941,30 +933,59 @@ var entrants = new Vue({
     addTargetContract: function() {
       this.entrant.target_contracts.push({
         id: null,
-        competitive_group_id: null,
-        competitive_group_name: '',
-        target_organization_id: null,
-        target_organization_name: '',
-        status: null
+        document_type: 'target_contract',
+        document_category: '',
+        serie: '',
+        number: '',
+        date: '',
+        issuer: '',
+        original: ''
       });
     },
     deleteTargetContract: function() {
       if(this.entrant.target_contracts.length > 1) this.entrant.target_contracts.splice(-1, 1);
     },
     addBenefitDocument: function() {
-      this.entrant.benefit_documents.push({document_type: '', document_serie: '', document_number: '', document_date: '', document_issuer: ''});
+      this.entrant.benefit_documents.push({
+        id: null,
+        document_type: 'benefit_document',
+        document_category: '',
+        serie: '',
+        number: '',
+        date: '',
+        issuer: '',
+        original: ''
+      });
     },
     deleteBenefitDocument: function() {
       if(this.entrant.benefit_documents.length > 1) this.entrant.benefit_documents.splice(-1, 1);
     },
     addOlympicDocument: function() {
-      this.entrant.olympic_documents.push({document_type: '', document_serie: '', document_number: '', document_date: '', document_issuer: ''});
+      this.entrant.olympic_documents.push({
+        id: null,
+        document_type: 'olympic_document',
+        document_category: '',
+        serie: '',
+        number: '',
+        date: '',
+        issuer: '',
+        original: ''
+      });
     },
     deleteOlympicDocument: function() {
       if(this.entrant.olympic_documents.length > 1) this.entrant.olympic_documents.splice(-1, 1);
     },
     addOtherDocument: function() {
-      this.entrant.other_documents.push({documentName: '', document_serie: '', document_number: '', document_date: '', document_issuer: ''});
+      this.entrant.other_documents.push({
+        id: null,
+        document_type: 'other_document',
+        document_category: '',
+        serie: '',
+        number: '',
+        date: '',
+        issuer: '',
+        original: ''
+      });
     },
     deleteOtherDocument: function() {
       if(this.entrant.other_documents.length > 1) this.entrant.other_documents.splice(-1, 1);
@@ -1065,43 +1086,38 @@ var entrants = new Vue({
           });
           if(this.entrant.olympic_documents.length == 0) this.entrant.olympic_documents.push({
             id: null,
-            benefit_document_type_id: null,
-            olympic_id: null,
-            diploma_type_id: null,
-            olympic_profile_id: null,
-            class_number: null,
-            olympic_document_series: '',
-            olympic_document_number: '',
-            olympic_document_date: '',
-            olympic_subject_id: null,
-            ege_subject_id: null,
-            status: null,
-            olympic_document_type_id: null,
+            document_type: 'olympic_document',
+            document_category: '',
+            number: '',
+            date: '',
+            class_number: '',
+            original: ''
           });
           if(this.entrant.benefit_documents.length == 0) this.entrant.benefit_documents.push({
             id: null,
-            benefit_document_type_id: null,
-            benefit_document_series: '',
-            benefit_document_number: '',
-            benefit_document_date: '',
-            benefit_document_organization: '',
-            benefit_type_id: null,
-            status: null
+            document_type: 'benefit_document',
+            document_category: '',
+            serie: '',
+            number: '',
+            date: '',
+            issuer: '',
+            original: ''
           });
           if(this.entrant.other_documents.length == 0) this.entrant.other_documents.push({
             id: null,
-            other_document_series: '',
-            other_document_number: '',
-            other_document_issuer: '',
-            name: ''
+            document_type: 'other_document',
+            document_category: '',
+            serie: '',
+            number: '',
+            date: '',
+            issuer: '',
+            original: ''
           });
           if(this.entrant.target_contracts.length == 0) this.entrant.target_contracts.push({
             id: null,
-            competitive_group_id: null,
-            competitive_group_name: '',
-            target_organization_id: null,
-            target_organization_name: '',
-            status: null
+            document_type: 'target_contract',
+            competitive_group_id: '',
+            original: ''
           });
           if(!this.entrant.contragent) this.entrant.contragent = {
             id: null,

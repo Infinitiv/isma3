@@ -5,12 +5,12 @@ fieldset
       p =link_to ' Бланк согласия на обработку и распространние персональных данных', '/attachments/61368', target: '_blank'
 fieldset(v-if="entrant.id")
   legend Прикрепите копию согласия на обработку персональных данных
-  .row(v-for="document in entrant.data_processing_consent_documents")
+  .row
     .large-12.small-12.columns
-      = render partial: 'add_attachment', locals: {document_type: 'data_processing_consent_document', message: 'Можно загрузить один или несколько файлов', document_id: 'document.id', entrant_id: 'entrant.id', ref_name: 'data_processing_consent_document', id: 'data_processing_consent_document'}
+      = render partial: 'add_attachment', locals: {document_type: 'data_processing_consent', message: 'Можно загрузить один или несколько файлов', document_id: 'entrant.id', entrant_id: 'entrant.id', ref_name: 'data_processing_consent', id: 'data_processing_consent'}
   .row(v-for="attachment in entrant.attachments")
     .large-12.small-12.columns
-      p(v-if="attachment.document_type == 'data_processing_consent_document'")
+      p(v-if="attachment.document_type == 'data_processing_consent'")
         a v-bind:href = "'/api/attachments/' + attachment.data_hash + '?filename=' + attachment.filename" target = '_blank' {{ attachment.filename }}
 
 fieldset(v-bind:disabled = 'isDisabled')
@@ -115,7 +115,7 @@ fieldset
     .button.tiny(v-if="entrant.identity_documents.length > 1" @click="deleteIdentityDocument") Удалить документ
 fieldset
   legend Документ об образовании
-  p (v-if="entrant.questionnaire['current_campaign'] != '' && findCampaign(entrant.questionnaire['current_campaign']).campaign_type == 'Прием на обучение на бакалавриат/специалитет'") Сведения о документе об образовании — это данные того документа, который будет подан в приемную комиссию. При поступлении по результатам ЕГЭ обычно это аттестат, но при наличии у Вас нескольких документов об образовании (аттестата и диплома), Вы можете выбрать, какой из них подать. При поступлении по результатам внутренних экзаменов абитуриент подает диплом о высшем образовании.
+  p (v-if="entrant.questionnaire['current_campaign'] != '' && findCampaign(entrant.questionnaire['current_campaign']).campaign_type == 'Прием на обучение на бакалавриат/специалитет'") Сведения о документе об образовании — это данные того документа, который будет подан в приемную комиссию. При поступлении по результатам ЕГЭ обычно это аттестат, но при наличии у Вас нескольких документов об образовании (аттестата и диплома), Вы можете выбрать, какой из них подать.
   . v-for="(document, index) in entrant.education_documents"
     .row
       .large-6.small-12.columns

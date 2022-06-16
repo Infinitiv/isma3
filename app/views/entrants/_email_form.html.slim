@@ -20,19 +20,6 @@ fieldset
       br
       = submit_tag 'Получить код проверки', class: 'button tiny', '@click': 'checkEmail', 'v-bind:disabled': 'isSendCodeDisabled', 'v-if': '!entrant.email_confirmed'
 
-fieldset(v-if='entrant.hash')
-  legend Анкета
-  .row
-    .large-12.small-12.columns
-      label
-        p Просим Вас ответить на несколько вопросов для упрощения процедуры подачи заявления
-        .row(v-for="item in api.questionnaire")
-          .large-1.small-1.columns
-            input(type="checkbox" v-bind:id="item.key" v-bind:name="item.key" v-bind:value="item.key" v-model="entrant.questionnaire" v-on:change="sendData('questionnaire', entrant.questionnaire)")
-          .large-11.small-11.columns
-            label(v-bind:for="item.key")
-              span= "{{ item.value }}"
-              
 fieldset(v-if='!isNextDisabled')
   legend(v-if="entrant.errors.length") Исправьте ошибки и повторно нажмите кнопку Отправить
   .row(v-if="entrant.errors.length")
