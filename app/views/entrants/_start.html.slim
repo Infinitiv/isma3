@@ -161,19 +161,19 @@ fieldset
         = label_tag :last_name
           span Фамилия
           = text_field_tag :last_name, nil, placeholder: 'Как в паспорте', 'v-model.trim': 'entrant.contragent.last_name', class: 'error', 'v-on:change': 'sendData("contragent", entrant.contragent)'
-        small.error v-if="checkLastName" == "{{ checkLastName }}"
+        small.error v-if="checkContragentLastName" == "{{ checkContragentLastName }}"
         small.error v-if="findErrorMessage('last_name')" == "{{ findErrorMessage('last_name') }}"
       .large-4.small-12.columns
         = label_tag :first_name
           span Имя
           = text_field_tag :first_name, nil, placeholder: 'Как в паспорте', 'v-model.trim': 'entrant.contragent.first_name', class: 'error', 'v-on:change': 'sendData("contragent", entrant.contragent)'
-        small.error v-if="checkFirstName" == "{{ checkFirstName }}"
+        small.error v-if="checkContragentFirstName" == "{{ checkContragentFirstName }}"
         small.error v-if="findErrorMessage('first_name')" == "{{ findErrorMessage('first_name') }}"
       .large-4.small-12.columns
         = label_tag :middle_name
           span Отчество
           = text_field_tag :middle_name, nil, placeholder: 'Как в паспорте, если есть', 'v-model.trim': 'entrant.contragent.middle_name', class: 'error', 'v-on:change': 'sendData("contragent", entrant.contragent)'
-        small.error v-if="checkMiddleName" == "{{ checkMiddleName }}"
+        small.error v-if="checkContragentMiddleName" == "{{ checkContragentMiddleName }}"
         small.error v-if="findErrorMessage('middle_name')" == "{{ findErrorMessage('middle_name') }}"
     .row
       .large-4.small-12.columns
@@ -211,7 +211,6 @@ fieldset
         = label_tag :identity_document_date
           span Дата выдачи документа
           = date_field_tag 'contragents[][identity_document_date]', nil, placeholder: 'Дата выдачи документа', 'v-model.trim': 'entrant.contragent.identity_document_date', class: 'error', 'v-on:change': "sendData('contragent', entrant.contragent)"
-        small.error v-if="checkIdentityDocumentDate" == "{{ checkIdentityDocumentDate }}"
     .row
       .large-12.small-12.columns
         = label_tag :identity_document_issuer

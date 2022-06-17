@@ -5,10 +5,8 @@ var entrants = new Vue({
       hash: window.document.location.pathname.split('/')[2],
       current_tab: 'common',
       dictionaries: {
-        countries: [],
-        campaigns: [],
+        campaign: {},
         identity_document_categories: [],
-        specialities_dictionary: [],
         languages: [
           'Английский',
           'Французский',
@@ -40,13 +38,27 @@ var entrants = new Vue({
             name: "Документ, подтверждающий право поступления по специальной квоте"
           },
         ],
-        olympic_document_catgories: [
+        olympic_document_categories: [
           {
             name: "Диплом победителя/призера олимпиады школьников"
           },
           {
             name: "Диплом победителя/призера всероссийской олимпиады школьников"
           }
+        ],
+        olympic_profiles: [
+          {
+            name: "химия"
+          },
+          {
+            name: "биология"
+          },
+          {
+            name: "русский язык"
+          },
+          {
+            name: "медицина"
+          },
         ],
         education_document_categories: [
           {
@@ -114,186 +126,26 @@ var entrants = new Vue({
     errors: [],
     files: '',
     dataset: '',
-    entrant: {
-      id: null,
-      nationality: false,
-      personal: {
-        last_name: '',
-        first_name: '',
-        middle_name: '',
-        gender: '',
-        birth_date: '',
-      },
-      contact_information: {
-        address: '',
-        zip_code: '',
-        email: '',
-        phone: ''
-      },
-      entrant_applications: [
-        {
-          application_number: '',
-          competitive_group_id: null,
-          return_date: '',
-          created_at: ''
-        }
-      ],
-      status: '',
-      stage: 0,
-      need_hostel: false,
-      special_entrant: false,
-      special_conditions: '',
-      snils: '',
-      snils_absent: false,
-      language: '',
-      questionnaire: [],
-      data_processing_consents: [
-        {
-          id: null,
-          document_type: '',
-        }
-      ],
-      identity_documents: [
-        {
-          id: null,
-          document_type: '',
-          document_category: '',
-          serie: '',
-          number: '',
-          date: '',
-          issuer: '',
-          status: null,
-          last_name: '',
-          first_name: '',
-          middle_name: ''
-        }
-      ],
-      education_documents: [
-        {
-          id: null,
-          document_type: '',
-          document_category: '',
-          number: '',
-          date: '',
-          issuer: '',
-          original: '',
-        }
-      ],
-      snils: [
-        {
-          id: null,
-          document_type: '',
-          number: '',
-        }
-      ],
-      marks: [
-        {
-          id: null,
-          value: null,
-          subject: '',
-          test_type: '',
-          value: null,
-          year: null,
-          organization_uid: ''
-        }
-      ],
-      sum: null,
-      achievements_sum: null,
-      full_sum: null,
-      achievements: [
-        {
-          id: null,
-          name: '',
-          value: '',
-          checked: false
-        }
-      ],
-      achievements_ids: [],
-      olympic_documents: [
-        {
-          id: null,
-          document_type: '',
-          document_category: '',
-          number: '',
-          date: '',
-          class_number: '',
-          original: ''
-        }
-      ],
-      benefit_documents: [
-        {
-          id: null,
-          document_type: '',
-          document_category: '',
-          serie: '',
-          number: '',
-          date: '',
-          issuer: '',
-          original: ''
-        }
-      ],
-      target_contracts: [
-        {
-          id: null,
-          document_type: '',
-          competitive_group_id: '',
-          original: ''
-        }
-      ],
-      other_documents: [
-        {
-          id: null,
-          document_type: '',
-          document_category: '',
-          serie: '',
-          number: '',
-          date: '',
-          issuer: '',
-          original: ''
-        }
-      ],
-      competitive_group_ids: [],
-      contragent: {
-          id: null,
-          last_name: '',
-          first_name: '', 
-          middle_name: '',
-          birth_date: '',
-          identity_document_serie: '',
-          identity_document_number: '',
-          identity_document_date: '',
-          identity_document_issuer: '',
-          identity_document_data: '',
-          email: '',
-          phone: '',
-          address: ''
-      },
-      tickets: [
-        {
-          id: null,
-          entrant_id: null,
-          parent_ticket: null,
-          message: '',
-          solved: false,
-          created_at: null,
-          children: []
-        }
-      ],
-      attachments: [],
-    }
+    entrant: {},
   },
   computed: {
-    checkFirstName: function() {
+    checkEntrantFirstName: function() {
       if(this.entrant.personal.first_name.charAt(0).toUpperCase() + this.entrant.personal.first_name.slice(1).toLowerCase() != this.entrant.personal.first_name) return 'Обычно имя начинается с заглавной буквы, за которой следуют строчные';
     },
-    checkMiddleName: function() {
+    checkEntrantMiddleName: function() {
       if(this.entrant.personal.middle_name.charAt(0).toUpperCase() + this.entrant.personal.middle_name.slice(1).toLowerCase() != this.entrant.personal.middle_name) return 'Обычно отчество начинается с заглавной буквы, за которой следуют строчные';
     },
-    checkLastName: function() {
+    checkEntrantLastName: function() {
       if(this.entrant.personal.last_name.charAt(0).toUpperCase() + this.entrant.personal.last_name.slice(1).toLowerCase() != this.entrant.personal.last_name) return 'Обычно фамилия начинается с заглавной буквы, за которой следуют строчные';
     },
-    checkFirstName: function() {
-      if(this.entrant.personal.first_name.charAt(0).toUpperCase() + this.entrant.personal.first_name.slice(1).toLowerCase() != this.entrant.personal.first_name) return 'Обычно имя начинается с заглавной буквы, за которой следуют строчные';
+    checkContragentFirstName: function() {
+      if(this.entrant.contragent.first_name.charAt(0).toUpperCase() + this.entrant.contragent.first_name.slice(1).toLowerCase() != this.entrant.contragent.first_name) return 'Обычно имя начинается с заглавной буквы, за которой следуют строчные';
+    },
+    checkContragentMiddleName: function() {
+      if(this.entrant.contragent.middle_name.charAt(0).toUpperCase() + this.entrant.contragent.middle_name.slice(1).toLowerCase() != this.entrant.contragent.middle_name) return 'Обычно отчество начинается с заглавной буквы, за которой следуют строчные';
+    },
+    checkContragentLastName: function() {
+      if(this.entrant.contragent.last_name.charAt(0).toUpperCase() + this.entrant.contragent.last_name.slice(1).toLowerCase() != this.entrant.contragent.last_name) return 'Обычно фамилия начинается с заглавной буквы, за которой следуют строчные';
     },
     checkBirthDate: function() {
       if(this.entrant.personal.birth_date){
@@ -311,68 +163,6 @@ var entrants = new Vue({
         }
       }
     },
-    checkIdentityDocumentSerie: function() {
-      message = '';
-      if(this.entrant.identity_documents.find(function(element) {
-        if(element.documentSerie == '') message = 'Необходимо указать серию документа, удостоверяющего личность';
-      }));
-      return message;
-    },
-    checkIdentityDocumentNumber: function() {
-      message = '';
-      if(this.entrant.identity_documents.find(function(element) {
-        if(element.document_number == '') message = 'Необходимо указать номер документа, удостоверяющего личность';
-      }));
-      return message;
-    },
-    checkIdentityDocumentDate: function() {
-      if(this.entrant.identity_documents.find(function(element) {
-        if(element.date){
-          var numbers = element.date.split('-');
-          var birthYear = Number(numbers[0]);
-          var birthMonth = Number(numbers[1]) - 1;
-          var birthDay = Number(numbers[2]);
-          var message = [];
-          var year = (new Date()).getFullYear();
-          if(birthYear + birthMonth + birthDay) {
-            if(!(Number(numbers[0]) > 0 && Number(numbers[0]) < Number(year))) message.push('Неверный год');
-            if(!(Number(numbers[1]) > 0 && Number(numbers[1]) < 13)) message.push('Неверный месяц');
-            if(!(Number(numbers[2]) > 0 && Number(numbers[2]) < 32)) message.push('Неверный день');
-          };
-          return message.join(', ')
-        }
-      }));
-    },
-    checkEducationDocumentDate: function() {
-      if(this.entrant.identity_documents.find(function(element) {
-        if(element.education_document_date){
-        var numbers = element.date.split('-');
-        var birthYear = Number(numbers[0]);
-        var birthMonth = Number(numbers[1]) - 1;
-        var birthDay = Number(numbers[2]);
-        var message = [];
-        var year = (new Date()).getFullYear() + 1;
-        if(birthYear + birthMonth + birthDay) {
-          if(!(Number(numbers[0]) > 0 && Number(numbers[0]) < Number(year))) message.push('Неверный год');
-          if(!(Number(numbers[1]) > 0 && Number(numbers[1]) < 13)) message.push('Неверный месяц');
-          if(!(Number(numbers[2]) > 0 && Number(numbers[2]) < 32)) message.push('Неверный день');
-        };
-        return message.join(', ')
-        }
-      }));
-    },
-    checkContactInformationZipCode: function() {
-      if(this.entrant.contact_information.zip_code == '') return 'Необходимо указать почтовый индекс';
-    },
-    checkContactInformationAddress: function() {
-      if(this.entrant.contact_information.address == '') return 'Необходимо указать адрес проживания';
-    },
-    checkContactInformationEmail: function() {
-      if(this.entrant.contact_information.email == '') return 'Необходимо указать адрес электронной почты';
-    },
-    checkContactInformationPhone: function() {
-      if(this.entrant.contact_information.phone == '') return 'Необходимо указать контактный телефон';
-    },
     checkContragent: function() {
       if(!this.entrant.contragent.id || !this.entrant.contragent.last_name || !this.entrant.contragent.first_name || !this.entrant.contragent.birth_date || !this.entrant.contragent.identity_document_serie || !this.entrant.contragent.identity_document_number || !this.entrant.contragent.identity_document_date || !this.entrant.contragent.identity_document_issuer || !this.entrant.contragent.email || !this.entrant.contragent.phone || !this.entrant.contragent.address) return 'Необходимо заполнить данные заказчика договора на платную образовательную услугу';
     },
@@ -386,11 +176,11 @@ var entrants = new Vue({
     },
     checkPaidCompetitiveGroups: function(){
       var checkPaidCompetitiveGroups = false;
-//       this.entrant.entrant_applications.find(function(element){
-//         if(entrants.findCompetitiveGroup(element.campaign_id, element.competitive_group_id).education_source == 'С оплатой обучения') {
-//           checkPaidCompetitiveGroups = true;
-//         }
-//       })
+      this.entrant.competitive_groups.find(function(element) {
+        if(element.education_source == 'С оплатой обучения') {
+          checkPaidCompetitiveGroups = true;
+        }
+      })
       return checkPaidCompetitiveGroups;
     },
     checkAge: function() {
@@ -402,28 +192,13 @@ var entrants = new Vue({
       var tempDate = new Date(birthYear + minAge, birthMonth, birthDay);
       return (tempDate <= new Date());
     },
-//     examDate: function() {
-//       var examDate = false;
-//       var currentDate = new Date();
-//       this.findCampaign(this.entrant.campaign_id).competitive_groups.find(function(element){
-//         var numbers = element.application_end_exam_date.split('-');
-//         var year = Number(numbers[0]);
-//         var month = Number(numbers[1]) - 1;
-//         var day = Number(numbers[2]);
-//         var date = new Date(year, month, day, 23, 59, 59)
-//         if(currentDate <= date) {
-//           examDate = true;
-//         }
-//       })
-//       return examDate;
-//     },
   },
   methods: {
     egeDate: function(competitive_group) {
       var egeDate = false;
       var currentDate = new Date();
-      var termAdmissionDate = competitive_group.term_admissions.find(function(element) {
-        if(element.name == 'Прием заявлений и документов без прохождения ДВИ и ВИ вуза') {
+      var termAdmissionDate = this.api.dictionaries.campaign.term_admissions.find(function(element) {
+        if(element.competitive_group_id == competitive_group.id && element.name == 'Прием заявлений и документов без прохождения ДВИ и ВИ вуза') {
           return element.end_date
         }
       })
@@ -533,15 +308,11 @@ var entrants = new Vue({
       });
       return findAttachment;
     },
-    findCompetitiveGroup: function(campaignId, competitiveGgroupId) {
+    findCompetitiveGroup: function(competitive_group_id) {
       var findCompetitiveGroup = null;
-      this.api.dictionaries.campaigns.find(function(campaign) {
-        if(campaign.id == campaignId) {
-          campaign.competitive_groups.find(function(competitive_group) {
-            if(competitive_group.id == competitiveGgroupId) {
-              findCompetitiveGroup = competitive_group
-            };
-          });
+      this.api.dictionaries.campaign.competitive_groups.find(function(competitive_group) {
+        if(competitive_group.id == competitive_group_id) {
+          findCompetitiveGroup = competitive_group
         };
       });
       return findCompetitiveGroup;
@@ -800,31 +571,13 @@ var entrants = new Vue({
         this.dataset = '';
       })
     },
-    findCampaign: function(campaign_id) {
-      var findCampaign = {
-        name: '',
-        id: null,
-        campaign_type_id: null,
-        year_start: null,
-        admission_volumens: [],
-        competitive_groups: [],
-        institution_achievements: [],
-        entrance_test_items: []
-      };
-      this.api.dictionaries.campaigns.find(function(element) {
-        if(element.id == campaign_id){
-          findCampaign = element;
-        };
-      });
-      return findCampaign;
-    },
     checkForm: function(tab) {
       this.errors = [];
       if(tab == 'benefits' || tab == 'target' || tab == 'competitions' || tab == 'others' || tab == 'applications'){
-        if(this.entrant.personal.entrant_last_name == '') this.errors.push({element: 'entrant_last_name', message: 'Необходимо указать фамилию', level: 'red'});
+        if(this.entrant.personal.last_name == '') this.errors.push({element: 'last_name', message: 'Необходимо указать фамилию', level: 'red'});
         if(this.entrant.personal.first_name == '') this.errors.push({element: 'first_name', message: 'Необходимо указать имя', level: 'red'});
         if(this.entrant.personal.birth_date == '') this.errors.push({element: 'birth_date', message: 'Необходимо указать дату рождения', level: 'red'});
-        if(this.entrant.personal.gender_id == '') this.errors.push({element: 'gender_id', message: 'Необходимо указать пол', level: 'red'});
+        if(this.entrant.personal.gender == null) this.errors.push({element: 'gender', message: 'Необходимо указать пол', level: 'red'});
         if(this.entrant.contact_information.phone == '') this.errors.push({element: 'phone', message: 'Необходимо контактный телефон', level: 'red'});
         if(!entrants.findAttachment(this.entrant.id, 'data_processing_consent', false)) entrants.errors.push({element: 'data_processing_consent_attachment', message: 'Необходимо прикрепить сканы согласий на обработку и распространение персональных данных', level: 'red'});
         if(this.entrant.snils.find(function(element) {
@@ -839,6 +592,9 @@ var entrants = new Vue({
           };
           if(element.document_category == 'Паспорт гражданина РФ' && element.serie.length != 4){
             entrants.errors.push({element: 'identity_document_serie', message: 'Выбран тип документа Российский паспорт, но серия указана неправильно', level: 'red'});
+          };
+          if(element.number == ''){
+            entrants.errors.push({element: 'identity_document_number', message: 'Необходимо указать номер документа, удостоверяющего личность', level: 'red'});
           };
           if(element.document_category == 'Паспорт гражданина РФ' && element.number.length != 6){
             entrants.errors.push({element: 'identity_document_number', message: 'Выбран тип документа Российский паспорт, но номер указан неправильно', level: 'red'});
@@ -869,34 +625,37 @@ var entrants = new Vue({
       }
       if(tab == 'target' || tab == 'others' || tab == 'applications'){
         if(this.entrant.benefit_documents.find(function(element) {
-          if(element.benefit_document_type == '' && entrants.entrant.questionnaire['benefit']){
-            entrants.errors.push({element: 'benefit_document_type', message: 'Необходимо выбрать тип документа, подтверждающего льготу', level: 'red'});
+          if(element.document_category == '' && (entrants.entrant.questionnaire['benefit'] || entrants.entrant.questionnaire['special'])) {
+            entrants.errors.push({element: 'benefit_document_category', message: 'Необходимо выбрать тип документа, подтверждающего льготу', level: 'red'});
           };
-          if(element.benefit_document_series == '' && entrants.entrant.questionnaire['benefit']){
-            entrants.errors.push({element: 'benefit_document_series', message: 'Не указана серия документа, подтверждающего льготу. Если серия отсутствует, напишите "нет"', level: 'red'});
-          };
-          if(element.benefit_document_number == '' && entrants.entrant.questionnaire['benefit']){
+          if(element.number == '' && (entrants.entrant.questionnaire['benefit'] || entrants.entrant.questionnaire['special'])) {
             entrants.errors.push({element: 'benefit_document_number', message: 'Не указан номер документа, подтверждающего льготу. Если номер отсутствует, напишите "нет"', level: 'red'});
           };
-          if(element.benefit_document_date == '' && entrants.entrant.questionnaire['benefit']){
+          if(element.date == '' && (entrants.entrant.questionnaire['benefit'] || entrants.entrant.questionnaire['special'])) {
             entrants.errors.push({element: 'benefit_document_date', message: 'Необходимо указать дату выдачи документа, подтверждающего льготу', level: 'red'});
           };
-          if(element.benefit_document_organization == '' && entrants.entrant.questionnaire['benefit']){
-            entrants.errors.push({element: 'benefit_document_organization', message: 'Необходимо указать кем выдан документ, подтверждающий льготу', level: 'red'});
+          if(element.issuer == '' && (entrants.entrant.questionnaire['benefit'] || entrants.entrant.questionnaire['special'])) {
+            entrants.errors.push({element: 'benefit_document_issuer', message: 'Необходимо указать кем выдан документ, подтверждающий льготу', level: 'red'});
           };
-          if(!entrants.findAttachment(element.id, 'benefit_document', false) && entrants.entrant.questionnaire['benefit']) entrants.errors.push({element: 'benefit_document', message: 'Необходимо прикрепить копию документа, подтверждающего льготу', level: 'red'});
+          if(!entrants.findAttachment(element.id, 'benefit_document', false) && (entrants.entrant.questionnaire['benefit'] || entrants.entrant.questionnaire['special'])) entrants.errors.push({element: 'benefit_document', message: 'Необходимо прикрепить копию документа, подтверждающего льготу', level: 'red'});
         }));
         if(this.entrant.olympic_documents.find(function(element) {
-          if(element.olympic_document_series == '' && entrants.entrant.olympionic){
-            entrants.errors.push({element: 'olympic_document_series', message: 'Не указана серия диплома олимпиады. Если серия отсутствует, напишите "нет"', level: 'red'});
+          if(element.document_category == '' && entrants.entrant.questionnaire['olympionic']){
+            entrants.errors.push({element: 'olympic_document_category', message: 'Не указан тип диплома олимпиады', level: 'red'});
           };
-          if(element.olympic_document_number == '' && entrants.entrant.olympionic){
-            entrants.errors.push({element: 'olympic_document_number', message: 'Не указан номер диплома олимпиады. Если номер отсутствует, напишите "нет"', level: 'red'});
+          if(element.number == '' && entrants.entrant.questionnaire['olympionic']){
+            entrants.errors.push({element: 'olympic_document_number', message: 'Не указан код подтверждения диплома олимпиады. Если код отсутствует, напишите "нет', level: 'red'});
           };
-          if(element.class_number == '' && entrants.entrant.olympionic){
+          if(element.profile == '' && entrants.entrant.questionnaire['olympionic']){
+            entrants.errors.push({element: 'olympic_profile', message: 'Не выбран профиль олимпиады', level: 'red'});
+          };
+          if(element.date == '' && entrants.entrant.questionnaire['olympionic']){
+            entrants.errors.push({element: 'olympic_document_date', message: 'Необходимо указать дату проведения олимпиады', level: 'red'});
+          };
+          if(element.class_number == '' && entrants.entrant.questionnaire['olympionic']){
             entrants.errors.push({element: 'class_number', message: 'Необходимо указать в каком классе получен диплом олимпиады', level: 'red'});
           };
-          if(!entrants.findAttachment(element.id, 'olympic_document', false) && entrants.entrant.olympionic) entrants.errors.push({element: 'olympic_document', message: 'Необходимо прикрепить копию диплома олимпиады', level: 'red'});
+          if(!entrants.findAttachment(element.id, 'olympic_document', false) && entrants.entrant.questionnaire['olympionic']) entrants.errors.push({element: 'olympic_document', message: 'Необходимо прикрепить копию диплома олимпиады', level: 'red'});
         }));
       }
       if(tab == 'others' || tab == 'applications'){
@@ -1031,6 +790,7 @@ var entrants = new Vue({
     },
     setCurrentTab: function(tab) {
       this.checkForm(tab);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
       if(this.errors.length == 0){
         this.api.current_tab = tab;
         if(this.api.current_tab == 'applications' && this.entrant.stage < 4){
@@ -1039,7 +799,6 @@ var entrants = new Vue({
         if(this.api.current_tab == 'start' && this.entrant.stage == 0){
           this.sendData('stage', this.entrant.stage);
         }
-        window.scrollTo({ top: 0, behavior: 'smooth' });
       };
     }
   },
@@ -1098,6 +857,7 @@ var entrants = new Vue({
             number: '',
             date: '',
             class_number: '',
+            profile: '',
             original: ''
           });
           if(this.entrant.benefit_documents.length == 0) this.entrant.benefit_documents.push({
@@ -1141,18 +901,11 @@ var entrants = new Vue({
             phone: '',
             address: ''
           };
-          for(var i = 0; i < this.entrant.campaigns.length; i++){
-            axios
-              .get('/api/campaigns/' + this.entrant.campaigns[i].id)
-              .then(response => (this.api.dictionaries.campaigns.push(response.data.campaign)));
-          };
+          this.entrant.agreement = '';
+          axios
+            .get('/api/campaigns/' + this.entrant.current_campaign.id)
+            .then(response => (this.api.dictionaries.campaign = response.data.campaign));
         });
-//     axios
-//       .get('/api/dictionaries/57')
-//       .then(response => (this.api.dictionaries.specialities_dictionary = response.data.dictionary.items));
-//     axios
-//       .get('/api/dictionaries/30')
-//       .then(response => (this.api.dictionaries.countries = response.data.dictionary.items));
     axios
       .get('/api/dictionaries/67')
       .then(response => (this.api.dictionaries.identity_document_categories = response.data.dictionary.items));
