@@ -8,8 +8,6 @@ var entrants = new Vue({
       campaign_id: '',
       email: '',
       pin: '',
-      response: null,
-      error: null,
       message: '',
       email_confirmed: false,
       hash: null,
@@ -33,35 +31,6 @@ var entrants = new Vue({
     }
   },
   methods: {
-    sendWelcomeEmail: function() {
-      axios
-        .put('/api/entrants/' + this.entrant.hash + '/send_welcome_email', {id: this.entrant.hash})
-        .then(response => {
-          console.log(response.data.message);
-        })
-    },
-    findCampaign: function(campaignId) {
-      var find_campaign = null;
-      this.api.campaigns.find(function(element) {
-        if(campaignId == element.id){
-          find_campaign = element;
-        };
-      });
-      return find_campaign;
-    },
-    checkPin: function() {
-      if(this.entrant.pin.length == 4) {
-        console.log(this.entrant.pin);
-        this.confirmEmail();
-      };
-    },
-    checkForm: function(e) {
-      this.entrant.errors = [];
-      if(this.entrant.email == '') this.entrant.errors.push({element: 'email', message: 'Необходимо указать адрес электронной почты', level: 'red'});
-      if(this.entrant.campaign_id == '') this.entrant.errors.push({element: 'campaign_id', message: 'Необходимо выбрать приемную кампанию', level: 'red'});
-      if(this.entrant.errors.length == 0) return true;
-      e.preventDefault();
-    },
     checkEmail: function() {
       this.entrant.errors = [];
       axios
@@ -71,6 +40,7 @@ var entrants = new Vue({
             this.entrant.errors.push({element: 'email', message: 'Адрес электронной почты уже зарегистрирован в системе. Личный кабинет Вами уже создан. Для входа в личный кабинет необходимо использовать ссылку, полученную по почте. Если нет письма со ссылкой, обратитесь в приемную комиссию по телефону или электронной почте. Не создавайте дублирующиеся личные кабинеты.', level: 'red'});
           }
           if(response.data.status == 'success'){
+            this.entrant.errors = [];
             $('#email_code_field').foundation('reveal', 'open');
             this.sendCode();
           }
@@ -89,27 +59,25 @@ var entrants = new Vue({
           }
       })
     },
-    findErrorMessage: function(fieldName) {
-      var message = '';
-      this.entrant.errors.find(function(element) {
-        if(fieldName == element.element) {
-          message = element.message;
-        }
-      });
-      return message;
+    checkPin: function() {
+      if(this.entrant.pin.length == 4) {
+        console.log(this.entrant.pin);
+        this.confirmEmail();
+      };
     },
     confirmEmail: function () {
       axios
         .put( '/api/entrants/' + this.entrant.hash + '/check_pin', { hash: this.entrant.hash, pin: this.entrant.pin } )
         .then(response => {
           if(response.data.status == 'success') {
+            this.entrant.errors = [];
             this.entrant.email_confirmed = true;
             this.entrant.message = 'код подтверждения успешно проверен';
             $('#email_code_field').foundation('reveal', 'close');
             this.sendWelcomeEmail();
           }
-          else
-          {
+          else {
+            this.entrant.errors = [];
             this.entrant.email_confirmed = false;
             this.entrant.message = 'код подтверждения введен неверно';
             this.entrant.errors.push({element: 'pin', message: 'Код подтверждения введен неверно', level: 'red'});
@@ -124,6 +92,7 @@ var entrants = new Vue({
         .put( '/api/entrants/' + this.entrant.hash + '/remove_pin', { hash: this.entrant.hash } )
         .then(response => {
           if(response.data.status == 'success') {
+            this.entrant.errors = [];
             this.entrant.email_confirmed = true;
             this.entrant.message = 'отказ от проверки подтвержден';
             $('#email_code_field').foundation('reveal', 'close');
@@ -133,11 +102,37 @@ var entrants = new Vue({
         .catch(function (error) {
           console.log(error)
         });
-    }
+    },
+    sendWelcomeEmail: function() {
+      axios
+        .put('/api/entrants/' + this.entrant.hash + '/send_welcome_email', {id: this.entrant.hash})
+        .then(response => {
+          console.log(response.data.message);
+        })
+    },
+    checkForm: function(e) {
+      this.entrant.errors = [];
+      if(this.entrant.email == '') this.entrant.errors.push({element: 'email', message: 'Необходимо указать адрес электронной почты', level: 'red'});
+      if(this.entrant.campaign_id == '') this.entrant.errors.push({element: 'campaign_id', message: 'Необходимо выбрать приемную кампанию', level: 'red'});
+      if(this.entrant.errors.length == 0) return true;
+      e.preventDefault();
+    },
+    findErrorMessage: function(fieldName) {
+      var message = '';
+      this.entrant.errors.find(function(element) {
+        if(fieldName == element.element) {
+          message = element.message;
+        }
+      });
+      return message;
+    },
   },
   mounted: function() {
     axios
       .get('/api/campaigns')
-      .then(response => (this.api.campaigns = response.data.campaigns));
+      .then(response => {
+        this.api.campaigns = response.data.campaigns
+        if(this.api.campaigns.length == 1) this.entrant.campaign_id = this.api.campaigns[0]['id'];
+      });
   }
 })

@@ -1011,15 +1011,15 @@ var entrants = new Vue({
     deleteTicket: function() {
       if(this.entrant.tickets.length > 1) this.entrant.tickets.splice(-1, 1);
     },
-    specialityName: function(directionId) {
-      var name = '';
-      this.api.dictionaries.specialities_dictionary.find(function(element) {
-        if(element.id == directionId) {
-          name = element.name;
-        }
-      });
-      return name;
-    },
+//     specialityName: function(directionId) {
+//       var name = '';
+//       this.api.dictionaries.specialities_dictionary.find(function(element) {
+//         if(element.id == directionId) {
+//           name = element.name;
+//         }
+//       });
+//       return name;
+//     },
     findErrorMessage: function(fieldName) {
       var message = '';
       this.errors.find(function(element) {
@@ -1147,12 +1147,12 @@ var entrants = new Vue({
               .then(response => (this.api.dictionaries.campaigns.push(response.data.campaign)));
           };
         });
-    axios
-      .get('/api/dictionaries/57')
-      .then(response => (this.api.dictionaries.specialities_dictionary = response.data.dictionary.items));
-    axios
-      .get('/api/dictionaries/30')
-      .then(response => (this.api.dictionaries.countries = response.data.dictionary.items));
+//     axios
+//       .get('/api/dictionaries/57')
+//       .then(response => (this.api.dictionaries.specialities_dictionary = response.data.dictionary.items));
+//     axios
+//       .get('/api/dictionaries/30')
+//       .then(response => (this.api.dictionaries.countries = response.data.dictionary.items));
     axios
       .get('/api/dictionaries/67')
       .then(response => (this.api.dictionaries.identity_document_categories = response.data.dictionary.items));

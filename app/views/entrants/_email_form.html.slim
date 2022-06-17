@@ -1,4 +1,4 @@
-fieldset
+fieldset(v-if="entrant.campaign_id == ''")
   legend Выберите приемную кампанию
   .row
     .large-12.small-12.columns
@@ -25,7 +25,7 @@ fieldset(v-if='!isNextDisabled')
   .row(v-if="entrant.errors.length")
     .large-12.small-12.columns.label.warning
       ul.no-bullet
-        li v-for='error in entrant.errors' v-if='entrant.error.level == "red"' == '{{ entrant.error.message }}'
+        li v-for='error in entrant.errors' v-if='error.level == "red"' == '{{ error.message }}'
   .row
     .large-12.small-12.columns
       a.button.tiny v-bind:href="entrant.hash" Перейти к заполнению анкеты
