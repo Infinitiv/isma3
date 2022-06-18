@@ -162,7 +162,7 @@ class ApplicationController < ActionController::Base
         proxy_port = nil
       when 'production'
         protocol = 'https://'
-        url = 'priem.isma.ivanovo.ru'
+        url = "#{ENV['API_HOST']}"
         proxy_ip = nil
         proxy_port = nil
     end
