@@ -277,25 +277,34 @@ var entrants = new Vue({
       });
       return withdrawCount;
     },
-    generateTemplates: function(){
+    generateTemplates: function() {
+      this.generateEntrantApplicationTemplates();
+      this.generateConsentApplicationTemplates();
+      this.generateWithdrawApplicationTemplates();
+    },
+    generateEntrantApplicationTemplates: function() {
       axios
       .put('/api/entrants/' + this.entrant.hash + '/generate_entrant_application', {id: this.entrant.id})
       .then(response => {
         console.log(response.data.message);
-        this.entrant.attachments = response.data.attachments
-      })
+        this.entrant.attachments = response.data.attachments;
+      });
+    },
+    generateConsentApplicationTemplates: function() {
       axios
       .put('/api/entrants/' + this.entrant.hash + '/generate_consent_applications', {id: this.entrant.id})
       .then(response => {
         console.log(response.data.message);
-        this.entrant.attachments = response.data.attachments
-      })
+        this.entrant.attachments = response.data.attachments;
+      });
+    },
+    generateWithdrawApplicationTemplates: function() {
       axios
       .put('/api/entrants/' + this.entrant.hash + '/generate_withdraw_applications', {id: this.entrant.id})
       .then(response => {
         console.log(response.data.message);
-        this.entrant.attachments = response.data.attachments
-      })
+        this.entrant.attachments = response.data.attachments;
+      });
     },
     isApplicable: function(competitiveGroup) {
       if(competitiveGroup.education_source == 'С оплатой обучения' && competitiveGroup.entrance_category == 'Для иностранных граждан — обучение на русском языке' && this.entrant.nationality != 'Российская Федерация') {
@@ -318,19 +327,6 @@ var entrants = new Vue({
         };
       };
       return false;
-    },
-    findEntranceTestItem: function(subjectId) {
-//       var findEntranceTestItem = {
-//         subject_id: null,
-//         min_score: null,
-//         subject_name: ''
-//       };
-//       this.findCampaign(this.entrant.campaign_id).entrance_test_items.find(function(element) {
-//         if(element.subject_id == subjectId){
-//           findEntranceTestItem = element;
-//         };
-//       });
-      return findEntranceTestItem;
     },
     findAchievement: function(institutionAchievementId) {
       var findAchievement = null;
@@ -413,6 +409,8 @@ var entrants = new Vue({
             this.entrant.entrant_applications = response.data.entrant_applications;
             this.entrant.stage = response.data.stage;
             this.entrant.status = response.data.status;
+            this.generateConsentApplicationTemplates();
+            this.generateWithdrawApplicationTemplates();
           };
           if(sub == 'institution_achievement_ids') {
             this.entrant.achievements = response.data.achievements;
@@ -545,6 +543,7 @@ var entrants = new Vue({
       .then(
         response => {
         this.entrant.attachments = response.data.attachments;
+        this.entrant.status = response.data.status;
         console.log(response.data.message);
         if(this.dataset.documentType == 'entrant') {
           this.$refs.entrant.value = null
@@ -810,15 +809,6 @@ var entrants = new Vue({
     deleteTicket: function() {
       if(this.entrant.tickets.length > 1) this.entrant.tickets.splice(-1, 1);
     },
-//     specialityName: function(directionId) {
-//       var name = '';
-//       this.api.dictionaries.specialities_dictionary.find(function(element) {
-//         if(element.id == directionId) {
-//           name = element.name;
-//         }
-//       });
-//       return name;
-//     },
     findErrorMessage: function(field_name) {
       var message = '';
       this.errors.find(function(element) {
@@ -837,7 +827,7 @@ var entrants = new Vue({
           this.generateTemplates();
         }
         if(this.api.current_tab == 'start' && this.entrant.stage == 0){
-          this.sendData('stage', 1);
+          this.sendData('stage', this.entrant.stage);
         }
       };
     }
