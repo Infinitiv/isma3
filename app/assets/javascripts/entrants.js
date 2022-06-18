@@ -365,16 +365,16 @@ var entrants = new Vue({
     closeContragentModal: function(){
       $('#contragent').foundation('reveal', 'close');
     },
-//     generateContract: function(competitive_group_id) {
-//       $('#contract_button').addClass('hide');
-//       $('#contract_link').removeClass('hide');
-//       axios
-//       .put('/api/entrants/' + this.entrant.hash + '/generate_contracts', {id: this.entrant.id, competitive_group_id: competitive_group_id})
-//       .then(response => {
-//         console.log(response.data.message);
-//         this.entrant.attachments = response.data.attachments
-//       })
-//     },
+    generateContract: function(competitive_group_id) {
+      $('#contract_button').addClass('hide');
+      $('#contract_link').removeClass('hide');
+      axios
+      .put('/api/entrants/' + this.entrant.hash + '/generate_contracts', {id: this.entrant.id, competitive_group_id: competitive_group_id})
+      .then(response => {
+        console.log(response.data.message);
+        this.entrant.attachments = response.data.attachments
+      })
+    },
     sendData: function(sub, subData, index) {
       let data = {};
       data[sub] = subData;
@@ -829,125 +829,124 @@ var entrants = new Vue({
       return message;
     },
     setCurrentTab: function(tab) {
-      this.checkForm(tab);
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      this.checkForm(tab);
       if(this.errors.length == 0){
         this.api.current_tab = tab;
         if(this.api.current_tab == 'applications' && this.entrant.stage < 4){
           this.generateTemplates();
         }
         if(this.api.current_tab == 'start' && this.entrant.stage == 0){
-          this.sendData('stage', this.entrant.stage);
+          this.sendData('stage', 1);
         }
       };
     }
   },
   mounted: function() {
-    axios
-      .get('/api/entrants/' + this.api.hash)
-      .then(
-        response => {
-          this.entrant = response.data.entrant;
-          if(this.entrant.status != 'новый') this.api.current_tab = 'start';
-          if(this.entrant.identity_documents.length == 0) this.entrant.identity_documents.push({
-            id: null,
-            document_type: 'identity_document',
-            document_category: '',
-            serie: '',
-            number: '',
-            date: '',
-            issuer: '',
-            last_name: '',
-            first_name: '',
-            middle_name: ''
-          });
-          if(this.entrant.education_documents.length == 0) this.entrant.education_documents.push({
-            id: null,
-            document_type: 'education_document',
-            document_category: '',
-            number: '',
-            date: '',
-            issuer: '',
-            original: '',
-          });
-          if(this.entrant.snils.length == 0) this.entrant.snils.push({
-            id: null,
-            document_type: 'snils',
-            number: '',
-          });
-          if(this.entrant.marks.length == 0) this.entrant.marks.push({
-            id: null,
-            value: null,
-            subject_id: null,
-            subject: '',
-            form: '',
-            checked: false,
-            organization_uid: ''
-          });
-          if(this.entrant.achievements.length == 0) this.entrant.achievements.push({
-            id: null,
-            name: '',
-            value: '',
-            status: null
-          });
-          if(this.entrant.olympic_documents.length == 0) this.entrant.olympic_documents.push({
-            id: null,
-            document_type: 'olympic_document',
-            document_category: '',
-            number: '',
-            date: '',
-            class_number: '',
-            profile: '',
-            original: ''
-          });
-          if(this.entrant.benefit_documents.length == 0) this.entrant.benefit_documents.push({
-            id: null,
-            document_type: 'benefit_document',
-            document_category: '',
-            serie: '',
-            number: '',
-            date: '',
-            issuer: '',
-            original: ''
-          });
-          if(this.entrant.other_documents.length == 0) this.entrant.other_documents.push({
-            id: null,
-            document_type: 'other_document',
-            document_category: '',
-            serie: '',
-            number: '',
-            date: '',
-            issuer: '',
-            original: ''
-          });
-          if(this.entrant.target_contracts.length == 0) this.entrant.target_contracts.push({
-            id: null,
-            document_type: 'target_contract',
-            competitive_group_id: '',
-            original: ''
-          });
-          if(!this.entrant.contragent) this.entrant.contragent = {
-            id: null,
-            last_name: '',
-            first_name: '',
-            middle_name: '',
-            birth_date: '',
-            identity_document_serie: '',
-            identity_document_number: '',
-            identity_document_date: '',
-            identity_document_issuer: '',
-            identity_document_data: '',
-            email: '',
-            phone: '',
-            address: ''
-          };
-          this.entrant.agreement = '';
-          axios
-            .get('/api/campaigns/' + this.entrant.current_campaign.id)
-            .then(response => (this.api.dictionaries.campaign = response.data.campaign));
+  axios
+    .get('/api/entrants/' + this.api.hash)
+    .then(
+      response => {
+        this.entrant = response.data.entrant;
+        if(this.entrant.stage != 0) this.api.current_tab = 'start';
+        if(this.entrant.identity_documents.length == 0) this.entrant.identity_documents.push({
+          id: null,
+          document_type: 'identity_document',
+          document_category: '',
+          serie: '',
+          number: '',
+          date: '',
+          issuer: '',
+          last_name: '',
+          first_name: '',
+          middle_name: ''
         });
-    axios
-      .get('/api/dictionaries/67')
-      .then(response => (this.api.dictionaries.identity_document_categories = response.data.dictionary.items));
-  }
+        if(this.entrant.education_documents.length == 0) this.entrant.education_documents.push({
+          id: null,
+          document_type: 'education_document',
+          document_category: '',
+          number: '',
+          date: '',
+          issuer: '',
+          original: '',
+        });
+        if(this.entrant.snils.length == 0) this.entrant.snils.push({
+          id: null,
+          document_type: 'snils',
+          number: '',
+        });
+        if(this.entrant.marks.length == 0 && this.entrant.current_campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации') this.entrant.marks.push({
+          id: null,
+          value: null,
+          subject_id: null,
+          subject: '',
+          form: '',
+          checked: false,
+          organization_uid: ''
+        });
+        if(this.entrant.achievements.length == 0) this.entrant.achievements.push({
+          id: null,
+          name: '',
+          value: '',
+          status: null
+        });
+        if(this.entrant.olympic_documents.length == 0) this.entrant.olympic_documents.push({
+          id: null,
+          document_type: 'olympic_document',
+          document_category: '',
+          number: '',
+          date: '',
+          class_number: '',
+          profile: '',
+          original: ''
+        });
+        if(this.entrant.benefit_documents.length == 0) this.entrant.benefit_documents.push({
+          id: null,
+          document_type: 'benefit_document',
+          document_category: '',
+          serie: '',
+          number: '',
+          date: '',
+          issuer: '',
+          original: ''
+        });
+        if(this.entrant.other_documents.length == 0) this.entrant.other_documents.push({
+          id: null,
+          document_type: 'other_document',
+          document_category: '',
+          serie: '',
+          number: '',
+          date: '',
+          issuer: '',
+          original: ''
+        });
+        if(this.entrant.target_contracts.length == 0) this.entrant.target_contracts.push({
+          id: null,
+          document_type: 'target_contract',
+          competitive_group_id: '',
+          original: ''
+        });
+        if(!this.entrant.contragent) this.entrant.contragent = {
+          id: null,
+          last_name: '',
+          first_name: '',
+          middle_name: '',
+          birth_date: '',
+          identity_document_serie: '',
+          identity_document_number: '',
+          identity_document_date: '',
+          identity_document_issuer: '',
+          identity_document_data: '',
+          email: '',
+          phone: '',
+          address: ''
+        };
+        axios
+          .get('/api/campaigns/' + this.entrant.current_campaign.id)
+          .then(response => (this.api.dictionaries.campaign = response.data.campaign));
+      });
+  axios
+    .get('/api/dictionaries/67')
+    .then(response => (this.api.dictionaries.identity_document_categories = response.data.dictionary.items));
+  },
 })
