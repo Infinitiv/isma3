@@ -12,6 +12,48 @@ var entrants = new Vue({
           'Французский',
           'Немецкий',
         ],
+        institution_achievements_spec: [
+          {
+            id:	1,
+            name: "Аттестат о среднем общем образовании с отличием, аттестата о среднем (полном) общем образовании с отличием",
+            max_value: 10,
+          },
+          {
+            id:	3,
+            name: "Диплом о среднем профессиональном образовании с отличием)",
+            max_value: 10,
+          },
+          {
+            id:	5,
+            name: "Наличие золотого, серебряного или бронзового знака ГТО",
+            max_value: 2,
+          },
+          {
+            id:	8,
+            name: "Наличие статуса победителя олимпиады школьников по биологии, проводимой Академией в 2021 и (или) 2022 году",
+            max_value: 5,
+          },
+          {
+            id:	9,
+            name: "Наличие статуса призера олимпиады школьников по биологии, проводимой Академией в 2021 и (или) 2022 году",
+            max_value: 3,
+          },
+          {
+            id:	10,
+            name: "Наличие статуса победителя финала Всероссийского конкурса «Большая перемена» по направлению «Сохраняй природу» и (или) «Будь здоров» в 2020 и (или) 2021 году",
+            max_value: 5,
+          },
+          {
+            id:	11,
+            name: "Наличие статуса призера финала Всероссийского конкурса «Большая перемена» по направлению «Сохраняй природу» и (или) «Будь здоров» в 2020 и (или) 2021 году",
+            max_value: 3,
+          },
+          {
+            id:	4,
+            name: "Наличие статуса победителя национального или международного чемпионата по профессиональному мастерству среди инвалидов и лиц с ограниченными возможностями здоровья «Абилимпикс», проводимого в 2021 или 2022 году",
+            max_value: 1,
+          },
+        ],
         benefit_document_categories: [
           {
             name: "Справка об установлении инвалидности"
@@ -167,7 +209,7 @@ var entrants = new Vue({
       if(!this.entrant.contragent.id || !this.entrant.contragent.last_name || !this.entrant.contragent.first_name || !this.entrant.contragent.birth_date || !this.entrant.contragent.identity_document_serie || !this.entrant.contragent.identity_document_number || !this.entrant.contragent.identity_document_date || !this.entrant.contragent.identity_document_issuer || !this.entrant.contragent.email || !this.entrant.contragent.phone || !this.entrant.contragent.address) return 'Необходимо заполнить данные заказчика договора на платную образовательную услугу';
     },
     isDisabled: function() {
-      if(this.entrant.status == 'новый') {
+      if(this.entrant.stage == 0) {
         return false;
       }
       else {
@@ -658,22 +700,20 @@ var entrants = new Vue({
           if(!entrants.findAttachment(element.id, 'olympic_document', false) && entrants.entrant.questionnaire['olympionic']) entrants.errors.push({element: 'olympic_document', message: 'Необходимо прикрепить копию диплома олимпиады', level: 'red'});
         }));
       }
-      if(tab == 'others' || tab == 'applications'){
+      if(tab == 'competitions') {
         if(this.entrant.target_contracts.find(function(element) {
-          if(element.document_type == ''){
-            entrants.errors.push({element: 'target_contract_type', message: 'Необходимо выбрать конкурсную группу', level: 'red'});
-          };
-          if(element.date == ''){
-            entrants.errors.push({element: 'target_contract_date', message: 'Необходимо указать дату заключения договора о целевом обучении', level: 'red'});
-          };
-          if(!entrants.findAttachment(element.id, 'target_contract', false)) entrants.errors.push({element: 'target_contract', message: 'Необходимо прикрепить копию договора о целевом обучении', level: 'red'});
+          if(element.competitive_group_id && element.date == null) entrants.errors.push({element: 'target_contract_date', message: 'Необходимо указать дату заключения договора', level: 'red'});
+          if(!entrants.findAttachment(element.id, 'target_contract', false) && element.competitive_group_id) entrants.errors.push({element: 'target_contract', message: 'Необходимо прикрепить копию целевого договора', level: 'red'});
         }));
+      }
+      if(tab == 'others' || tab == 'applications'){
         if(this.entrant.competitive_group_ids.length == 0) this.errors.push({element: 'competitive_group_ids', message: 'Необходимо отметить участие хотя бы в одном конкурсе', level: 'red'});
       }
       if(tab == 'applications'){
         if(!this.entrant.contact_information.address) this.errors.push({element: 'address', message: 'Необходимо указать адрес', level: 'red'});
-        if(this.entrant.special_entrant && !this.entrant.questionnaire['benefit']) this.errors.push({element: 'special_entrant', message: 'Указана необходимость создания специальных условий для сдачи вступительных испытаний, но не указано наличие льготы на вкладке Льготы', level: 'red'});
-        if(this.entrant.special_entrant && this.entrant.special_conditions == '') this.errors.push({element: 'special_conditions', message: 'Указана необходимость создания специальных условий для сдачи вступительных испытаний, но не указан перечень условий', level: 'red'});
+        if(this.entrant.questionnaire['special_entrant'] && !this.entrant.questionnaire['benefit']) this.errors.push({element: 'special_entrant', message: 'Указана необходимость создания специальных условий для сдачи вступительных испытаний, но не указано наличие льготы на вкладке Льготы', level: 'red'});
+        if(this.entrant.questionnaire['special_entrant'] && this.entrant.special_conditions == null) this.errors.push({element: 'special_conditions', message: 'Указана необходимость создания специальных условий для сдачи вступительных испытаний, но не указан перечень условий', level: 'red'});
+        if(!entrants.findAttachment(this.entrant.id, 'medical_document', false)) entrants.errors.push({element: 'medical_document', message: 'Необходимо прикрепить копию копию медицинского заключения', level: 'red'});
       }
       if(tab == 'start'){
         if(!this.findAttachment(this.entrant.id, 'entrant_application', false)) this.errors.push({element: 'entrant_application_attachment', message: 'Необходимо прикрепить заявление о поступлении', level: 'red'});
@@ -779,10 +819,10 @@ var entrants = new Vue({
 //       });
 //       return name;
 //     },
-    findErrorMessage: function(fieldName) {
+    findErrorMessage: function(field_name) {
       var message = '';
       this.errors.find(function(element) {
-        if(fieldName == element.element) {
+        if(field_name == element.element) {
           message = element.message;
         }
       });

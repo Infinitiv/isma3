@@ -134,7 +134,7 @@ fieldset
         p(v-if="attachment.document_type == 'identity_document' && attachment.document_id == document.id")
           a v-bind:href = "'/api/attachments/' + attachment.data_hash + '?filename=' + attachment.filename" target = '_blank' {{ attachment.filename }}
   br
-  .row v-if="entrant.status == 'новый'"
+  .row v-if="entrant.stage == 0"
     .large-12.small-12.columns
       .button.tiny @click="addIdentityDocument" Указать данные дополнительного документа
       span &nbsp;

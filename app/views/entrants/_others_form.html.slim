@@ -67,16 +67,16 @@ fieldset
       .large-12.small-12.columns
         br
         = render partial: 'add_attachment', locals: { message: 'Выберите и прикрепите файл(ы).', document_type: 'other_document', document_id: 'document.id', entrant_id: 'entrant.id', ref_name: 'other_document', id: 'other_document'}
-    .row(v-if="entrant.attachments.length > 0")
+    .row(v-for="attachment in entrant.attachments")
       .large-12.small-12.columns
-        h3 Прикрепленные файлы
-        ul.no-bullet
-          li(v-for="attachment in entrant.attachments" v-if="attachment.document_type == 'other_document' && attachment.document_id == document.id")
-              a v-bind:href = "'/api/attachments/' + attachment.data_hash + '?filename=' + attachment.filename" target = '_blank' {{ attachment.filename }}
-  .row v-if="entrant.status_id == 0"
-    .button.tiny @click="addOtherDocument" Добавить документ
-    span &nbsp;
-    .button.tiny(v-if="entrant.other_documents.length > 1" @click="deleteOtherDocument") Удалить документ
+        p(v-if="attachment.document_type == 'other_document' && attachment.document_id == document.id")
+          a v-bind:href = "'/api/attachments/' + attachment.data_hash + '?filename=' + attachment.filename" target = '_blank' {{ attachment.filename }}
+  br
+  .row v-if="entrant.stage == 0"
+    .large-12.small-12.columns
+      .button.tiny @click="addOtherDocument" Добавить документ
+      span &nbsp;
+      .button.tiny(v-if="entrant.other_documents.length > 1" @click="deleteOtherDocument") Удалить документ
 fieldset(v-if="entrant.current_campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
   legend Выбор иностранного языка, желаемого для изучения в вузе
   .row
