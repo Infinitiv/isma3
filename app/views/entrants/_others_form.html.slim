@@ -87,7 +87,7 @@ fieldset(v-if="entrant.current_campaign.campaign_type == 'Прием на обу
 fieldset
   .row(v-if="entrant.current_campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
     .large-12.small-12.columns
-      p Пункт "Согласен на передачу заявления на ЕПГУ" необходимо отметить, если у Вас имеется подтвержденная учетная запись на Едином портале государственных услуг и вы получить доступ к своему заявлению из личного кабинета.
+      p Пункт "Согласен на передачу заявления на ЕПГУ" необходимо отметить, если у Вас имеется подтвержденная учетная запись на Едином портале государственных услуг и Вы желаете получить доступ к своему заявлению из личного кабинета.
   .row
     .large-1.small-1.columns
       input#benefit(type="checkbox" name="epgu" v-bind:value="true" v-model="entrant.questionnaire['epgu']" v-on:change = "sendData('questionnaire', entrant.questionnaire)" v-bind:disabled = 'isDisabled')
@@ -105,7 +105,7 @@ fieldset
         span Нуждаюсь в предоставлении общежития на период обучения
   .row(v-if="entrant.current_campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
     .large-12.small-12.columns
-      p Если вы отметите нижеследующий пункт, Вам будет необходимо прикрепить на вкладке Льготы копию документа, подтверждающего инвалидность или ограниченные возможности здоровья, требующие создания специальных условий.
+      p Если Вы отметите нижеследующий пункт, Вам будет необходимо прикрепить на вкладке Льготы копию документа, подтверждающего инвалидность или ограниченные возможности здоровья, требующие создания специальных условий.
     .large-1.small-1.columns
       input#benefit(type="checkbox" name="special_entrant" v-bind:value="true" v-model="entrant.questionnaire['special_entrant']" v-on:change = "sendData('questionnaire', entrant.questionnaire)" v-bind:disabled = 'isDisabled')
     .large-11.small-11.columns
