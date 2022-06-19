@@ -10,7 +10,7 @@ var entrants = new Vue({
       pin: '',
       message: '',
       email_confirmed: false,
-      data_hash: null,
+      hash: null,
       errors: [],
       clerk: '',
       questionnaire: [],
@@ -18,7 +18,7 @@ var entrants = new Vue({
   },
   computed: {
     isNextDisabled: function() {
-      if(this.entrant.email_confirmed && this.entrant.data_hash) {
+      if(this.entrant.email_confirmed && this.entrant.hash) {
         return false
       }
       else {
@@ -51,7 +51,7 @@ var entrants = new Vue({
         .post('/api/entrants', { campaign_id: this.entrant.campaign_id, email: this.entrant.email, clerk: this.$refs.clerk.dataset.clerk })
         .then(response => {
           if(response.data.status == 'success') {
-            this.entrant.data_hash = response.data.data_hash;
+            this.entrant.hash = response.data.hash;
             this.entrant.entrant_id = response.data.id
           }
           if(response.data.status == 'faild') {
@@ -67,7 +67,7 @@ var entrants = new Vue({
     },
     confirmEmail: function () {
       axios
-        .put( '/api/entrants/' + this.entrant.data_hash + '/check_pin', { data_hash: this.entrant.data_hash, pin: this.entrant.pin } )
+        .put( '/api/entrants/' + this.entrant.hash + '/check_pin', { hash: this.entrant.hash, pin: this.entrant.pin } )
         .then(response => {
           if(response.data.status == 'success') {
             this.entrant.errors = [];
@@ -89,7 +89,7 @@ var entrants = new Vue({
     },
     checkEmailDecline: function() {
       axios
-        .put( '/api/entrants/' + this.entrant.data_hash + '/remove_pin', { data_hash: this.entrant.data_hash } )
+        .put( '/api/entrants/' + this.entrant.hash + '/remove_pin', { hash: this.entrant.hash } )
         .then(response => {
           if(response.data.status == 'success') {
             this.entrant.errors = [];
@@ -105,7 +105,7 @@ var entrants = new Vue({
     },
     sendWelcomeEmail: function() {
       axios
-        .put('/api/entrants/' + this.entrant.data_hash + '/send_welcome_email', {id: this.entrant.data_hash})
+        .put('/api/entrants/' + this.entrant.hash + '/send_welcome_email', {id: this.entrant.hash})
         .then(response => {
           console.log(response.data.message);
         })

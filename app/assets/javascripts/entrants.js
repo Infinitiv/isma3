@@ -284,7 +284,7 @@ var entrants = new Vue({
     },
     generateEntrantApplicationTemplates: function() {
       axios
-      .put('/api/entrants/' + this.entrant.hash + '/generate_entrant_application', {id: this.entrant.id})
+      .put('/api/entrants/' + this.entrant.hash + '/generate_entrant_application', {id: this.entrant.hash})
       .then(response => {
         console.log(response.data.message);
         this.entrant.attachments = response.data.attachments;
@@ -292,7 +292,7 @@ var entrants = new Vue({
     },
     generateConsentApplicationTemplates: function() {
       axios
-      .put('/api/entrants/' + this.entrant.hash + '/generate_consent_applications', {id: this.entrant.id})
+      .put('/api/entrants/' + this.entrant.hash + '/generate_consent_applications', {id: this.entrant.hash})
       .then(response => {
         console.log(response.data.message);
         this.entrant.attachments = response.data.attachments;
@@ -300,7 +300,7 @@ var entrants = new Vue({
     },
     generateWithdrawApplicationTemplates: function() {
       axios
-      .put('/api/entrants/' + this.entrant.hash + '/generate_withdraw_applications', {id: this.entrant.id})
+      .put('/api/entrants/' + this.entrant.hash + '/generate_withdraw_applications', {id: this.entrant.hash})
       .then(response => {
         console.log(response.data.message);
         this.entrant.attachments = response.data.attachments;
@@ -407,6 +407,7 @@ var entrants = new Vue({
           };
           if(sub == 'competitive_group_ids') {
             this.entrant.entrant_applications = response.data.entrant_applications;
+            this.entrant.competitive_groups = response.data.competitive_groups;
             this.entrant.stage = response.data.stage;
             this.entrant.status = response.data.status;
             this.generateConsentApplicationTemplates();
@@ -418,6 +419,9 @@ var entrants = new Vue({
           };
           if(sub == 'status') {
             this.entrant.status = response.data.status;
+          };
+          if(sub == 'stage') {
+            this.entrant.stage = response.data.stage;
           };
           if(sub == 'contragent') {
             this.entrant.contragent.id = response.data.contragent.id;
@@ -622,10 +626,12 @@ var entrants = new Vue({
         if(this.entrant.contact_information.phone == '') this.errors.push({element: 'phone', message: 'Необходимо контактный телефон', level: 'red'});
         if(!entrants.findAttachment(this.entrant.id, 'data_processing_consent', false)) entrants.errors.push({element: 'data_processing_consent_attachment', message: 'Необходимо прикрепить сканы согласий на обработку и распространение персональных данных', level: 'red'});
         if(this.entrant.snils.find(function(element) {
-          if(element.number == ''){
-            entrants.errors.push({element: 'snils', message: 'Необходимо указать номер СНИЛС, либо отметить, что он отсутствует', level: 'red'});
+          if(!entrants.entrant.snils_absent) {
+            if(element.number == ''){
+              entrants.errors.push({element: 'snils', message: 'Необходимо указать номер СНИЛС, либо отметить, что он отсутствует', level: 'red'});
+            };
+            if(!entrants.findAttachment(element.id, 'snils', false)) entrants.errors.push({element: 'snils_attachment', message: 'Необходимо прикрепить копию СНИЛС', level: 'red'});
           };
-          if(!entrants.findAttachment(element.id, 'snils', false)) entrants.errors.push({element: 'snils_attachment', message: 'Необходимо прикрепить копию СНИЛС', level: 'red'});
         }));
         if(this.entrant.identity_documents.find(function(element) {
           if(element.document_category == ''){
