@@ -3,6 +3,7 @@ var entrants = new Vue({
   data: {
     api: {
       campaigns: null,
+      countries: {},
     },
     entrant: {
       campaign_id: '',
@@ -13,6 +14,7 @@ var entrants = new Vue({
       hash: null,
       errors: [],
       clerk: '',
+      nationality: '',
       questionnaire: [],
     },
   },
@@ -48,7 +50,7 @@ var entrants = new Vue({
     },
     sendCode: function() {
       axios
-        .post('/api/entrants', { campaign_id: this.entrant.campaign_id, email: this.entrant.email, clerk: this.$refs.clerk.dataset.clerk })
+        .post('/api/entrants', { campaign_id: this.entrant.campaign_id, email: this.entrant.email, clerk: this.entrant.clerk, nationality: this.entrant.nationality })
         .then(response => {
           if(response.data.status == 'success') {
             this.entrant.hash = response.data.hash;
@@ -134,5 +136,9 @@ var entrants = new Vue({
         this.api.campaigns = response.data.campaigns
         if(this.api.campaigns.length == 1) this.entrant.campaign_id = this.api.campaigns[0]['id'];
       });
-  }
+    axios
+      .get('/api/dictionaries/30')
+      .then(response => (this.api.countries = response.data.dictionary.items));
+    this.entrant.clerk = this.$refs.clerk.dataset.clerk;
+  },
 })

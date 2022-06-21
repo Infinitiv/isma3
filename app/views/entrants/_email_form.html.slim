@@ -9,7 +9,15 @@ fieldset(v-if="api.campaigns && api.campaigns.length == 1 && entrant.campaign_id
           option(value = '')
           option(v-for="campaign_item in api.campaigns" v-bind:value="campaign_item.id") {{ campaign_item.name }}
         small.error v-if="findErrorMessage('campaign_id')" == "{{ findErrorMessage('campaign_id') }}"
-          
+- if current_user && current_user.groups.map(&:name).include?('priem')
+  fieldset(v-if="api.countries && entrant.clerk")
+    legend Выберите гражданство
+    .row
+      .large-12.small-12.columns
+        label
+          select.error#nationality(name="nationality" v-model='entrant.nationality' v-bind:disabled='entrant.email_confirmed')
+            option(value = '')
+            option(v-for="country in api.countries" v-bind:value="country.FullName ? country.FullName : country.ShortName") {{ country.FullName ? country.FullName : country.ShortName }}
 fieldset
   legend Укажите адрес электронной почты
   .row

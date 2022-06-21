@@ -5,7 +5,7 @@
   = javascript_include_tag 'vue.js'
 section.panel#entrant
   - if current_user && current_user.groups.map(&:name).include?('priem')
-    = hidden_field_tag :clerk, '', ref: 'clerk', data: {clerk: current_user.login}
+    = hidden_field_tag :clerk, current_user.login, ref: 'clerk', data: {clerk: current_user.login}
   - else
     = hidden_field_tag :clerk, '', ref: 'clerk', data: {clerk: ''}
   h1 Заполнение заявления в электронном виде
