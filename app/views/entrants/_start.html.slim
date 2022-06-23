@@ -40,18 +40,16 @@ fieldset
       table.table
         thead
           tr
-            th(v-for="mark in entrant.marks") = "{{ mark.subject }}"
-            th Сумма баллов
-            th(v-if="entrant.achievements.length > 0") Сумма с учетом достижений
+            th Конкурсная сумма
+            th Сумма
+            th(v-for="entrance_test in entrant.entrance_tests") = "{{ entrance_test }}"
         tbody
-          tr
-            td(v-for="mark in entrant.marks")
-              span(v-if="mark.value == 0") {{ mark.form }}
-              span(v-else) 
-                span= "{{ mark.value }}"
-                sup= "{{ mark.form }}"
-            td= "{{ entrant.sum }}"
-            td(v-if="entrant.achievements.length > 0")= "{{ entrant.full_sum }}"
+          td= "{{ entrant.full_sum }}"
+          td= "{{ entrant.sum }}"
+          td(v-for="entrance_test in entrant.entrance_tests")
+              .(v-for="item in entrant.marks" v-if="item.subject == entrance_test")
+                  span= "{{ item.marks[0].value }}"
+                  sup= "{{ item.marks[0].test_type }}"
 fieldset(v-if="checkPaidCompetitiveGroups")
   p Если Вы подали документы на один или несколько внебюджетных конкурсов, Вам необходимо заполнить со своей стороны договор (договоры) об оказании платных образовательных услуг. Если Вы поступите на бюджетное место, данный договор не вступит в силу и оплата обучения не потребуется. Если Вы поступите на внебюджетное место и будете зачислены в вуз, договор вступит в силу с момента начала обучения. Оплата по договору должна быть произведена до 25 сентября {{ entrant.current_campaign.year_start }} года (за семестр или за учебный год). То есть заранее (до зачисления) Вы платить не обязаны.
   p(v-if="checkAge") Поскольку Вам уже есть 18 лет, то Вы можете сами быть заказчиком по данному договору и оплачивать образовательные услуги. Однако, это может быть и иное дееспособное лицо. Чаще всего заказчиком выступает один из родителей или кто-то из родственников. Учите, что согласно законодательству Российской Федерации в некоторых случаях, заказчик может получить налоговый вычет за оплату образовательных услуг или использовать материнский капитал, поэтому подумайте, кто может выступить заказчиком Вашего обучения.
