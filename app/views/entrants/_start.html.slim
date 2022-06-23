@@ -132,7 +132,7 @@ fieldset
       ul.no-bullet
         li(v-for="attachment in entrant.attachments" v-if="attachment.document_type == 'withdraw_application' && !attachment.template")
           a v-bind:href = "'/api/attachments/' + attachment.data_hash + '?filename=' + attachment.filename" target = '_blank' {{ attachment.filename }}
-  .(v-if="entrant.status == 4")
+  .(v-if="entrant.stage == 4")
     h3 Отзыв пакета документов
     p Для отзыва документов из ИвГМА необходимо скачать, распечатать, подписать и прикрепить заявление об отзыве документов в соответствующее поле. Заявление будет обработано приемной комиссией, после чего Вы будете исключены из списков поступающих.
     .row(v-if="entrant.attachments.length > 0")
