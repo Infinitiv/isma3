@@ -25,7 +25,7 @@ fieldset
             .panel.callout.radius(v-if="child.id")
               p= "{{ child.message }}"
               p.right
-                small= "{{ entrant.personal.entrant_first_name + ' ' + entrant.personal.last_name }}"
+                small= "{{ entrant.personal.first_name + ' ' + entrant.personal.last_name }}"
             . v-if="!child.id && ticket.id && !ticket.solved"
               = label_tag :message
                 span Добавить сообщение к текущей проблеме
