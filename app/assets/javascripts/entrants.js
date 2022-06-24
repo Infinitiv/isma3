@@ -652,6 +652,12 @@ var entrants = new Vue({
           if(element.issuer == ''){
             entrants.errors.push({element: 'identity_document_issuer', message: 'Необходимо указать кем выдан документ, удостоверяющий личность', level: 'red'});
           };
+          if(element.division_code == ''){
+            entrants.errors.push({element: 'identity_document_division_code', message: 'Необходимо указать код подразделения, выдавшего документ', level: 'red'});
+          };
+          if(element.birth_place == ''){
+            entrants.errors.push({element: 'identity_document_birth_place', message: 'Необходимо указать место рождения', level: 'red'});
+          };
           if(!entrants.findAttachment(element.id, 'identity_document', false)) entrants.errors.push({element: 'identity_document_attachment', message: 'Необходимо прикрепить копию документа, удостоверяющего личность', level: 'red'});
         }));
         if(this.entrant.education_documents.find(function(element) {
@@ -855,7 +861,9 @@ var entrants = new Vue({
           issuer: '',
           last_name: '',
           first_name: '',
-          middle_name: ''
+          middle_name: '',
+          division_code: '',
+          birth_place: ''
         });
         if(this.entrant.education_documents.length == 0) this.entrant.education_documents.push({
           id: null,
