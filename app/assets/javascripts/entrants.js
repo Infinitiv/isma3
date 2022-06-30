@@ -113,7 +113,7 @@ var entrants = new Vue({
             name: "Диплом о высшем профессиональном образовании"
           }
         ],
-        other_document_types: [
+        other_document_categories: [
           'Свидетельство об аккредитации специалиста',
           'Выписка из итогового протокола заседания аккредитационной комиссии',
           'Сертификат специалиста',
@@ -403,7 +403,7 @@ var entrants = new Vue({
             this.entrant.tickets = response.data.tickets;
           };
           if(sub == 'mark') {
-            this.entrant.marks[index].id = response.data.mark.id;
+            this.entrant.marks[0].marks[index].id = response.data.mark.id;
           };
           if(sub == 'competitive_group_ids') {
             this.entrant.entrant_applications = response.data.entrant_applications;
@@ -652,12 +652,6 @@ var entrants = new Vue({
           if(element.issuer == ''){
             entrants.errors.push({element: 'identity_document_issuer', message: 'Необходимо указать кем выдан документ, удостоверяющий личность', level: 'red'});
           };
-          if(element.division_code == ''){
-            entrants.errors.push({element: 'identity_document_division_code', message: 'Необходимо указать код подразделения, выдавшего документ', level: 'red'});
-          };
-          if(element.birth_place == ''){
-            entrants.errors.push({element: 'identity_document_birth_place', message: 'Необходимо указать место рождения', level: 'red'});
-          };
           if(!entrants.findAttachment(element.id, 'identity_document', false)) entrants.errors.push({element: 'identity_document_attachment', message: 'Необходимо прикрепить копию документа, удостоверяющего личность', level: 'red'});
         }));
         if(this.entrant.education_documents.find(function(element) {
@@ -724,7 +718,7 @@ var entrants = new Vue({
         if(!this.entrant.contact_information.address) this.errors.push({element: 'address', message: 'Необходимо указать адрес', level: 'red'});
         if(this.entrant.questionnaire['special_entrant'] && !this.entrant.questionnaire['benefit']) this.errors.push({element: 'special_entrant', message: 'Указана необходимость создания специальных условий для сдачи вступительных испытаний, но не указано наличие льготы на вкладке Льготы', level: 'red'});
         if(this.entrant.questionnaire['special_entrant'] && this.entrant.special_conditions == null) this.errors.push({element: 'special_conditions', message: 'Указана необходимость создания специальных условий для сдачи вступительных испытаний, но не указан перечень условий', level: 'red'});
-        if(!entrants.findAttachment(this.entrant.id, 'medical_document', false)) entrants.errors.push({element: 'medical_document', message: 'Необходимо прикрепить копию копию медицинского заключения', level: 'red'});
+        if(!entrants.findAttachment(this.entrant.id, 'medical_document', false) && entrants.entrant.current_campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет') entrants.errors.push({element: 'medical_document', message: 'Необходимо прикрепить копию копию медицинского заключения', level: 'red'});
       }
       if(tab == 'start'){
         if(!this.findAttachment(this.entrant.id, 'entrant_application', false)) this.errors.push({element: 'entrant_application_attachment', message: 'Необходимо прикрепить заявление о поступлении', level: 'red'});
@@ -880,13 +874,17 @@ var entrants = new Vue({
           number: '',
         });
         if(this.entrant.marks.length == 0 && this.entrant.current_campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации') this.entrant.marks.push({
-          id: null,
-          value: null,
-          subject_id: null,
-          subject: '',
-          form: '',
-          checked: false,
-          organization_uid: ''
+          subject: 'Здравоохранение',
+          marks: [
+          {
+            id: null,
+            value: null,
+            subject: 'Здравоохранение',
+            test_type: '',
+            checked: false,
+            year: null,
+            organization_uid: ''
+          }],
         });
         if(this.entrant.achievements.length == 0) this.entrant.achievements.push({
           id: null,

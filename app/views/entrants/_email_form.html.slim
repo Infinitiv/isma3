@@ -1,4 +1,4 @@
-fieldset(v-if="api.campaigns && api.campaigns.length == 1 && entrant.campaign_id == ''")
+fieldset(v-if="api.campaigns && api.campaigns.length > 1")
   legend Выберите приемную кампанию
   .row
     .large-12.small-12.columns

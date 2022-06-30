@@ -18,7 +18,7 @@ fieldset
         span Адрес электронной почты
         = email_field_tag :email, nil, placeholder: 'user@domain.com', 'v-model.trim': 'entrant.contact_information.email', class: 'error', disabled: true
       small.error v-if="findErrorMessage('entrant.contact_information.email')" == "{{ findErrorMessage('entrant.contact_information.email') }}"
-fieldset(v-if="entrant.id")
+fieldset(v-if="entrant.id && entrant.current_campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
   legend Прикрепите копию медицинского заключения (например, справку по форме 086/у)
   .row
     .large-12.small-12.columns
@@ -88,7 +88,7 @@ fieldset
   .row(v-if="entrant.current_campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
     .large-12.small-12.columns
       p Пункт "Согласен на передачу заявления на ЕПГУ" необходимо отметить, если у Вас имеется подтвержденная учетная запись на Едином портале государственных услуг и Вы желаете получить доступ к своему заявлению из личного кабинета.
-  .row
+  .row(v-if="entrant.current_campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
     .large-1.small-1.columns
       input#benefit(type="checkbox" name="epgu" v-bind:value="true" v-model="entrant.questionnaire['epgu']" v-on:change = "sendData('questionnaire', entrant.questionnaire)" v-bind:disabled = 'isDisabled')
     .large-11.small-11.columns
