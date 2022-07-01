@@ -859,7 +859,7 @@ var entrants = new Vue({
           division_code: '',
           birth_place: ''
         });
-        if(this.entrant.education_documents.length == 0) this.entrant.education_documents.push({
+        if(this.entrant.education_documents.length == 0 && this.entrant.current_campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет') this.entrant.education_documents.push({
           id: null,
           document_type: 'education_document',
           document_category: '',
@@ -867,6 +867,16 @@ var entrants = new Vue({
           date: '',
           issuer: '',
           original: '',
+        });
+        if(this.entrant.education_documents.length == 0 && this.entrant.current_campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации') this.entrant.education_documents.push({
+          id: null,
+          document_type: 'education_document',
+          document_category: 'Диплом о высшем профессиональном образовании',
+          number: '',
+          date: '',
+          issuer: '',
+          original: '',
+          speciality: '',
         });
         if(this.entrant.snils.length == 0) this.entrant.snils.push({
           id: null,

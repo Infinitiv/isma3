@@ -154,7 +154,7 @@ fieldset
   legend Документ об образовании
   p (v-if="entrant.current_campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'") Сведения о документе об образовании — это данные того документа, который будет подан в приемную комиссию. При поступлении по результатам ЕГЭ обычно это аттестат, но при наличии у Вас нескольких документов об образовании (например, аттестата и диплома), Вы сами можете выбрать, какой из них подать.
   . v-for="(document, index) in entrant.education_documents"
-    .row
+    .row(v-if="entrant.current_campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
       .large-6.small-12.columns
         label
           span Вид документа
@@ -167,6 +167,18 @@ fieldset
           span Серия и номер документа
           = text_field_tag 'education_documents[][number]', nil, placeholder: 'Укажите серию и номер документа', 'v-model.trim': 'document.number', class: 'error', 'v-on:change': "sendData('education_document', document, index)", 'v-bind:disabled': 'isDisabled'
         small.error v-if="findErrorMessage('education_document_number')" == "{{ findErrorMessage('education_document_number') }}"
+    .row(v-if="entrant.current_campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации'")
+      .large-6.small-12.columns
+        = label_tag :number
+          span Серия и номер документа
+          = text_field_tag 'education_documents[][number]', nil, placeholder: 'Укажите серию и номер документа', 'v-model.trim': 'document.number', class: 'error', 'v-on:change': "sendData('education_document', document, index)", 'v-bind:disabled': 'isDisabled'
+        small.error v-if="findErrorMessage('education_document_number')" == "{{ findErrorMessage('education_document_number') }}"
+      .large-6.small-12.columns(v-if="entrant.current_campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации'")
+        label
+          span Специальность по диплому
+        select.error#speciality(name="education_documents[][speciality]" v-model='document.speciality' v-on:change = "sendData('education_document', document, index)")
+          option(disabled value) Выберите специальность
+          option(v-for="speciality in api.dictionaries.education_speciality_codes" v-bind:value="speciality.code") {{ speciality.name }}
     .row
       .large-4.small-12.columns
         = label_tag :date
@@ -178,12 +190,6 @@ fieldset
           span Кем выдан документ
           = text_field_tag 'education_documents[][issuer]', nil, placeholder: 'Укажите, кто выдал документ', 'v-model.trim': 'document.issuer', class: 'error', 'v-on:change': "sendData('education_document', document, index)", 'v-bind:disabled': 'isDisabled'
         small.error v-if="findErrorMessage('education_document_issuer')" == "{{ findErrorMessage('education_document_issuer') }}"
-      .large-4.small-12.columns(v-if="entrant.current_campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации'")
-        label
-          span Специальность по диплому
-        select.error#speciality(name="education_documents[][code]" v-model='document.code' v-on:change = "sendData('education_document', document, index)")
-          option(disabled value) Выберите специальность
-          option(v-for="speciality in api.dictionaries.education_speciality_codes" v-bind:value="speciality.code") {{ speciality.name }}
     .row
       .large-12.small-12.columns
         br
