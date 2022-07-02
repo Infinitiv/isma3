@@ -649,9 +649,6 @@ var entrants = new Vue({
           if(element.date == ''){
             entrants.errors.push({element: 'identity_document_date', message: 'Необходимо указать дату выдачи документа, удостоверяющего личность', level: 'red'});
           };
-          if(element.issuer == ''){
-            entrants.errors.push({element: 'identity_document_issuer', message: 'Необходимо указать кем выдан документ, удостоверяющий личность', level: 'red'});
-          };
           if(!entrants.findAttachment(element.id, 'identity_document', false)) entrants.errors.push({element: 'identity_document_attachment', message: 'Необходимо прикрепить копию документа, удостоверяющего личность', level: 'red'});
         }));
         if(this.entrant.education_documents.find(function(element) {
