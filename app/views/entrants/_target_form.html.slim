@@ -7,14 +7,14 @@ fieldset
       .large-12.small-12.columns
         label
           span Конкурс
-        select.error#competitive_group_id(name="target_contracts[][competitive_group_id]" v-model='document.competitive_group_id' v-on:change="sendData('target_contract', document, index)" v-bind:disabled = 'isDisabled')
+        select.error#competitive_group_id(name="target_contracts[][competitive_group_id]" v-model='document.competitive_group_id' v-on:change="sendData('target_contract', document, index)" v-bind:disabled = "isDisabled && document.competitive_group_id != ''")
           option(value)
           option(v-for="competitive_group in api.dictionaries.campaign.competitive_groups" v-if="competitive_group.education_source == 'Квота приема на целевое обучение'" v-bind:value="competitive_group.id") {{ competitive_group.name }}
     .row
       .large-4.small-12.columns
         = label_tag :target_contract_date
           span Дата заключения договора
-          = date_field_tag 'target_contracts[][date]', nil, 'v-model.trim': 'document.date', class: 'error', 'v-on:change': "sendData('target_contract', document, index)", 'v-bind:disabled': 'isDisabled'
+          = date_field_tag 'target_contracts[][date]', nil, 'v-model.trim': 'document.date', class: 'error', 'v-on:focusout': "sendData('target_contract', document, index)", 'v-bind:disabled': "entrant.stage == 4 && document.date != null"
         small.error v-if="findErrorMessage('target_contract_date')" == "{{ findErrorMessage('target_contract_date') }}"
     .row(v-if="document.id")
       .large-12.small-12.columns

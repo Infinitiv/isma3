@@ -347,8 +347,8 @@ var entrants = new Vue({
       return findAttachment;
     },
     findCompetitiveGroup: function(competitive_group_id) {
-      var findCompetitiveGroup = null;
-      this.api.dictionaries.campaign.competitive_groups.find(function(competitive_group) {
+      var findCompetitiveGroup = false;
+      this.entrant.competitive_groups.find(function(competitive_group) {
         if(competitive_group.id == competitive_group_id) {
           findCompetitiveGroup = competitive_group
         };
@@ -742,11 +742,7 @@ var entrants = new Vue({
       this.entrant.target_contracts.push({
         id: null,
         document_type: 'target_contract',
-        document_category: '',
-        serie: '',
-        number: '',
-        date: '',
-        issuer: '',
+        competitive_group_id: '',
         original: ''
       });
     },
