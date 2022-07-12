@@ -395,6 +395,7 @@ var entrants = new Vue({
           };
           if(sub == 'target_contract') {
             this.entrant.target_contracts[index].id = response.data.target_contract.id;
+            this.entrant.stage = response.data.entrant.stage;
           };
           if(sub == 'other_document') {
             this.entrant.other_documents[index].id = response.data.other_document.id;
