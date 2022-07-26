@@ -20,9 +20,9 @@ fieldset
             label(v-bind:for="competitive_group.id")
               span= "{{ competitive_group.name }} (количество мест: {{ competitive_group.admission_number }})"
               span(v-if="egeDate(competitive_group)")= " - прием документов завершен"
-/fieldset
+fieldset
   legend Вступительные испытания
-  .(v-if="entrant.current_campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
+  /.(v-if="entrant.current_campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
     p Вступительные испытания, проводимые академией самостоятельно, имеют право сдавать ТОЛЬКО:
     ul
       li лица, поступающие на обучение на базе высшего образования;
