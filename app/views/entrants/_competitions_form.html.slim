@@ -20,7 +20,7 @@ fieldset
             label(v-bind:for="competitive_group.id")
               span= "{{ competitive_group.name }} (количество мест: {{ competitive_group.admission_number }})"
               span(v-if="egeDate(competitive_group)")= " - прием документов завершен"
-fieldset
+/fieldset
   legend Вступительные испытания
   .(v-if="entrant.current_campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
     p Вступительные испытания, проводимые академией самостоятельно, имеют право сдавать ТОЛЬКО:
@@ -38,7 +38,7 @@ fieldset
         input#exam(type="checkbox" name="exam" v-bind:value="true" v-model="entrant.questionnaire['exam']" v-on:change = "sendData('questionnaire', entrant.questionnaire)" v-bind:disabled = 'isDisabled')
       .large-11.small-11.columns
         label
-          span Имею право и собираюсь сдавать вступительные испытания, проводимые вузом самостоятельно.
+          span Имею право и собираюсь сдавать вступительные испытания, проводимые вузом самостоятельно./
     
     p Вступительные испытания: химия, биология, русский язык. Минимальный балл по каждому предмету - 40.
   .(v-if="entrant.current_campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации'")
