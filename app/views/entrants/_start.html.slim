@@ -7,13 +7,22 @@ fieldset
       .label.info(v-if="entrant.stage == 2") Ваши документы зарегистрированы и находятся на рассмотрении
       .label.success(v-if="entrant.stage == 4") Ваше заявление допущено к участию в конкурсе. Номер личного дела {{entrant.application_number}}.
       .label.alert(v-if="entrant.stage == 6") Ваше заявление отзвано
-  .row
+  .row(v-if="entrant.current_campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
     .large-12.small-12.columns
       br
-      =link_to 'Список лиц, подавших документы', '/storage/data/entrants/current_entrants_spec.html', target: '_blank', 'v-if': 'entrant.current_campaign.campaign_type == "Прием на обучение на бакалавриат/специалитет"'
-      =link_to 'Список лиц, подавших документы', '/storage/data/entrants/current_entrants_ord.html', target: '_blank', 'v-if': 'entrant.current_campaign.campaign_type == "Прием на подготовку кадров высшей квалификации"'
+      /=link_to 'Список лиц, подавших документы', '/storage/data/entrants/current_entrants_spec.html', target: '_blank'
+      =link_to 'Конкурсный список', '/storage/data/competitions/current_competitions_spec.html', target: '_blank'
+    .large-12.small-12.columns
+      /p= "(обновляется не реже, чем 1 раз в сутки)"
+      p= "(обновляется не реже, чем 5 раз в сутки)"
+  .row(v-if="entrant.current_campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации'")
+    .large-12.small-12.columns
+      br
+      =link_to 'Список лиц, подавших документы', '/storage/data/entrants/current_entrants_ord.html', target: '_blank'
+      /=link_to 'Конкурсный список', '/storage/data/competitions/current_competitions_ord.html', target: '_blank'
     .large-12.small-12.columns
       p= "(обновляется не реже, чем 1 раз в сутки)"
+      /p= "(обновляется не реже, чем 5 раз в сутки)"
   .row(v-if="entrant.comment")
     .large-12.small-12.columns
       br
