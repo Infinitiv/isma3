@@ -28,6 +28,8 @@ section.panel.clearfix
           dt Телефон
           dd
             span(itemprop="telephone")= multi_number_to_phone(@details_hash['Телефон'][:value].html_safe, country_code: 7, area_code: true)
+          dd
+            link_to 'Положение об организации рассмотрения обращений граждан', '/attachments/67831', target: '_blank'
     dl
       dt Реквизиты
       - if @details_hash['ИНН']
