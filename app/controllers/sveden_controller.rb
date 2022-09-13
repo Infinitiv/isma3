@@ -28,8 +28,8 @@ class SvedenController < ApplicationController
   end
   
   def employees
-    @posts_head = Post.includes(:profile, :division).select{|p| p.name =~ /^и. о. ректор|ректор/}
-    @posts_vice = Post.includes(:profile, :division).select{|p| p.name =~ /^и. о. проректор|проректор/}
+    @posts_head = Post.includes(:profile, :division).select{|p| p.name =~ /^и. о. ректор|^ректор/}
+    @posts_vice = Post.includes(:profile, :division).select{|p| p.name =~ /^и. о. проректор|^проректор/}
     @employees_all = Profile.joins(:divisions).where(divisions: {division_type_id: 3}).uniq
     @employees_educational_programs = Profile.joins(:divisions, :educational_programs).where(divisions: {division_type_id: 3}).uniq
     @employees_not_educational_programs = @employees_all - @employees_educational_programs
