@@ -119,56 +119,37 @@ section.panel
   p= link_to 'Копия локального нормативного акта, регламентирующего размер платы за пользование жилым помещением и коммунальные услуги в общежитии', '/attachments/1196', target: 'blank', itemprop: 'localActObSt'
   
   table
-    caption Информации о трудоустройстве выпускников образовательных организаций за последние 3 года
+    caption Информация о трудоустройстве выпускников образовательной организации за прошлый учебный год
     tr
-      th rowspan=2 Код
-      th rowspan=2 Наименование профессии, специальности, направления подготовки
-      th colspan=2 2018
-      th colspan=2 2019
-      th colspan=2 2020
-    tr
-      th Кол-во выпускников
-      th Кол-во трудоустроенных выпускников
-      th Кол-во выпускников
-      th Кол-во трудоустроенных выпускников
-      th Кол-во выпускников
-      th Кол-во трудоустроенных выпускников
+      th Код, шифр
+      th Наименование профессии, специальности, направления подготовки наименование группы научных специальностей
+      th Образовательная программа, направленность, профиль, шифр и наименование научной специальности
+      th Количество выпускников
+      th Количество трудоустроенных выпускников
     tr(itemprop='graduateJob')
       td(itemprop='eduCode') 31.05.01
       td(itemprop='eduName') Лечебное дело
+      td(itemprop='eduProf') Лечебное дело
       td(itemprop='v1') 182
       td(itemprop='t1') 179
-      td(itemprop='v2') 218
-      td(itemprop='t2') 199
-      td(itemprop='v3') 200
-      td(itemprop='t3') 171
     tr
       td(itemprop='eduCode') 31.05.02
       td(itemprop='eduName') Педиатрия
+      td(itemprop='eduProf') Педиатрия
       td(itemprop='v1') 97
       td(itemprop='t1') 88
-      td(itemprop='v2') 133
-      td(itemprop='t2') 115
-      td(itemprop='v3') 153
-      td(itemprop='t3') 135
     tr
       td(itemprop='eduCode') 31.05.03
       td(itemprop='eduName') Стоматология
+      td(itemprop='eduProf') Стоматология
       td(itemprop='v1') 29
       td(itemprop='t1') 26
-      td(itemprop='v2') 38
-      td(itemprop='t2') 30
-      td(itemprop='v3') 39
-      td(itemprop='t3') 31
     tr
       td(itemprop='eduCode')
       td(itemprop='eduName') Ординатура
+      td(itemprop='eduProf') Ординатура
       td(itemprop='v1') 67
       td(itemprop='t1') 67
-      td(itemprop='v2') 153
-      td(itemprop='t2') 153
-      td(itemprop='v3') 164
-      td(itemprop='t3') 164
       
   p
     =link_to 'Приспособленность общежитий, интернатов для использования инвалидами и лицами с ограниченными возможностями здоровья', '/sveden/ovz'
