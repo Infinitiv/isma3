@@ -6,24 +6,38 @@ section.panel
     caption Информация о сроке действия государственной аккредитации образовательной программы, о языках, на которых осуществляется образование (обучение)
     thead
       tr
-        th Код
-        th Наименование профессии, специальности, направления подготовки
+        th Код, шифр
+        th Наименование профессии, специальности, направления подготовки, научной специальности
+        th Образовательная программа, направленность, профиль, шифр и наименование научной специальности
         th Уровень образования
         th Формы обучения
         th Нормативный срок обучения
         th Срок действия государственной аккредитации (дата окончания действия свидетельства о государственной аккредитации)
         th Языки, на которых осуществляется образование (обучение)
+        th Учебные предметы, курсы, дисциплины (модули), предусмотренные соответствующей образовательной программой
+        th Практики, предусмотренные соответствующей образовательной программой
+        th Информация об использовании при реализации образовательных программ электронного обучения и дистанционных образовательных технологий
     tbody
       - @educational_programs.each do |educational_program|
-        tr(itemprop='eduAccred')
+        tr(itemprop='eduAccred', style="vertical-align: top;")
           td(itemprop='eduCode')=  educational_program.code
           - amp = educational_program.adaptive ? '*' : ''
-          td(itemprop='eduName')= link_to "#{educational_program.full_name}#{amp}", educational_program if educational_program.full_name
+          td(itemprop='eduName')= educational_program.name if educational_program.name
+          td(itemprop='eduProf')= "#{educational_program.full_name}#{amp}" if educational_program.full_name
           td(itemprop='eduLevel')= educational_program.level if educational_program.level
           td(itemprop='eduForm')= educational_program.form if educational_program.form
           td(itemprop='learningTerm')= educational_program.duration if educational_program.duration
           td(itemprop='dateEnd')= (educational_program.accreditation.expiration_date ? educational_program.accreditation.expiration_date.strftime("%d.%m.%Y") : 'бессрочно') if educational_program.accreditation
           td(itemprop='language')= educational_program.language
+          td(itemprop='eduPred')
+            ul.no-bullet
+              - educational_program.subjects.each do |subject|
+                li= subject.name
+          td(itemprop='eduPrac')
+            ul.no-bullet
+              - educational_program.practices.each do |practic|
+                li= practic.name
+          td(itemprop='eduEl')= educational_program.level == 'высшее образование - специалитет' ? 'Используется система электронной поддержки образовательного процесса' : '-'
   p.sub * - адаптированная образовательная программа
   table
     caption Информация о профессионально-общественной аккредитации образовательной программы
@@ -43,43 +57,39 @@ section.panel
     caption Информация о численности обучающихся
     thead
       tr
-        th rowspan=2 Код
-        th rowspan=2 Наименование специальности, направления подготовки
-        th rowspan=2 Уровень образования
-        th rowspan=2 Формы обучения
-        th colspan=4 Численность обучающихся/из них иностранных граждан за счет (количество человек):
-        th rowspan=2 Общая численность обучающихся
-      tr
-        th бюджетных ассигнований федерального бюджета
-        th бюджетов субъектов Российской Федерации
-        th местных бюджетов
-        th средств физических и (или) юридических лиц
+        th Код, шифр
+        th Наименование профессии, специальности, направления подготовки, наименование группы научных специальностей
+        th Уровень образования
+        th Формы обучения
+        th Сведения о численности обучающихся за счёт бюджетных ассигнований федерального бюджета
+        th Из них численность обучающихся, являющихся иностранными гражданами
+        th Сведения о численности обучающихся за счѐт бюджетов субъектов Российской Федерации
+        th Из них численность обучающихся, являющихся иностранными гражданами
+        th Сведения о численности обучающихся за счёт местных бюджетов
+        th Из них численность обучающихся, являющихся иностранными гражданами
+        th Сведения о численности обучающихся за счёт средств физическихи (или) юридических лиц
+        th Из них численность обучающихся, являющихся иностранными гражданами
+        th Общая численность обучающихся
     tbody
       - @educational_programs.each do |educational_program|
         - educational_program_number = educational_program.educational_program_numbers.sort_by(&:date).last
         - if educational_program_number
-          tr(itemprop='eduChislen')
+          tr(itemprop='eduChislen', style="vertical-align: top;")
             td(itemprop='eduCode')=  educational_program.code
-            td(itemprop='eduName')= link_to educational_program.full_name, educational_program if educational_program.full_name
+            td(itemprop='eduName')= educational_program.full_name if educational_program.full_name
             td(itemprop='eduLevel')= educational_program.level if educational_program.level
             td(itemprop='eduForm')= educational_program.form if educational_program.form
-            td
-              span(itemprop='numberBF')= educational_program_number.number_federal
-              span= '/'
-              span(itemprop='numberBFF')= educational_program_number.number_foreign_budget
-            td
-              span(itemprop='numberBR')= educational_program_number.number_regional
-              span= '/'
-              span(itemprop='numberBRF')= educational_program_number.number_regional
-            td
-              span(itemprop='numberBM')= educational_program_number.number_local
-              span= '/'
-              span(itemprop='numberBMF')= educational_program_number.number_local
-            td
-              span(itemprop='numberP')= educational_program_number.number_personal
-              span= '/'
-              span(itemprop='numberPF')= educational_program_number.number_foreign_paid
+            td(itemprop='numberBF')= educational_program_number.number_federal
+            td(itemprop='numberBFF')= educational_program_number.number_foreign_budget
+            td(itemprop='numberBR')= educational_program_number.number_regional
+            td(itemprop='numberBRF')= educational_program_number.number_regional
+            td(itemprop='numberBM')= educational_program_number.number_local
+            td(itemprop='numberBMF')= educational_program_number.number_local
+            td(itemprop='numberP')= educational_program_number.number_personal
+            td(itemprop='numberPF')= educational_program_number.number_foreign_paid
             td(itemprop='numberAll')= [educational_program_number.number_federal, educational_program_number.number_regional, educational_program_number.number_local, educational_program_number.number_personal].compact.sum
+  p(itemprop='eduChislenEl')= link_to 'Информация о численности обучающихся по программам специалитета', '/attachments/1188', target: '_blank'
+  p(itemprop='eduChislenEl')= link_to 'Информация о численности обучающихся по программам подготовки кадров высшей квалификации', '/attachments/6208', target: '_blank'
   table
     caption Информация о результатах приема
     thead
