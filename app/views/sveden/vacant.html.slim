@@ -4,17 +4,16 @@ section.panel
   table(itemprop='vacant')
     thead
       tr
-        th rowspan=2 Код
-        th rowspan=2 Наименование профессии, специальности, направления подготовки
-        th rowspan=2 Уровень образования
-        th rowspan=2 Курс
-        th rowspan=2 Форма обучения
-        th colspan=4 Количество вакантных мест для приема (перевода) на места, финансируемые:
-      tr
-        th бюджетных ассигнований федерального бюджета
-        th бюджетов субъектов Российской Федерации
-        th местных бюджетов
-        th по договорам об образовании за счет средств физических и (или) юридических лиц
+        th Код, шифр группы научных специальностей
+        th Наименование профессии, специальности, направления подготовки, наименование группы научных специальностей
+        th Уровень образования
+        th Образовательная программа, направленность, профиль, шифр и наименование научной специальности
+        th Курс
+        th Форма обучения
+        th Количество вакантных мест для приема (перевода) на места, финансируемые за счет бюджетных ассигнований федерального бюджета
+        th Количество вакантных мест для приема (перевода) на места, финансируемые за счет бюджетов субъектов Российской Федерации
+        th Количество вакантных мест для приема (перевода) на места, финансируемые за счет местных бюджетов
+        th Количество вакантных мест для приема (перевода) за счёт средств физических и (или) юридических лиц
     tbody
       - @educational_programs.each do |educational_program|
         - educational_program.educational_program_vacants.group_by(&:stage).each do |stage, vacants|
@@ -22,8 +21,9 @@ section.panel
           - if educational_program_vacant
             tr
               td(itemprop='eduCode')=  educational_program.code
-              td(itemprop='eduName')= link_to educational_program.name, educational_program if educational_program.name
-              td(itemprop='eduLevel')= educational_program.level if educational_program.level                
+              td(itemprop='eduName')= educational_program.name if educational_program.name
+              td(itemprop='eduLevel')= educational_program.level if educational_program.level
+              td(itemprop='eduProf')= educational_program.name if educational_program.name
               td(itemprop='eduCourse')= educational_program_vacant.stage
               td(itemprop='eduForm')= educational_program.form if educational_program.form
               td(itemprop='numberBFVacant')= educational_program_vacant.number_federal
