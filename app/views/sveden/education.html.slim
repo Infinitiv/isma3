@@ -39,6 +39,7 @@ section.panel
                 li= practic.name
           td(itemprop='eduEl')= educational_program.level == 'высшее образование - специалитет' ? 'Используется система электронной поддержки образовательного процесса' : '-'
   p.sub * - адаптированная образовательная программа
+  p(itemprop='languageEl')= link_to 'Информация о языках, на которых осуществляется образование (обучение)', '/attachments/73941', target: '_blank'
   table
     caption Информация о профессионально-общественной аккредитации образовательной программы
     thead
@@ -117,6 +118,7 @@ section.panel
             td(itemprop='numberBM')= educational_program_priem.number_local
             td(itemprop='numberP')= educational_program_priem.number_personal
             td(itemprop='score')= educational_program_priem.summa
+  p(itemprop='eduPriemEl')= link_to 'Информация о результатах приема по каждой специальности высшего образования, каждой научной специальности с различными условиями приема с указанием средней суммы набранных баллов по всем вступительным испытаниям', '/attachments/73942', target: '_blank'
   table
     caption Информация о результатах перевода, восстановления и отчисления
     thead
@@ -142,6 +144,7 @@ section.panel
             td(itemprop='numberTo')= educational_program_perevod.number_to_perevod
             td(itemprop='numberRes')= educational_program_perevod.number_res_perevod
             td(itemprop='numberExp')= educational_program_perevod.number_exp_perevod
+  p(itemprop='eduPerevodEl')= link_to 'Информация о результатах перевода, восстановления и отчисления, размещенная в форме электронного документа, подписанного электронной подписью', '/attachments/73943', target: '_blank'
   table
     caption Информация по образовательным программам
     thead
