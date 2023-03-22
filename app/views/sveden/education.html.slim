@@ -123,8 +123,8 @@ section.panel
     caption Информация о результатах перевода, восстановления и отчисления
     thead
       tr
-        th Код
-        th Наименование специальности, направления подготовки
+        th Код, шифр
+        th Наименование профессии, специальности, направления подготовки, наименование группы научных специальностей
         th Уровень образования
         th Форма обучения
         th Численность обучающихся, переведенных в другие образовательные организации
@@ -149,116 +149,112 @@ section.panel
     caption Информация по образовательным программам
     thead
       tr
-        th Код
-        th Наименование специальности, направления подготовки
+        th Код, шифр
+        th Наименование профессии, специальности, направления подготовки, наименование группы научных специальностей
         th Уровень образования
+        th Образовательная программа, направленность, профиль, шифр и наименование научной специальности
         th Реализуемые формы обучения
         th Ссылка на описание образовательной программы с приложением ее копии
         th Ссылка на учебный план
         th Ссылка на аннотации к рабочим программам дисциплин (по каждой дисциплине в составе образовательной программы)
         th Ссылки на рабочие программы (по каждой дисциплине в составе образовательной программы)
         th Ссылка на календарный учебный график
-        th Ссылка на методические ииные документы, разработанные образовательной организацией для обеспечения образовательного процесса
         th Ссылка на рабочие программы практик, предусмотренных соответствующей образовательной программой
-        th Использование при реализации образовательных программ электронного обучения и дистанционных образовательных технологий
+        th Ссылка на методические и иные документы, разработанные ОО для обеспечения образовательного процесса, а также рабочие программы воспитания и календарные планы воспитательной работы, включаемых в ООП
     tbody
       - @common_educational_programs.each do |educational_program|
         tr(itemprop="#{educational_program.adaptive ? 'eduAdOp' : 'eduOp'}")
           td(itemprop="eduCode", style="vertical-align: top;")= educational_program.code
           td(itemprop="eduName", style="vertical-align: top;")= educational_program.name
           td(itemprop="eduLevel", style="vertical-align: top;")= educational_program.level
+          td(itemprop='eduProf')= "#{educational_program.full_name}#{amp}" if educational_program.full_name
           td(itemprop="eduForm", style="vertical-align: top;")= educational_program.form
           td(itemprop='opMain', style="vertical-align: top;")
-            = link_to educational_program.full_name, educational_program.attachment, target: 'blank' if educational_program.full_name
-          td(style="vertical-align: top;")
+            = link_to 'Описание образовательной программы', educational_program.attachment, target: 'blank' if educational_program.attachment
+          td(itemprop='educationPlan', style="vertical-align: top;")
             ul
               - educational_program.academic_plans.each do |academic_plan|
-                li(itemprop='educationPlan')= link_to academic_plan.name, academic_plan.attachment, target: 'blank'
-          td(style="vertical-align: top;")
+                li= link_to academic_plan.name, academic_plan.attachment, target: 'blank'
+          td(itemprop='educationAnnotation', style="vertical-align: top;")
             ul
               - educational_program.subjects.each do |subject|
                 - if subject.annotation_attachment
-                  li(itemprop='educationAnnotation')= link_to subject.name, subject.annotation_attachment, target: 'blank'
-          td(style="vertical-align: top;")
+                  li= link_to subject.name, subject.annotation_attachment, target: 'blank'
+          td(itemprop='educationRpd', style="vertical-align: top;")
             ul
               - educational_program.subjects.each do |subject|
                 - if subject.full_text_attachment
-                  li(itemprop='educationRpd')= link_to subject.name, subject.full_text_attachment, target: 'blank'
-          td(style="vertical-align: top;")
+                  li= link_to subject.name, subject.full_text_attachment, target: 'blank'
+          td(itemprop='educationShedule', style="vertical-align: top;")
             ul
               - educational_program.academic_schedules.each do |academic_schedule|
-                li(itemprop='educationShedule')= link_to academic_schedule.name, academic_schedule.attachment, target: 'blank'
-          td(style="vertical-align: top;")
-            ul
-              - educational_program.methodological_supports.each do |methodological_support|
-                li(itemprop='methodology')= link_to methodological_support.attachment.title_sen_dot, methodological_support.attachment, target: 'blank'
-          td(style="vertical-align: top;")
+                li= link_to academic_schedule.name, academic_schedule.attachment, target: 'blank'
+          td(itemprop='eduPr', style="vertical-align: top;")
             ul
               - educational_program.practices.each do |practic|
-                li(itemprop='eduPr')= link_to practic.name, practic.attachment, target: 'blank'
-          td(itemprop='eduEl', style="vertical-align: top;")= educational_program.level == 'высшее образование - специалитет' ? 'Используется система электронной поддержки образовательного процесса' : '-'
-  table
+                li= link_to practic.name, practic.attachment, target: 'blank'
+          td(itemprop='methodology', style="vertical-align: top;")
+            ul
+              - educational_program.methodological_supports.each do |methodological_support|
+                li= link_to methodological_support.attachment.title_sen_dot, methodological_support.attachment, target: 'blank'
+    table
     caption Информация по адаптированным образовательным программам
     thead
       tr
-        th Код
-        th Наименование специальности, направления подготовки
+        th Код, шифр
+        th Наименование профессии, специальности, направления подготовки, наименование группы научных специальностей
         th Уровень образования
+        th Образовательная программа, направленность, профиль, шифр и наименование научной специальности
         th Реализуемые формы обучения
         th Ссылка на описание образовательной программы с приложением ее копии
         th Ссылка на учебный план
         th Ссылка на аннотации к рабочим программам дисциплин (по каждой дисциплине в составе образовательной программы)
         th Ссылки на рабочие программы (по каждой дисциплине в составе образовательной программы)
         th Ссылка на календарный учебный график
-        th Ссылка на методические ииные документы, разработанные образовательной организацией для обеспечения образовательного процесса
         th Ссылка на рабочие программы практик, предусмотренных соответствующей образовательной программой
-        th Использование при реализации образовательных программ электронного обучения и дистанционных образовательных технологий
+        th Ссылка на методические и иные документы, разработанные ОО для обеспечения образовательного процесса, а также рабочие программы воспитания и календарные планы воспитательной работы, включаемых в ООП
     tbody
       - @adaptive_educational_programs.each do |educational_program|
         tr(itemprop="#{educational_program.adaptive ? 'eduAdOp' : 'eduOp'}")
           td(itemprop="eduCode", style="vertical-align: top;")= educational_program.code
           td(itemprop="eduName", style="vertical-align: top;")= educational_program.name
           td(itemprop="eduLevel", style="vertical-align: top;")= educational_program.level
+          td(itemprop='eduProf')= "#{educational_program.full_name}#{amp}" if educational_program.full_name
           td(itemprop="eduForm", style="vertical-align: top;")= educational_program.form
-          - amp = educational_program.adaptive ? '*' : ''
           td(itemprop='opMain', style="vertical-align: top;")
-            = link_to educational_program.full_name, educational_program.attachment, target: 'blank' if educational_program.full_name
-            ul
-              - educational_program.subjects.each do |subject|
-                - if subject.full_text_attachment
-                  li(itemprop='educationAnnotation')= link_to subject.name, subject.full_text_attachment, target: 'blank'
-          td(style="vertical-align: top;")
+            = link_to 'Описание образовательной программы', educational_program.attachment, target: 'blank' if educational_program.attachment
+          td(itemprop='educationPlan', style="vertical-align: top;")
             ul
               - educational_program.academic_plans.each do |academic_plan|
-                li(itemprop='educationPlan')= link_to academic_plan.name, academic_plan.attachment, target: 'blank'
-          td(style="vertical-align: top;")
+                li= link_to academic_plan.name, academic_plan.attachment, target: 'blank'
+          td(itemprop='educationAnnotation', style="vertical-align: top;")
             ul
               - educational_program.subjects.each do |subject|
-                li(itemprop='educationAnnotation')= link_to subject.name, subject.annotation_attachment, target: 'blank'
-          td(style="vertical-align: top;")
+                - if subject.annotation_attachment
+                  li= link_to subject.name, subject.annotation_attachment, target: 'blank'
+          td(itemprop='educationRpd', style="vertical-align: top;")
             ul
               - educational_program.subjects.each do |subject|
                 - if subject.full_text_attachment
-                  li(itemprop='educationRpd')= link_to subject.name, subject.full_text_attachment, target: 'blank'
-          td(style="vertical-align: top;")
+                  li= link_to subject.name, subject.full_text_attachment, target: 'blank'
+          td(itemprop='educationShedule', style="vertical-align: top;")
             ul
               - educational_program.academic_schedules.each do |academic_schedule|
-                li(itemprop='educationShedule')= link_to academic_schedule.name, academic_schedule.attachment, target: 'blank'
-          td(style="vertical-align: top;")
-            ul
-              - educational_program.methodological_supports.each do |methodological_support|
-                li(itemprop='methodology')= link_to methodological_support.attachment.title_sen_dot, methodological_support.attachment, target: 'blank'
-          td(style="vertical-align: top;")
+                li= link_to academic_schedule.name, academic_schedule.attachment, target: 'blank'
+          td(itemprop='eduPr', style="vertical-align: top;")
             ul
               - educational_program.practices.each do |practic|
-                li(itemprop='eduPr')= link_to practic.name, practic.attachment, target: 'blank'
-          td(itemprop='eduEl', style="vertical-align: top;") При реализации образовательной программы используются элементы электронного обучения и дистанционных образовательных технологий посредством ЭИОС вуза
+                li= link_to practic.name, practic.attachment, target: 'blank'
+          td(itemprop='methodology', style="vertical-align: top;")
+            ul
+              - educational_program.methodological_supports.each do |methodological_support|
+                li= link_to methodological_support.attachment.title_sen_dot, methodological_support.attachment, target: 'blank'
   table
     caption Информация об общественной аккредитации образовательной организации
     thead
       tr
         th Наименование аккредитующей организации
-        th Срок действия профессионально-общественной аккредитации (дата окончания действия свидетельства о профессионально-общественной аккредитации) 
+        th Срок действия общественной аккредитации 
     tbody
       tr(itemprop='eduOAccred')
         td(itemprop='orgName') отсутствует
@@ -267,21 +263,25 @@ section.panel
     caption Информация о направлениях и результатах научной (научно-исследовательской) деятельности
     thead
       tr
-        th Код
-        th Наименование специальности, направления подготовки
-        th Уровень образования
+        th Код, шифр
+        th Наименование специальности, направления подготовки, наименование группы научных специальностей
         th Перечень научных направлений, в рамках которых ведется научная (научно-исследовательская) деятельность
+        th Образовательная программа, направленность, профиль, шифр и наименование научной специальности
+        th Уровень образования
+        th Название научного направления/научной школы
         th Результаты научной (научно-исследовательской) деятельности
-        th Сведения о научноисследовательской базе для осуществления научной (научно-исследовательской) деятельности
+        th Сведения о научно-исследовательской базе для осуществления научной (научно-исследовательской) деятельности
     tbody
       - @common_educational_programs.each do |educational_program|
         - educational_program_research = educational_program.educational_program_researches.sort_by(&:date).last
         - if educational_program_research
           tr(itemprop='eduNir')
             td(itemprop='eduCode')=  educational_program.code
-            td(itemprop='eduName')= link_to educational_program.full_name, educational_program if educational_program.full_name
-            td(itemprop='eduLevel')= educational_program.level
+            td(itemprop='eduName')= educational_program.name if educational_program.name
             td(itemprop='perechenNir')= educational_program_research.perechen_nir
+            td(itemprop='eduProf')= "#{educational_program.full_name}#{amp}" if educational_program.full_name
+            td(itemprop='eduLevel')= educational_program.level
+            td(itemprop='napravNir')
             td(itemprop='resultNir')= educational_program_research.result_nir
             td(itemprop='baseNir')= educational_program_research.base_nir
   p= autosub_details("&amp;[Копия лицензии на осуществление образовательной деятельности (с приложениями)]").html_safe
