@@ -167,7 +167,7 @@ section.panel
           td(itemprop="eduCode", style="vertical-align: top;")= educational_program.code
           td(itemprop="eduName", style="vertical-align: top;")= educational_program.name
           td(itemprop="eduLevel", style="vertical-align: top;")= educational_program.level
-          td(itemprop='eduProf')= "#{educational_program.full_name}#{amp}" if educational_program.full_name
+          td(itemprop='eduProf')= "#{educational_program.full_name}" if educational_program.full_name
           td(itemprop="eduForm", style="vertical-align: top;")= educational_program.form
           td(itemprop='opMain', style="vertical-align: top;")
             = link_to 'Описание образовательной программы', educational_program.attachment, target: 'blank' if educational_program.attachment
@@ -219,7 +219,7 @@ section.panel
           td(itemprop="eduCode", style="vertical-align: top;")= educational_program.code
           td(itemprop="eduName", style="vertical-align: top;")= educational_program.name
           td(itemprop="eduLevel", style="vertical-align: top;")= educational_program.level
-          td(itemprop='eduProf')= "#{educational_program.full_name}#{amp}" if educational_program.full_name
+          td(itemprop='eduProf')= "#{educational_program.full_name}" if educational_program.full_name
           td(itemprop="eduForm", style="vertical-align: top;")= educational_program.form
           td(itemprop='opMain', style="vertical-align: top;")
             = link_to 'Описание образовательной программы', educational_program.attachment, target: 'blank' if educational_program.attachment
@@ -279,7 +279,7 @@ section.panel
             td(itemprop='eduCode')=  educational_program.code
             td(itemprop='eduName')= educational_program.name if educational_program.name
             td(itemprop='perechenNir')= educational_program_research.perechen_nir
-            td(itemprop='eduProf')= "#{educational_program.full_name}#{amp}" if educational_program.full_name
+            td(itemprop='eduProf')= "#{educational_program.full_name}" if educational_program.full_name
             td(itemprop='eduLevel')= educational_program.level
             td(itemprop='napravNir')
             td(itemprop='resultNir')= educational_program_research.result_nir
