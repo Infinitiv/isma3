@@ -37,6 +37,11 @@
               <%= image_tag 'flag_gb.png', size: '24x24' %>
             <% end %>
           </li>
+          <li>
+            <%= link_to article_url(7343), title: "Français" do %>
+              <%= image_tag 'flag_fr.png', size: '24x24' %>
+            <% end %>
+          </li>
           <% if @moderator_permission && @achievements_count > 0 %>
             <li>
               <%= link_to achievements_path + "?achievement[published]=0", title: "Достижений на модерацию - #{@achievements_count}" do %>
