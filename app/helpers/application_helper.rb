@@ -62,7 +62,7 @@ module ApplicationHelper
   def insert_rutube(text)
     matches = text.scan(/(\S*)(rutube.ru)(\S*)/)
     matches.each do |m|
-      id = /^.*(rutube.ru\/play\/embed\/)([^<#\&\?]*).*/.match(m.join(''))[2]
+      id = /^.*(rutube.ru\/video\/)([^<#\&\?]*).*\//.match(m.join(''))[2]
       iframe = "<iframe width='30%' style='float:right; padding-left: 10px;' src='//rutube.ru/play/embed/#{id}?rel=0' frameBorder='0' allow='clipboard-write; autoplay' webkitAllowFullScreen mozallowfullscreen allowFullScreen></iframe>"
       text.gsub!(m.join(''), iframe)
     end
