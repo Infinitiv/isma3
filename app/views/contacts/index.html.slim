@@ -67,6 +67,12 @@ section.panel.clearfix
         dd
           strong ОКТМО: 
           span= @details_hash['ОКТМО'][:value].html_safe
+  table
+    tr
+      td Оплатить предоставленные академией образовательные и иные услуги можно посредством электронного платежа через СБЕР
+      td= link_to 'https://sberbank.com/sms/ppinv?reqId=1613967226603', target: '_blank' do
+        = image_tag 'sber_button.svg', width: '100%'
+  
 
   h3 В академии устанавливаются следующие часы приема по личным вопросам сотрудников и студентов:
   table.table
