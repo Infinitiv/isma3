@@ -31,7 +31,7 @@ fieldset(v-if="entrant.campaign_id > 1")
         label
           select.error#nationality(name="nationality" v-model='entrant.nationality' v-bind:disabled='entrant.email_confirmed')
             option(value = '')
-            option(v-for="country in api.countries" v-bind:value="country.FullName ? country.FullName : country.ShortName") {{ country.FullName ? country.FullName : country.ShortName }}
+            option(v-for="country in api.countries" v-bind:value="country.Name") {{ country.Name }}
 fieldset
   legend Укажите адрес электронной почты
   .row
@@ -47,6 +47,9 @@ fieldset(v-if='!isNextDisabled')
     .large-12.small-12.columns.label.warning
       ul.no-bullet
         li v-for='error in entrant.errors' v-if='error.level == "red"' == '{{ error.message }}'
+  .row
+    .large-12.small-12.columns
+      p Нажимая на кнопку "Перейти к заполнению анкеты", Вы подттверждаете, что ознакомились с порядком обработки и распространения персональных данных, принятых во ФГБОУ ВО ИвГМА Минздрава России, и даете свое согласие на обработу и распространение своих персональных данных в соответствии с ним.
   .row
     .large-12.small-12.columns
       a.button.tiny v-bind:href="entrant.hash" Перейти к заполнению анкеты
