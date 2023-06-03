@@ -1,12 +1,12 @@
 fieldset
   legend Выбор условий поступления
-  .(v-if="entrant.current_campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
+  .(v-if="entrant.campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
     p Вы имеете право отметить любое количество конкурсов (в том числе все) из списка, представленного ниже. Каждый абитуриент, не имеющий высшего образования, может участвовать в конкурсе на основные места на каждую специальность и на бюджетной, и на внебюджетной основе. Лица, имеющие высшее образование могут поступать только на внебюджетной основе. 
     p Конкурсы по особой, специальной и целевой квотам становятся доступны только в том случае, если Вы заполнили соответствующие поля и прикрепили документы, подтверждающие право на участие в конкурсе по особой, специальной и/или целевой квоте на вкладке Льготы.
     p Для участия в конкурсе в пределах квоты целевого приема необходимо заключить договор с заказчиком целевого обучения и загрузить его на вкладке Целевой прием.
   . v-if = "findAttachment(entrant.id, 'entrant_application', false)"
     strong Вы уже загрузили заявление о поступлении, поэтому после добавления нового конкурса Вам будет необходимо заново скачать бланк заявления, подписать его и загрузить на вкладке Заявления
-  .(v-if="entrant.current_campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации'")
+  .(v-if="entrant.campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации'")
     p Вы имеете право выбрать ДВЕ специальности для поступления, внутри которых Вы можете отметить любое количество конкурсов при наличии оснований для участия в них. Для участия в конкурсе в пределах квоты целевого приема необходимо заключить договор с заказчиком целевого обучения и загрузить его на вкладке Целевой прием.
   .row
     .large-12.small-12.columns
@@ -22,7 +22,7 @@ fieldset
               span(v-if="egeDate(competitive_group)")= " - прием документов завершен"
 fieldset
   legend Вступительные испытания
-  /.(v-if="entrant.current_campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
+  .(v-if="entrant.campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
     p Вступительные испытания, проводимые академией самостоятельно, имеют право сдавать ТОЛЬКО:
     ul
       li лица, поступающие на обучение на базе высшего образования;
@@ -41,7 +41,7 @@ fieldset
           span Имею право и собираюсь сдавать вступительные испытания, проводимые вузом самостоятельно./
     
     p Вступительные испытания: химия, биология, русский язык. Минимальный балл по каждому предмету - 40.
-  .(v-if="entrant.current_campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации'")
+  .(v-if="entrant.campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации'")
     .row
       .large-12.small-12.columns
         table
@@ -62,14 +62,14 @@ fieldset
               td
                 span(v-show="mark.test_type == 'Аккредитация'")= number_field_tag 'marks[][value]', nil, min: 70, max: 100, 'v-model.trim': 'mark.value'
               td
-                span(v-show="mark.test_type == 'Аккредитация'")= number_field_tag 'marks[][year]', nil, 'v-bind:min': 'entrant.current_campaign.year_start - 1', 'v-bind:max': 'entrant.current_campaign.year_start', 'v-model.trim':'mark.year', 'v-on:change': "sendData('mark', mark, index)"
+                span(v-show="mark.test_type == 'Аккредитация'")= number_field_tag 'marks[][year]', nil, 'v-bind:min': 'entrant.campaign.year_start - 1', 'v-bind:max': 'entrant.campaign.year_start', 'v-model.trim':'mark.year', 'v-on:change': "sendData('mark', mark, index)"
                 small.error v-if="findErrorMessage('mark.test_type')" == "{{ findErrorMessage('mark.test_type') }}"
               td
                 = text_field_tag 'marks[][organization_uid]', nil, 'v-model.tirm': 'mark.organization_uid', 'v-on:change': "sendData('mark', mark, index)"
 
 fieldset
   legend Указать индивидуальные достижения
-  .(v-if="entrant.current_campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
+  .(v-if="entrant.campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
     p Необходимо подтвердить наличие индивидуального достижения, прикрепив копию соответствующего документа. 
     p Подтверждающими документами являются: копия документа об образовании (диплома или аттестата, в которых написано, что они – с отличием), удостоверение о награждении золотым значком ГТО, диплома победителя чемпионата «Абилимпикс».
     p Обратите внимание: начисление баллов за индивидуальные достижения происходит не сразу, а после заседания комиссии по индивидуальным достижениям. Результат рассмотрения будет 
@@ -87,7 +87,7 @@ fieldset
         ul.no-bullet
           li(v-for="attachment in entrant.attachments" v-if="attachment.document_type == 'achievement' && attachment.document_id == institution_achievement.id")
             a v-bind:href = "'/api/attachments/' + attachment.data_hash + '?filename=' + attachment.filename" target = '_blank' {{ attachment.filename }}
-  .(v-if="entrant.current_campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации'")
+  .(v-if="entrant.campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации'")
     p Необходимо подтвердить наличие индивидуального достижения, прикрепив копию соответствующего документа. 
     p Обратите внимание: начисление баллов за индивидуальные достижения происходит не сразу, а после заседания комиссии по индивидуальным достижениям. Результат рассмотрения будет 
     .row(v-for="institution_achievement in api.dictionaries.campaign.institution_achievements")

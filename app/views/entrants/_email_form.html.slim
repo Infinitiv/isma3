@@ -9,7 +9,7 @@ fieldset(v-if="api.campaigns && api.campaigns.length > 1")
           option(value = '')
           option(v-for="campaign_item in api.campaigns" v-bind:value="campaign_item.id") {{ campaign_item.name }}
         small.error v-if="findErrorMessage('campaign_id')" == "{{ findErrorMessage('campaign_id') }}"
-fieldset(v-if="entrant.campaign_id > 1")
+fieldset(v-if="entrant.campaign_id > 6")
   legend Прием осуществляется только при наличии полного пакета документов:
   .row
     .large-12.small-12.columns

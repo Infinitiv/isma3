@@ -137,7 +137,7 @@ var entrants = new Vue({
         if(this.api.campaigns.length == 1) this.entrant.campaign_id = this.api.campaigns[0]['id'];
       });
     axios
-      .get('/api/dictionaries/30')
+      .get('/api/dictionaries/18')
       .then(response => (this.api.countries = response.data.dictionary.items));
     this.entrant.clerk = this.$refs.clerk.dataset.clerk;
   },

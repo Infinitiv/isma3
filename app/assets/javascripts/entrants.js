@@ -219,7 +219,7 @@ var entrants = new Vue({
     checkPaidCompetitiveGroups: function(){
       var checkPaidCompetitiveGroups = false;
       this.entrant.competitive_groups.find(function(element) {
-        if(element.education_source == 'С оплатой обучения') {
+        if(element.education_source == 'По договору об оказании платных образовательных услуг') {
           checkPaidCompetitiveGroups = true;
         }
       })
@@ -233,6 +233,32 @@ var entrants = new Vue({
       var birthDay = Number(numbers[2]);
       var tempDate = new Date(birthYear + minAge, birthMonth, birthDay);
       return (tempDate <= new Date());
+    },
+    checkSNILS: function() {
+      // Remove any non-digit characters from the SNILS
+      var snils = ''
+      this.entrant.snils.find(function(element){
+        if(element.number != ''){
+          snils = String(element.number)
+        }
+      })
+      snils = snils.replace(/\D/g, '');
+    
+      // Check if the SNILS has the correct length
+      if (snils.length !== 11) {
+        return 'В номер СНИЛС должно быть 11 цифр';
+      }
+    
+      // Calculate the control sum
+      const controlSum = snils.slice(0, -2).split('').reduce((sum, digit, index) => sum + digit * (9 - index), 0);
+    
+      // Check the control sum against the last two digits
+      const controlDigits = parseInt(snils.slice(-2), 10);
+      const expectedControlDigits = controlSum > 101 ? controlSum % 101 : controlSum;
+    
+      if (expectedControlDigits !== controlDigits) {
+        return 'Контрольная сумма не совпадает, введенное значение не является номером СНИЛС'
+      }
     },
   },
   methods: {
@@ -308,19 +334,22 @@ var entrants = new Vue({
       });
     },
     isApplicable: function(competitiveGroup) {
-      if(competitiveGroup.education_source == 'С оплатой обучения' && competitiveGroup.entrance_category == 'Для иностранных граждан — обучение на русском языке' && this.entrant.nationality != 'Российская Федерация') {
+      if(competitiveGroup.education_source == 'По договору об оказании платных образовательных услуг' && competitiveGroup.entrance_category == 'Для иностранных граждан — обучение на русском языке' && this.entrant.nationality != 'Российская Федерация') {
         return true;
       };
-      if(competitiveGroup.education_source == 'Квота приема лиц, имеющих особое право' && competitiveGroup.entrance_category == 'Специальная квота' && this.entrant.questionnaire['special']) {
+      if(competitiveGroup.education_source == 'По договору об оказании платных образовательных услуг' && competitiveGroup.entrance_category == 'Для иностранных граждан — обучение на английском языке' && this.entrant.nationality != 'Российская Федерация') {
         return true;
       };
-      if(competitiveGroup.education_source == 'Квота приема лиц, имеющих особое право' && competitiveGroup.entrance_category == null && this.entrant.questionnaire['benefit']) {
+      if(competitiveGroup.education_source == 'Особая квота' && competitiveGroup.entrance_category == 'Отдельная квота' && this.entrant.questionnaire['special']) {
         return true;
       };
-      if(competitiveGroup.education_source == 'Основные места в рамках КЦП' || (competitiveGroup.education_source == 'С оплатой обучения' && competitiveGroup.entrance_category == null)) {
+      if(competitiveGroup.education_source == 'Особая квота' && competitiveGroup.entrance_category == null && this.entrant.questionnaire['benefit']) {
         return true;
       };
-      if(competitiveGroup.education_source == 'Квота приема на целевое обучение') {
+      if(competitiveGroup.education_source == 'Основные места в рамках КЦП' || (competitiveGroup.education_source == 'По договору об оказании платных образовательных услуг' && competitiveGroup.entrance_category == null)) {
+        return true;
+      };
+      if(competitiveGroup.education_source == 'Целевая квота') {
         for( var i = 0; i < this.entrant.target_contracts.length; i++ ) {
           if(competitiveGroup.id == this.entrant.target_contracts[i].competitive_group_id){
             return true;
@@ -626,15 +655,6 @@ var entrants = new Vue({
         if(this.entrant.personal.birth_date == '') this.errors.push({element: 'birth_date', message: 'Необходимо указать дату рождения', level: 'red'});
         if(this.entrant.personal.gender == null) this.errors.push({element: 'gender', message: 'Необходимо указать пол', level: 'red'});
         if(this.entrant.contact_information.phone == '') this.errors.push({element: 'phone', message: 'Необходимо контактный телефон', level: 'red'});
-        if(!entrants.findAttachment(this.entrant.id, 'data_processing_consent', false)) entrants.errors.push({element: 'data_processing_consent_attachment', message: 'Необходимо прикрепить сканы согласий на обработку и распространение персональных данных', level: 'red'});
-        if(this.entrant.snils.find(function(element) {
-          if(!entrants.entrant.snils_absent) {
-            if(element.number == ''){
-              entrants.errors.push({element: 'snils', message: 'Необходимо указать номер СНИЛС, либо отметить, что он отсутствует', level: 'red'});
-            };
-            if(!entrants.findAttachment(element.id, 'snils', false)) entrants.errors.push({element: 'snils_attachment', message: 'Необходимо прикрепить копию СНИЛС', level: 'red'});
-          };
-        }));
         if(this.entrant.identity_documents.find(function(element) {
           if(element.document_category == ''){
             entrants.errors.push({element: 'identity_document_category', message: 'Необходимо выбрать тип документа, удостоверяющего личность', level: 'red'});
@@ -652,6 +672,11 @@ var entrants = new Vue({
             entrants.errors.push({element: 'identity_document_date', message: 'Необходимо указать дату выдачи документа, удостоверяющего личность', level: 'red'});
           };
           if(!entrants.findAttachment(element.id, 'identity_document', false)) entrants.errors.push({element: 'identity_document_attachment', message: 'Необходимо прикрепить копию документа, удостоверяющего личность', level: 'red'});
+        }));
+        if(this.entrant.snils.find(function(element){
+          if(element.number == '' && entrants.entrant.nationality == 'Российская Федерация') {
+            entrants.errors.push({element: 'snils_number', message: 'Необходимо указать номер СНИЛС', level: 'red'})
+          }
         }));
         if(this.entrant.education_documents.find(function(element) {
           if(element.document_category == ''){
@@ -717,7 +742,7 @@ var entrants = new Vue({
         if(!this.entrant.contact_information.address) this.errors.push({element: 'address', message: 'Необходимо указать адрес', level: 'red'});
         if(this.entrant.questionnaire['special_entrant'] && !this.entrant.questionnaire['benefit']) this.errors.push({element: 'special_entrant', message: 'Указана необходимость создания специальных условий для сдачи вступительных испытаний, но не указано наличие льготы на вкладке Льготы', level: 'red'});
         if(this.entrant.questionnaire['special_entrant'] && this.entrant.special_conditions == null) this.errors.push({element: 'special_conditions', message: 'Указана необходимость создания специальных условий для сдачи вступительных испытаний, но не указан перечень условий', level: 'red'});
-        if(!entrants.findAttachment(this.entrant.id, 'medical_document', false) && entrants.entrant.current_campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет') entrants.errors.push({element: 'medical_document', message: 'Необходимо прикрепить копию копию медицинского заключения', level: 'red'});
+        if(!entrants.findAttachment(this.entrant.id, 'medical_document', false) && entrants.entrant.campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет') entrants.errors.push({element: 'medical_document', message: 'Необходимо прикрепить копию копию медицинского заключения', level: 'red'});
       }
       if(tab == 'start'){
         if(!this.findAttachment(this.entrant.id, 'entrant_application', false)) this.errors.push({element: 'entrant_application_attachment', message: 'Необходимо прикрепить заявление о поступлении', level: 'red'});
@@ -854,7 +879,7 @@ var entrants = new Vue({
           division_code: '',
           birth_place: ''
         });
-        if(this.entrant.education_documents.length == 0 && this.entrant.current_campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет') this.entrant.education_documents.push({
+        if(this.entrant.education_documents.length == 0 && this.entrant.campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет') this.entrant.education_documents.push({
           id: null,
           document_type: 'education_document',
           document_category: '',
@@ -863,7 +888,7 @@ var entrants = new Vue({
           issuer: '',
           original: '',
         });
-        if(this.entrant.education_documents.length == 0 && this.entrant.current_campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации') this.entrant.education_documents.push({
+        if(this.entrant.education_documents.length == 0 && this.entrant.campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации') this.entrant.education_documents.push({
           id: null,
           document_type: 'education_document',
           document_category: 'Диплом о высшем профессиональном образовании',
@@ -878,7 +903,7 @@ var entrants = new Vue({
           document_type: 'snils',
           number: '',
         });
-        if(this.entrant.marks.length == 0 && this.entrant.current_campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации') this.entrant.marks.push({
+        if(this.entrant.marks.length == 0 && this.entrant.campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации') this.entrant.marks.push({
           subject: 'Здравоохранение',
           marks: [
           {
@@ -949,11 +974,11 @@ var entrants = new Vue({
           address: ''
         };
         axios
-          .get('/api/campaigns/' + this.entrant.current_campaign.id)
+          .get('/api/campaigns/' + this.entrant.campaign.id)
           .then(response => (this.api.dictionaries.campaign = response.data.campaign));
       });
   axios
-    .get('/api/dictionaries/67')
+    .get('/api/dictionaries/10')
     .then(response => (this.api.dictionaries.identity_document_categories = response.data.dictionary.items));
   },
 })
