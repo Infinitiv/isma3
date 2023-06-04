@@ -77,7 +77,7 @@ var entrants = new Vue({
             name: "Документ, подтверждающий участие в работах на радиационных объектах или воздействие радиации"
           },
           {
-            name: "Документ, подтверждающий право поступления по специальной квоте"
+            name: "Документ, подтверждающий право поступления по отдельной квоте"
           },
         ],
         olympic_document_categories: [
@@ -245,19 +245,20 @@ var entrants = new Vue({
       snils = snils.replace(/\D/g, '');
     
       // Check if the SNILS has the correct length
-      if (snils.length !== 11) {
+      if (snils.length > 0 && snils.length !== 11) {
         return 'В номер СНИЛС должно быть 11 цифр';
       }
-    
-      // Calculate the control sum
-      const controlSum = snils.slice(0, -2).split('').reduce((sum, digit, index) => sum + digit * (9 - index), 0);
-    
-      // Check the control sum against the last two digits
-      const controlDigits = parseInt(snils.slice(-2), 10);
-      const expectedControlDigits = controlSum > 101 ? controlSum % 101 : controlSum;
-    
-      if (expectedControlDigits !== controlDigits) {
-        return 'Контрольная сумма не совпадает, введенное значение не является номером СНИЛС'
+      if (snils.length === 11) {
+        // Calculate the control sum
+        const controlSum = snils.slice(0, -2).split('').reduce((sum, digit, index) => sum + digit * (9 - index), 0);
+      
+        // Check the control sum against the last two digits
+        const controlDigits = parseInt(snils.slice(-2), 10);
+        const expectedControlDigits = controlSum > 101 ? controlSum % 101 : controlSum;
+      
+        if (expectedControlDigits !== controlDigits) {
+          return 'Контрольная сумма не совпадает, введенное значение не является номером СНИЛС'
+        }
       }
     },
   },

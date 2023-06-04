@@ -49,6 +49,14 @@ fieldset
           = text_field_tag 'snils[][number]', nil, placeholder: '00000000000', 'v-model.trim': 'document.number', class: 'error', 'v-on:change': "sendData('snils', document, index)", 'v-bind:disabled': 'isDisabled'
         small.error v-if="checkSNILS" == "{{ checkSNILS }}"
         small.error v-if="findErrorMessage('snils')" == "{{ findErrorMessage('snils') }}"
+    .row
+      .large-12.small-12.columns
+        br
+        dd= render partial: 'add_attachment', locals: { message: 'Выберите и прикрепите файл.', document_type: 'snils', document_id: 'document.id', entrant_id: 'entrant.id', ref_name: 'snils', id: 'snils'}
+    .row(v-for="attachment in entrant.attachments")
+      .large-12.small-12.columns
+        p(v-if="attachment.document_type == 'snils'")
+          a v-bind:href = "'/api/attachments/' + attachment.data_hash + '?filename=' + attachment.filename" target = '_blank' {{ attachment.filename }}
 fieldset
   legend Документы, удостоверяющие личность
   p Указываются данные действующего документа, удостоверяющего личность.
