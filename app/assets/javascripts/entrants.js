@@ -698,6 +698,7 @@ var entrants = new Vue({
       this.entrant.target_contracts.push({
         id: null,
         document_type: 'target_contract',
+        document_category: 'Договор о целевом обучении',
         competitive_group_id: '',
         original: ''
       });
