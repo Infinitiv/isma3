@@ -57,39 +57,9 @@ fieldset(v-if="checkPaidCompetitiveGroups")
   =link_to 'Указать данные заказчика', '#', '@click.prevent': 'openContragentModal', class: 'button tiny'
 fieldset
   legend Действия с заявлениями
-  h3 Заявление о согласии на зачисление
-  p Вы можете участвовать в нескольких конкурсах на поступление в наш вуз. Но зачислены Вы будете лишь на одну специальность и либо на бюджетные места, либо на места по договору об оказании платных образовательных услуг. Поэтому, оценив конкурсную ситуацию, Вы должны будете сделать свой выбор и подать заявление о согласии на зачисление и оригинал документа об образовании. Это не обязательно делать сейчас, то есть сразу при подаче документов, но необходимо сделать в установленные сроки.
-  .(v-if="entrant.campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
-    p Если Вы не предоставите заявление о согласии на зачисление и оригинал документа о предшествующем образовании в установленные сроки (пункты 10.10, 10.11 Правил приема), Вы не будете зачислены в наш вуз, даже если пройдете по конкурсу. Если Вы считаете, что окончательно определились со своим выбором, Вы можете сразу при подаче документов представить заявление о согласии и оригинал. Для этого отметьте тот конкурс, по результатам которого Вы согласны быть зачислены. В последующем (но обязательно ДО истечения вышеуказанных сроков) Вы сможете изменить свое мнение и переписать заявление о согласии на зачисление (переписать три раза - если поступаете на бюджетные места, неограниченное число раз - если поступаете по внебюджету).
-  .row
-    .large-12.small-1.columns
-      p 
-        strong Шаг 1. Выберите конкурс.
-      select.error#competitive_group_id(name="competitive_group_id" v-model='entrant.agreement' v-bind:disabled="consentCount() > withdrawCount() ? 'disabled' : false")
-        option(value)
-        option(v-for="competitive_group in entrant.competitive_groups" v-bind:value="competitive_group.id") {{ competitive_group.name }}
-  .row
-    br
-    .large-12.small-12.columns(v-if="!findAttachment(entrant.agreement, 'consent_application', false) || consentCount() == withdrawCount()")
-      .(v-if="findAttachment(entrant.agreement, 'consent_application', true)")
-        p
-          strong Шаг 2. Скачайте бланк
-        p
-          a v-bind:href = "'/api/attachments/' + findAttachment(entrant.agreement, 'consent_application', true).data_hash + '?filename=' + findAttachment(entrant.agreement, 'consent_application', true).filename" target = '_blank' Скачать бланк заявления о согласии на зачисление
-      .(v-if="entrant.agreement")
-        p
-          strong Шаг 3. Распечатайте и подпишите
-        = render partial: 'add_attachment', locals: { message: 'Загрузите подписанное заявление о согласии на зачисление.', document_type: 'consent_application', document_id: 'entrant.agreement', entrant_id: 'entrant.id', ref_name: 'consent_application', id: 'consent_application'}
-  .row
-    .large-12.small-12.columns(v-if="consentCount() > 0")
-      p
-        strong Поданные согласия на зачисление
-      ul.no-bullet
-        li(v-for="attachment in entrant.attachments" v-if="attachment.document_type == 'consent_application' && !attachment.template")
-          a v-bind:href = "'/api/attachments/' + attachment.data_hash + '?filename=' + attachment.filename" target = '_blank' {{ attachment.filename }}
-  .row
-    .large-12.small-12.columns(v-if="entrant.agreement && api.dictionaries.campaign.competitive_groups && findCompetitiveGroup(entrant.agreement).education_source == 'С оплатой обучения'")
-      p Вы решили подать согласие на зачисление на внебюджетный конкурс. Вторым обязательным условием зачисления, кроме согласия, является подписание договора на оказание платных образовательных услуг.
+  /.row
+    .large-12.small-12.columns(v-if="api.dictionaries.campaign.competitive_groups && findCompetitiveGroup(entrant.agreement).education_source == 'С оплатой обучения'")
+      p Обязательным условием зачисления на конкурс с оплатой обучения, является подписание договора на оказание платных образовательных услуг.
       .(v-if="checkContragent")
         p= "{{ checkContragent }}"
         =link_to 'Указать данные заказчика', '#', '@click.prevent': 'openContragentModal', class: 'button tiny'
@@ -111,25 +81,6 @@ fieldset
         strong Загруженные договоры
       ul.no-bullet
         li(v-for="attachment in entrant.attachments" v-if="attachment.document_type == 'contract' && !attachment.template")
-          a v-bind:href = "'/api/attachments/' + attachment.data_hash + '?filename=' + attachment.filename" target = '_blank' {{ attachment.filename }}
-  h3 Отзыв согласия на зачисление
-  p Для отзыва заявления о согласии на зачисление, необходимо скачать бланк, распечатать, подписать и прикрепить в соответствующее поле. Заявление будет обработано приемной комиссией, после чего согласие в базе будет удалено. Вы продолжаете участвовать в заявленных Вами конкурсах, но без подачи нового заявления о согласии не сможете быть зачисленными в ИвГМА.
-  .row(v-if="entrant.agreement")
-    .large-12.small-12.columns(v-if="!findAttachment(entrant.agreement, 'withdraw_application', false) || consentCount() > withdrawCount()")
-      .(v-if="findAttachment(entrant.agreement, 'withdraw_application', true) && findAttachment(entrant.agreement, 'consent_application', false)")
-        p
-          strong Шаг 1. Скачайте бланк
-        p
-          a v-bind:href = "'/api/attachments/' + findAttachment(entrant.agreement, 'withdraw_application', true).data_hash + '?filename=' + findAttachment(entrant.agreement, 'withdraw_application', true).filename" target = '_blank' Скачать бланк заявления об отзыве согласия на зачисление
-        p
-          strong Шаг 2. Распечатайте и подпишите
-        = render partial: 'add_attachment', locals: { message: 'Загрузите подписанное заявление об отказе от согласия на зачисление.', document_type: 'withdraw_application', document_id: 'entrant.agreement', entrant_id: 'entrant.id', ref_name: 'withdraw_application', id: 'withdraw_application'}
-  .row
-    .large-12.small-12.columns(v-if="withdrawCount() > 0")
-      p
-        strong Поданные отзывы согласия на зачисление
-      ul.no-bullet
-        li(v-for="attachment in entrant.attachments" v-if="attachment.document_type == 'withdraw_application' && !attachment.template")
           a v-bind:href = "'/api/attachments/' + attachment.data_hash + '?filename=' + attachment.filename" target = '_blank' {{ attachment.filename }}
   .(v-if="entrant.stage == 4")
     h3 Отзыв пакета документов
