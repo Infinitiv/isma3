@@ -2,7 +2,7 @@ var entrants = new Vue({
   el: '#entrant',
   data: {
     api: {
-      campaigns: null,
+      campaigns: {},
       countries: {},
     },
     entrant: {
@@ -17,20 +17,28 @@ var entrants = new Vue({
       nationality: '',
       questionnaire: [],
     },
+    current_campaign: {
+      id: '',
+      campaign_type: '',
+    },
   },
   computed: {
     isNextDisabled: function() {
-      if(this.entrant.email_confirmed && this.entrant.hash) {
-        return false
-      }
-      else {
-        return true
-      }
+      return !(this.entrant.email_confirmed && this.entrant.hash);
     },
     isSendCodeDisabled: function() {
       const expression = /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-      return !expression.test(String(this.entrant.email).toLowerCase()) || this.entrant.campaign_id == '';
-    }
+      return !expression.test(this.entrant.email.toLowerCase()) || this.entrant.campaign_id == '';
+    },
+  },
+  watch: {
+    'entrant.campaign_id': function(newCampaignId) {
+      this.current_campaign.id = newCampaignId;
+      const selectedCampaign = this.api.campaigns.find(element => element.id === newCampaignId);
+      if (selectedCampaign) {
+        this.current_campaign.campaign_type = selectedCampaign.campaign_type;
+      }
+    },
   },
   methods: {
     checkEmail: function() {
@@ -129,16 +137,22 @@ var entrants = new Vue({
       return message;
     },
   },
-  mounted: function() {
+  created: function() {
     axios
       .get('/api/campaigns')
       .then(response => {
         this.api.campaigns = response.data.campaigns
-        if(this.api.campaigns.length == 1) this.entrant.campaign_id = this.api.campaigns[0]['id'];
+        if(this.api.campaigns.length === 1) {
+          this.entrant.campaign_id = this.api.campaigns[0].id;
+          this.current_campaign.id = this.api.campaigns[0].id;
+          this.current_campaign.campaign_type = this.api.campaigns[0].campaign_type;
+        };
       });
     axios
       .get('/api/dictionaries/18')
       .then(response => (this.api.countries = response.data.dictionary.items));
+    },
+  mounted: function () {
     this.entrant.clerk = this.$refs.clerk.dataset.clerk;
   },
 })
