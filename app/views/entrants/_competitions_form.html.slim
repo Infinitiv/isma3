@@ -15,11 +15,35 @@ fieldset
           strong= "{{ direction.name }}"
         .row(v-for="competitive_group in api.dictionaries.campaign.competitive_groups" v-if="competitive_group.direction_name == direction.name && isApplicable(competitive_group)")
           .large-1.small-1.columns
-            input.error(type="checkbox" v-bind:id="'competitive_group_' + competitive_group.id" v-bind:name="'competitive_groups[][id]'" v-bind:value="competitive_group.id" v-model="entrant.competitive_group_ids" v-on:change="sendData('competitive_group_ids', entrant.competitive_group_ids)" v-bind:disabled == "findCompetitiveGroup(competitive_group.id) && entrant.stage > 0 || egeDate(competitive_group)")
+            input.error(type="checkbox" v-bind:id="'competitive_group_' + competitive_group.id" v-bind:name="'competitive_groups[][id]'" v-bind:value="competitive_group.id" v-model="entrant.competitive_group_ids" v-on:change="sendData('competitive_group_ids', entrant.competitive_group_ids)" v-bind:disabled == "findCompetitiveGroup(competitive_group.id) && entrant.stage > 0 |egeDate(competitive_group)")
           .large-11.small-11.columns
             label(v-bind:for="competitive_group.id")
               span= "{{ competitive_group.name }} (количество мест: {{ competitive_group.admission_number }})"
-              span(v-if="egeDate(competitive_group)")= " - прием документов завершен"
+              span(v-if="egeDate(competitive_group.id)")= " - прием документов завершен"
+fieldset 
+  legend Расстановка приоритетов
+  p Перетаскиванием блоков и расположите их в порядке убывания значимости
+  h3 Бюджетные конкурсы
+  .
+    .(v-for="(priority, index) in entrant.priorities.budget_priorities" :key="priority.priority" :draggable="true" @dragstart="dragStart(priority)" @dragover.prevent @drop="drop(priority, entrant.priorities.budget_priorities)") 
+      .row
+        .large-12.small-12.columns
+          .panel.callout.radius
+            span= "{{ priority.direction }}."
+            span(v-if="priority.target") &nbsp;Целевые места:
+            span(v-else) &nbsp;Иные места:
+            span &nbsp;
+            span= "приоритет - {{ index + 1 }}"
+  h3 Платные конкурсы
+  .
+    .(v-for="(priority, index) in entrant.priorities.paid_priorities" :key="priority.priority" :draggable="true" @dragstart="dragStart(priority)" @dragover.prevent @drop="drop(priority, entrant.priorities.paid_priorities)") 
+      .row
+        .large-12.small-12.columns
+          .panel.callout.radius
+            span= "{{ priority.direction }}"
+            span(v-if="priority.target") &nbsp;Целевые места
+            span(v-else) &nbsp;Иные места
+            span= ": приоритет - {{ index + 1 }}"
 fieldset
   legend Вступительные испытания
   .(v-if="entrant.campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
@@ -38,7 +62,7 @@ fieldset
         input#exam(type="checkbox" name="exam" v-bind:value="true" v-model="entrant.questionnaire['exam']" v-on:change = "sendData('questionnaire', entrant.questionnaire)" v-bind:disabled = 'isDisabled')
       .large-11.small-11.columns
         label
-          span Имею право и собираюсь сдавать вступительные испытания, проводимые вузом самостоятельно./
+          span Имею право и собираюсь сдавать вступительные испытания, проводимые вузом самостоятельно.
     
     p Вступительные испытания: химия, биология, русский язык. Минимальный балл по каждому предмету - 40.
   .(v-if="entrant.campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации'")

@@ -2,6 +2,11 @@ var entrants = new Vue({
   el: '#entrant',
   data: {
     api: {
+      items: [
+        { id: 1, name: 'Block 1' },
+        { id: 2, name: 'Block 2' },
+        { id: 3, name: 'Block 3' },
+      ],
       hash: window.document.location.pathname.split('/')[2],
       current_tab: 'common',
       dictionaries: {
@@ -221,12 +226,12 @@ var entrants = new Vue({
     },
   },
   methods: {
-    egeDate: function(competitive_group) {
+    egeDate: function(competitive_group_id) {
       var egeDate = false;
       var currentDate = new Date();
       var endDate = null;
-      var termAdmissionDate = this.api.dictionaries.campaign.term_admissions.find(function(element) {
-        if(element.competitive_group_id == competitive_group.id && element.name == 'Прием заявлений и документов без прохождения ДВИ и ВИ вуза') {
+      this.api.dictionaries.campaign.term_admissions.find(function(element) {
+        if(element.competitive_group_id == competitive_group_id && element.name == 'Прием заявлений и документов без прохождения ДВИ и ВИ вуза') {
           endDate = new Date(element.end_date)
         }
       })
@@ -234,6 +239,19 @@ var entrants = new Vue({
           egeDate = true;
         }
       return egeDate;
+    },
+    dragStart: function(item) {
+      event.dataTransfer.setData('text', JSON.stringify(item));
+    },
+    drop: function(item, items) {
+      const droppedItem = JSON.parse(event.dataTransfer.getData('text'));
+      const droppedIndex = items.findIndex((i) => i.priority === droppedItem.priority);
+      const targetIndex = items.findIndex((i) => i.priority === item.priority);
+      items.splice(droppedIndex, 1);
+      items.splice(targetIndex, 0, droppedItem);
+      for(var i = 0; i < items.length; i++) {
+        items[i].priority = i + 1;
+        }
     },
     fillContragent: function() {
       this.entrant.contragent.last_name = this.entrant.personal.last_name;
@@ -603,7 +621,7 @@ var entrants = new Vue({
           if(element.date == ''){
             entrants.errors.push({element: 'identity_document_date', message: 'Необходимо указать дату выдачи документа, удостоверяющего личность', level: 'red'});
           };
-          if(!entrants.findAttachment(element.id, 'identity_document', false)) entrants.errors.push({element: 'identity_document_attachment', message: 'Необходимо прикрепить копию документа, удостоверяющего личность', level: 'red'});
+          if(!entrants.findAttachment(element.id, 'identity_document', false) && !entrants.entrant.source === 'через ЕПГУ') entrants.errors.push({element: 'identity_document_attachment', message: 'Необходимо прикрепить копию документа, удостоверяющего личность', level: 'red'});
         }));
         if(this.entrant.snils.find(function(element){
           if(element.number == '' && entrants.entrant.nationality == 'Российская Федерация') {
@@ -623,7 +641,7 @@ var entrants = new Vue({
           if(element.issuer == ''){
             entrants.errors.push({element: 'education_document_issuer', message: 'Необходимо указать кем выдан документ об образовании', level: 'red'});
           };
-          if(!entrants.findAttachment(element.id, 'education_document', false)) entrants.errors.push({element: 'education_document_attachment', message: 'Необходимо прикрепить документ об образовании', level: 'red'});
+          if(!entrants.findAttachment(element.id, 'education_document', false) && !entrants.entrant.source === 'через ЕПГУ') entrants.errors.push({element: 'education_document_attachment', message: 'Необходимо прикрепить документ об образовании', level: 'red'});
         }));
       }
       if(tab == 'target' || tab == 'others' || tab == 'applications'){
@@ -640,7 +658,7 @@ var entrants = new Vue({
           if(element.issuer == '' && (entrants.entrant.questionnaire['benefit'] || entrants.entrant.questionnaire['special'])) {
             entrants.errors.push({element: 'benefit_document_issuer', message: 'Необходимо указать кем выдан документ, подтверждающий льготу', level: 'red'});
           };
-          if(!entrants.findAttachment(element.id, 'benefit_document', false) && (entrants.entrant.questionnaire['benefit'] || entrants.entrant.questionnaire['special'])) entrants.errors.push({element: 'benefit_document', message: 'Необходимо прикрепить копию документа, подтверждающего льготу', level: 'red'});
+          if(!entrants.findAttachment(element.id, 'benefit_document', false) && (entrants.entrant.questionnaire['benefit'] || entrants.entrant.questionnaire['special']) && !entrants.entrant.source === 'через ЕПГУ') entrants.errors.push({element: 'benefit_document', message: 'Необходимо прикрепить копию документа, подтверждающего льготу', level: 'red'});
         }));
         if(this.entrant.olympic_documents.find(function(element) {
           if(element.document_category == '' && entrants.entrant.questionnaire['olympionic']){
@@ -658,13 +676,13 @@ var entrants = new Vue({
           if(element.class_number == '' && entrants.entrant.questionnaire['olympionic']){
             entrants.errors.push({element: 'class_number', message: 'Необходимо указать в каком классе получен диплом олимпиады', level: 'red'});
           };
-          if(!entrants.findAttachment(element.id, 'olympic_document', false) && entrants.entrant.questionnaire['olympionic']) entrants.errors.push({element: 'olympic_document', message: 'Необходимо прикрепить копию диплома олимпиады', level: 'red'});
+          if(!entrants.findAttachment(element.id, 'olympic_document', false) && entrants.entrant.questionnaire['olympionic'] && !entrants.entrant.source === 'через ЕПГУ') entrants.errors.push({element: 'olympic_document', message: 'Необходимо прикрепить копию диплома олимпиады', level: 'red'});
         }));
       }
       if(tab == 'competitions') {
         if(this.entrant.target_contracts.find(function(element) {
           if(element.competitive_group_id && element.date == null) entrants.errors.push({element: 'target_contract_date', message: 'Необходимо указать дату заключения договора', level: 'red'});
-          if(!entrants.findAttachment(element.id, 'target_contract', false) && element.competitive_group_id) entrants.errors.push({element: 'target_contract', message: 'Необходимо прикрепить копию целевого договора', level: 'red'});
+          if(!entrants.findAttachment(element.id, 'target_contract', false) && element.competitive_group_id && !entrants.entrant.source === 'через ЕПГУ') entrants.errors.push({element: 'target_contract', message: 'Необходимо прикрепить копию целевого договора', level: 'red'});
         }));
       }
       if(tab == 'others' || tab == 'applications'){
