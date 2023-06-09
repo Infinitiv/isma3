@@ -228,7 +228,7 @@ var entrants = new Vue({
   methods: {
     egeDate: function(competitive_group_id) {
       var egeDate = false;
-      var currentDate = new Date();
+      const currentDate = new Date();
       var endDate = null;
       this.api.dictionaries.campaign.term_admissions.find(function(element) {
         if(element.competitive_group_id == competitive_group_id && element.name == 'Прием заявлений и документов без прохождения ДВИ и ВИ вуза') {
