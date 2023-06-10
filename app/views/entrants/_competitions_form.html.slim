@@ -24,24 +24,31 @@ fieldset
   legend Расстановка приоритетов
   p Перетаскиванием блоков расположите их в порядке убывания значимости
   h3 Бюджетные конкурсы
-  .
-    .(v-for="(priority, index) in entrant.priorities.budget_priorities" :key="priority.priority" :draggable="true" @dragstart="dragStart(priority)" @dragover.prevent @drop="drop(priority, entrant.priorities.budget_priorities)") 
-      .panel.callout.radius
-        span= "{{ priority.direction }}."
-        span(v-if="priority.target") &nbsp;Целевые места:
-        span(v-else) &nbsp;Иные места:
-        span &nbsp;
-        span= "приоритет - {{ index + 1 }}"
+  draggable(v-model="entrant.priorities.budget_priorities" v-bind="dragOptions" :move="checkMove")
+    transition-group(type="transition")
+      .(v-for="(priority, index) in entrant.priorities.budget_priorities" :key="priority.priority")
+          .panel.callout
+            i.fi-list-thumbnails
+            span &nbsp;
+            span= "{{ priority.direction }}."
+            span &nbsp;
+            span(v-if="priority.target") Целевые места:
+            span(v-else) Иные места:
+            span &nbsp;
+            span= "приоритет - {{ index + 1 }}"
   h3 Платные конкурсы
-  .
-    .(v-for="(priority, index) in entrant.priorities.paid_priorities" :key="priority.priority" :draggable="true" @dragstart="dragStart(priority)" @dragover.prevent @drop="drop(priority, entrant.priorities.paid_priorities)") 
-      .row
-        .large-12.small-12.columns
-          .panel.callout.radius
-            span= "{{ priority.direction }}"
-            span(v-if="priority.target") &nbsp;Целевые места
-            span(v-else) &nbsp;Иные места
-            span= ": приоритет - {{ index + 1 }}"
+  draggable(v-model="entrant.priorities.paid_priorities" v-bind="dragOptions" :move="checkMove")
+    transition-group
+      .(v-for="(priority, index) in entrant.priorities.paid_priorities" :key="priority.priority")
+        .panel.callout.radius
+          i.fi-list-thumbnails
+          span &nbsp;
+          span= "{{ priority.direction }}."
+          span &nbsp;
+          span(v-if="priority.target") Целевые места:
+          span(v-else) Иные места:
+          span &nbsp;
+          span= "приоритет - {{ index + 1 }}"
 fieldset
   legend Вступительные испытания
   .(v-if="entrant.campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'")

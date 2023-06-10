@@ -1,8 +1,10 @@
-= javascript_include_tag 'axios'
+= javascript_include_tag 'axios.min.js'
 - if Rails.env == 'production'
   = javascript_include_tag 'vue@2.7.14.js'
 - else
   = javascript_include_tag 'vue.js'
+= javascript_include_tag 'Sortable.min.js'
+= javascript_include_tag 'vuedraggable.umd.min.js'
 section.panel#entrant
   . v-if="entrant.id"
     .row(v-if="errors.length")

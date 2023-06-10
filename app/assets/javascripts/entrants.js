@@ -224,8 +224,20 @@ var entrants = new Vue({
         }
       }
     },
+    dragOptions: function() {
+      return {
+        animation: 200,
+        group: "description",
+        disabled: false,
+        ghostClass: "ghost"
+      };
+    },
   },
   methods: {
+    checkMove: function(event) {
+      console.log(event.draggedContext.element.source === event.relatedContext.element.source)
+      return (event.draggedContext.element.source === event.relatedContext.element.source);
+    },
     egeDate: function(competitive_group_id) {
       var egeDate = false;
       const currentDate = new Date();
