@@ -5,7 +5,7 @@ fieldset
     p Конкурсы по особой, специальной и целевой квотам становятся доступны только в том случае, если Вы заполнили соответствующие поля и прикрепили документы, подтверждающие право на участие в конкурсе по особой, специальной и/или целевой квоте на вкладке Льготы.
     p Для участия в конкурсе в пределах квоты целевого приема необходимо заключить договор с заказчиком целевого обучения и загрузить его на вкладке Целевой прием.
   . v-if = "findAttachment(entrant.id, 'entrant_application', false)"
-    strong Вы уже загрузили заявление о поступлении, поэтому после добавления нового конкурса Вам будет необходимо заново скачать бланк заявления, подписать его и загрузить на вкладке Заявления
+    strong Вы уже загрузили заявление о поступлении, поэтому после добавления нового конкурса Вам будет необходимо заново подтвердить расстановку приоритетов, перейти на вкладку Заявления и направить заявление на рассмотрение в приемную комиссию.
   .(v-if="entrant.campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации'")
     p Вы имеете право выбрать ДВЕ специальности для поступления, внутри которых Вы можете отметить любое количество конкурсов при наличии оснований для участия в них. Для участия в конкурсе в пределах квоты целевого приема необходимо заключить договор с заказчиком целевого обучения и загрузить его на вкладке Целевой прием.
   .row
@@ -24,9 +24,9 @@ fieldset
   legend Расстановка приоритетов
   p Перетаскиванием блоков расположите их в порядке убывания значимости
   h3 Бюджетные конкурсы
-  draggable(v-model="entrant.priorities.budget_priorities" v-bind="dragOptions" :move="checkMove")
+  draggable(v-model="entrant.priorities.budget_priorities" v-bind="dragOptions" :move="checkMove" @end="entrant.questionnaire['priority'] = false; fillPriority(entrant.priorities.budget_priorities)")
     transition-group(type="transition")
-      .(v-for="(priority, index) in entrant.priorities.budget_priorities" :key="priority.priority")
+      .(v-for="(priority, index) in entrant.priorities.budget_priorities" :key="priority.index")
           .panel.callout
             i.fi-list-thumbnails
             span &nbsp;
@@ -35,11 +35,11 @@ fieldset
             span(v-if="priority.target") Целевые места:
             span(v-else) Иные места:
             span &nbsp;
-            span= "приоритет - {{ index + 1 }}"
+            span= "приоритет - {{ priority.priority }}"
   h3 Платные конкурсы
-  draggable(v-model="entrant.priorities.paid_priorities" v-bind="dragOptions" :move="checkMove")
+  draggable(v-model="entrant.priorities.paid_priorities" v-bind="dragOptions" :move="checkMove" @end="entrant.questionnaire['priority'] = false; fillPriority(entrant.priorities.paid_priorities)")
     transition-group
-      .(v-for="(priority, index) in entrant.priorities.paid_priorities" :key="priority.priority")
+      .(v-for="(priority, index) in entrant.priorities.paid_priorities" :key="priority.index")
         .panel.callout.radius
           i.fi-list-thumbnails
           span &nbsp;
@@ -48,7 +48,13 @@ fieldset
           span(v-if="priority.target") Целевые места:
           span(v-else) Иные места:
           span &nbsp;
-          span= "приоритет - {{ index + 1 }}"
+          span= "приоритет - {{ priority.priority }}"
+  .row
+      .large-1.small-1.columns
+        input#exam(type="checkbox" name="priority" v-bind:value="true" v-model="entrant.questionnaire['priority']" v-on:change = "sendData('questionnaire', entrant.questionnaire); sendData('priorities', entrant.priorities)")
+      .large-11.small-11.columns
+        label
+          span Подтверждаю, что указал приоритеты конкурсов.
 fieldset
   legend Вступительные испытания
   .(v-if="entrant.campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
@@ -59,7 +65,7 @@ fieldset
       li иностранные граждане;
       li по тем предметам, по которым поступающий не сдавал ЕГЭ в текущем календарном году - если поступающий получил документ о среднем общем образовании в иностранной организации;
       li граждане Российской Федерации, которые до прибытия на территорию Российской Федерации проживали на территории Донецкой Народной Республики, Луганской Народной Республики, Украины, а также граждане Российской Федерации, которые были вынуждены прервать свое обучение в иностранных образовательных организациях;
-      li лица, поступающие в пределах специальной квоты (дети военнослужащих и сотрудников федеральных органов исполнительной власти и федеральных государственных органов, принимающих (принимавших) участие в специальной военной операции на территориях ДНР, ЛНР и Украины, за исключением погибших (умерших), получивших увечье (ранение, травму, контузию) или заболевание).
+      li лица, поступающие в пределах специальной квоты (дети военнослужащих и сотрудников федеральных органов исполнительной власти и федеральных государственных органов, принимающих (принимавших) участие в специальной военной операции на территориях ДНР, ЛНР и Украины, за исключением погибших (умерших), получивших увечье (ранение, травму, контузию) или заболевание).
       
     p ВСЕ остальные категории абитуриентов могут поступать в академию ТОЛЬКО по результатам ЕГЭ. Результаты ЕГЭ будут подгружаться в нашу систему автоматически из Федеральной базы.
     .row(v-bind:disabled = 'isDisabled')

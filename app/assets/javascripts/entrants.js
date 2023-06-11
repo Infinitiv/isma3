@@ -235,8 +235,12 @@ var entrants = new Vue({
   },
   methods: {
     checkMove: function(event) {
-      console.log(event.draggedContext.element.source === event.relatedContext.element.source)
       return (event.draggedContext.element.source === event.relatedContext.element.source);
+    },
+    fillPriority: function(items) {
+      for(var i = 0; i < items.length; i++) {
+        items[i].priority = i + 1;
+        }
     },
     egeDate: function(competitive_group_id) {
       var egeDate = false;
@@ -251,19 +255,6 @@ var entrants = new Vue({
           egeDate = true;
         }
       return egeDate;
-    },
-    dragStart: function(item) {
-      event.dataTransfer.setData('text', JSON.stringify(item));
-    },
-    drop: function(item, items) {
-      const droppedItem = JSON.parse(event.dataTransfer.getData('text'));
-      const droppedIndex = items.findIndex((i) => i.priority === droppedItem.priority);
-      const targetIndex = items.findIndex((i) => i.priority === item.priority);
-      items.splice(droppedIndex, 1);
-      items.splice(targetIndex, 0, droppedItem);
-      for(var i = 0; i < items.length; i++) {
-        items[i].priority = i + 1;
-        }
     },
     fillContragent: function() {
       this.entrant.contragent.last_name = this.entrant.personal.last_name;
@@ -372,6 +363,9 @@ var entrants = new Vue({
       .put('/api/entrants/' + this.entrant.hash, data)
       .then(response => {
         if(response.data.result == 'success') {
+          if(sub == 'priorities') {
+            this.entrant.priorities = response.data.priorities;
+          };
           if(sub == 'identity_document') {
             this.entrant.identity_documents[index].id = response.data.identity_document.id;
           };
@@ -403,6 +397,7 @@ var entrants = new Vue({
           if(sub == 'competitive_group_ids') {
             this.entrant.entrant_applications = response.data.entrant_applications;
             this.entrant.competitive_groups = response.data.competitive_groups;
+            this.entrant.priorities = response.data.priorities;
             this.entrant.stage = response.data.stage;
             this.entrant.status = response.data.status;
           };
@@ -699,6 +694,7 @@ var entrants = new Vue({
       }
       if(tab == 'others' || tab == 'applications'){
         if(this.entrant.competitive_group_ids.length == 0) this.errors.push({element: 'competitive_group_ids', message: 'Необходимо отметить участие хотя бы в одном конкурсе', level: 'red'});
+        if(!entrants.entrant.questionnaire['priority']) entrants.errors.push({element: 'priority', message: 'Необходимо подтвердить расстановку приоритетов конкурсов.', level: 'red'});
       }
       if(tab == 'applications'){
         if(!this.entrant.contact_information.address) this.errors.push({element: 'address', message: 'Необходимо указать адрес', level: 'red'});
