@@ -289,10 +289,10 @@ var entrants = new Vue({
       });
     },
     isApplicable: function(competitiveGroup) {
-      if(competitiveGroup.education_source == 'По договору об оказании платных образовательных услуг' && competitiveGroup.entrance_category == 'Для иностранных граждан — обучение на русском языке' && this.entrant.nationality != 'Российская Федерация') {
+      if(competitiveGroup.education_source == 'По договору об оказании платных образовательных услуг' && competitiveGroup.entrance_category == 'Для иностранных граждан — обучение на русском языке' && this.entrant.nationality != 'РОССИЯ') {
         return true;
       };
-      if(competitiveGroup.education_source == 'По договору об оказании платных образовательных услуг' && competitiveGroup.entrance_category == 'Для иностранных граждан — обучение на английском языке' && this.entrant.nationality != 'Российская Федерация') {
+      if(competitiveGroup.education_source == 'По договору об оказании платных образовательных услуг' && competitiveGroup.entrance_category == 'Для иностранных граждан — обучение на английском языке' && this.entrant.nationality != 'РОССИЯ') {
         return true;
       };
       if(competitiveGroup.education_source == 'Особая квота' && competitiveGroup.entrance_category == 'Отдельная квота' && this.entrant.questionnaire['special']) {
@@ -616,13 +616,13 @@ var entrants = new Vue({
           if(element.document_category == ''){
             entrants.errors.push({element: 'identity_document_category', message: 'Необходимо выбрать тип документа, удостоверяющего личность', level: 'red'});
           };
-          if(element.document_category == 'Паспорт гражданина РФ' && element.serie.length != 4){
+          if(element.document_category == 'Паспорт гражданина Российской Федерации' && element.serie.length != 4){
             entrants.errors.push({element: 'identity_document_serie', message: 'Выбран тип документа Российский паспорт, но серия указана неправильно', level: 'red'});
           };
           if(element.number == ''){
             entrants.errors.push({element: 'identity_document_number', message: 'Необходимо указать номер документа, удостоверяющего личность', level: 'red'});
           };
-          if(element.document_category == 'Паспорт гражданина РФ' && element.number.length != 6){
+          if(element.document_category == 'Паспорт гражданина Российской Федерации' && element.number.length != 6){
             entrants.errors.push({element: 'identity_document_number', message: 'Выбран тип документа Российский паспорт, но номер указан неправильно', level: 'red'});
           };
           if(element.date == ''){
@@ -631,7 +631,7 @@ var entrants = new Vue({
           if(!entrants.findAttachment(element.id, 'identity_document', false) && !entrants.entrant.source === 'через ЕПГУ') entrants.errors.push({element: 'identity_document_attachment', message: 'Необходимо прикрепить копию документа, удостоверяющего личность', level: 'red'});
         }));
         if(this.entrant.snils.find(function(element){
-          if(element.number == '' && entrants.entrant.nationality == 'Российская Федерация') {
+          if(element.number == '' && entrants.entrant.nationality == 'РОССИЯ') {
             entrants.errors.push({element: 'snils_number', message: 'Необходимо указать номер СНИЛС', level: 'red'})
           }
         }));
