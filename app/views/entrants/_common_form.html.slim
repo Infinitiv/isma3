@@ -96,7 +96,7 @@ fieldset
       .large-4.small-12.columns(v-show="entrant.identity_documents.indexOf(document) < 1")
         = label_tag :division_code
           span Код подразделения
-          = text_field_tag 'identity_documents[][division_code]', nil, placeholder: '000-00', 'v-model.trim': 'document.division_code', class: 'error', 'v-on:change': "sendData('identity_document', document, index)", 'v-bind:disabled': 'isDisabled'
+          = text_field_tag 'identity_documents[][division_code]', nil, placeholder: '000-000', 'v-model.trim': 'document.division_code', class: 'error', 'v-on:change': "sendData('identity_document', document, index)", 'v-bind:disabled': 'isDisabled'
         small.error v-if="findErrorMessage('identity_document_division_code')" == "{{ findErrorMessage('identity_document_division_code') }}"
       .large-8.small-12.columns(v-show="entrant.identity_documents.indexOf(document) < 1")
         = label_tag :birth_place

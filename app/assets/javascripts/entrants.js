@@ -2,16 +2,12 @@ var entrants = new Vue({
   el: '#entrant',
   data: {
     api: {
-      items: [
-        { id: 1, name: 'Block 1' },
-        { id: 2, name: 'Block 2' },
-        { id: 3, name: 'Block 3' },
-      ],
       hash: window.document.location.pathname.split('/')[2],
       current_tab: 'common',
       dictionaries: {
         campaign: {},
         identity_document_categories: [],
+        regions: [],
         languages: [
           'Английский',
           'Французский',
@@ -912,7 +908,12 @@ var entrants = new Vue({
           id: null,
           document_type: 'target_contract',
           competitive_group_id: '',
-          original: ''
+          date: '',
+          number: '',
+          employer: '',
+          employer_ogrn: '',
+          employer_kpp: '',
+          employer_region: ''
         });
         if(!this.entrant.contragent) this.entrant.contragent = {
           id: null,
@@ -936,5 +937,8 @@ var entrants = new Vue({
   axios
     .get('/api/dictionaries/10')
     .then(response => (this.api.dictionaries.identity_document_categories = response.data.dictionary.items));
+  axios
+    .get('/api/dictionaries/29')
+    .then(response => (this.api.dictionaries.regions = response.data.dictionary.items));
   },
 })

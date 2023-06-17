@@ -14,11 +14,11 @@ fieldset(v-if="current_campaign.campaign_type == 'Прием на обучени
   .row
     .large-12.small-12.columns
       ol
-        li СНИЛС (для граждан Российской Федерации);
+        li СНИЛС;
         li документ (документы), удостоверяющий личность, гражданство;
         li документ установленного образца (аттестат или диплом с приложением);
         li документы, подтверждающие индивидуальные достижения поступающего  (при наличии);
-        li медицинская справка (например, по форме 086-у);
+        li медицинская справка (при наличии. Например, по форме 086-у);
         li документы подтверждающие наличие льготы (при наличии права на льготу);
         li копия договора о целевом обучении (для поступающих в рамках квоты целевого приема).
 fieldset(v-if="current_campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации'")
@@ -26,15 +26,13 @@ fieldset(v-if="current_campaign.campaign_type == 'Прием на подгото
   .row
     .large-12.small-12.columns
       ol
+        li СНИЛС (для граждан Российской Федерации);
         li документ (документы), удостоверяющий личность, гражданство;
         li документ установленного образца (диплом с приложением);
         li сертификат специалиста (при наличии);
         li документы, подтверждающие индивидуальные достижения поступающего  (при наличии);
         li военный билет (при наличии);
-        li 4 фотографии поступающего (3х4);
-        li СНИЛС (для граждан Российской Федерации);
-        li заявление об учете в качестве результатов вступительного испытания результата, с указанием специальности, организации, в которой проводилось вступительное испытание (тестирование), и года прохождения (по желанию поступающего);
-        li Копия договора о целевом обучении, заверенная заказчиком целевого обучения, или незаверенную копию указанного договора с предъявление его оригинала (для поступающих в рамках квоты на целевое обучение).
+        li копия договора о целевом обучении (для поступающих в рамках квоты целевого приема).
 - if current_user && current_user.groups.map(&:name).include?('priem')
   fieldset(v-if="api.countries && entrant.clerk")
     legend Выберите гражданство
@@ -44,15 +42,22 @@ fieldset(v-if="current_campaign.campaign_type == 'Прием на подгото
           select.error#nationality(name="nationality" v-model='entrant.nationality' v-bind:disabled='entrant.email_confirmed')
             option(value = '')
             option(v-for="country in api.countries" v-bind:value="country.Name") {{ country.Name }}
-fieldset
+fieldset(v-if='entrant.campaign_id')
   legend Укажите адрес электронной почты
   .row
     .large-12.small-12.columns
-      p Перед переходом непосредственно к подаче заявления о поступлении в ИвГМА, нам необходимо убедиться в корректности адреса электронной почты. На указанный Вами адрес будет отправлен код проверки, который будет необходимо внести в соответствующее поле после нажатия кнопки «Получить код проверки».
-      = email_field_tag :email, nil, placeholder: 'user@example.com', 'v-model.trim': 'entrant.email', class: 'error', required: true, 'v-bind:disabled': 'entrant.email_confirmed'
+      p Вам будет отправлена уникальная ссылка для доступа в личный кабинет. Не передавайте ее посторонним лицам. 
+      p Убедитесь в получении ссылки, проверьте папку Спам. Обращаем Ваше внимание, что если вы ошиблись при указании адреса электронной почты, ссылка на ваш кабинет может прийти другому человеку и он получит доступ к Вашему личному кабинету.
+      = email_field_tag :email, nil, placeholder: 'user@example.com', 'v-model.trim': 'entrant.email', class: 'error', required: true, 'v-bind:disabled': 'entrant.hash'
       small.error v-if="findErrorMessage('email')" == "{{ findErrorMessage('email') }}"
       br
-      = submit_tag 'Получить код проверки', class: 'button tiny', '@click': 'checkEmail', 'v-bind:disabled': 'isSendCodeDisabled', 'v-if': '!entrant.email_confirmed'
+      = submit_tag 'Получить ссылку', class: 'button tiny', '@click': 'checkEmail', 'v-bind:disabled': 'isSendEmailDisabled', 'v-if': '!entrant.hash && !findErrorMessage("email")'
+      = submit_tag 'Выслать ссылку повторно', class: 'button tiny', '@click': 'resendEmail', 'v-bind:disabled': 'isSendEmailDisabled', 'v-if': 'findErrorMessage("email")'
+      p(v-if="entrant.hash") 
+        span Ваш личный кабинет успешно создан, ссылка
+        strong &nbsp; {{ api.url }} &nbsp;
+        span отправлена на указанную почту. Также вы можете скопировать ее и сохранить.
+      p(v-if="entrant.resended") Ссылка отправлена. Если письмо не пришло, обратитесь в приемную комиссию.
 fieldset(v-if='!isNextDisabled')
   legend(v-if="entrant.errors.length") Исправьте ошибки и повторно нажмите кнопку Отправить
   .row(v-if="entrant.errors.length")
@@ -65,17 +70,4 @@ fieldset(v-if='!isNextDisabled')
   .row
     .large-12.small-12.columns
       a.button.tiny v-bind:href="entrant.hash" Перейти к заполнению анкеты
-      
-.reveal-modal.full id = 'email_code_field' data-reveal = true
-  .row
-    .large-12.small-12.columns
-      p= "Мы отправили сообщение с кодом на почту {{entrant.email}}"
-    .large-4.small-12.columns
-      label Введите код
-      = number_field_tag :pin, nil, 'v-model.trim': 'entrant.pin', 'v-on:input': 'checkPin', class: 'error'
-      small.error v-if="findErrorMessage('pin')" == "{{ findErrorMessage('pin') }}"
-    .large-12.small-12.columns
-      p Если Вы не получили в течение нескольких минут код проверки, проверьте папку Спам. В случае технических трудностей с получением кода, если Вы полностью уверены в корректности указанного адреса электронной почты, Вы можете отказаться от проверки и продолжить подачу заявления о поступлении, нажав на кнопку ниже.
-  .row
-    .large-12.small-12.columns
-      = submit_tag 'Отказаться от проверки', class: 'button tiny', '@click': 'checkEmailDecline'
+= hidden_field_tag :url, '', ref: 'url', type: 'text', 'v-model.trim': 'api.url'
