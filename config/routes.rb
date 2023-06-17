@@ -8,7 +8,6 @@ Isma::Application.routes.draw do
       end
       member do
         put 'generate_entrant_application'
-        put 'generate_consent_applications'
         put 'generate_withdraw_applications'
         put 'generate_contracts'
       end

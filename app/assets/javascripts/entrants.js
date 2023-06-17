@@ -624,7 +624,7 @@ var entrants = new Vue({
           if(element.date == ''){
             entrants.errors.push({element: 'identity_document_date', message: 'Необходимо указать дату выдачи документа, удостоверяющего личность', level: 'red'});
           };
-          if(!entrants.findAttachment(element.id, 'identity_document', false) && !entrants.entrant.source === 'через ЕПГУ') entrants.errors.push({element: 'identity_document_attachment', message: 'Необходимо прикрепить копию документа, удостоверяющего личность', level: 'red'});
+          if(!entrants.findAttachment(element.id, 'identity_document', false) && !(entrants.entrant.source === 'через ЕПГУ')) entrants.errors.push({element: 'identity_document_attachment', message: 'Необходимо прикрепить копию документа, удостоверяющего личность', level: 'red'});
         }));
         if(this.entrant.snils.find(function(element){
           if(element.number == '' && entrants.entrant.nationality == 'РОССИЯ') {
@@ -644,7 +644,7 @@ var entrants = new Vue({
           if(element.issuer == ''){
             entrants.errors.push({element: 'education_document_issuer', message: 'Необходимо указать кем выдан документ об образовании', level: 'red'});
           };
-          if(!entrants.findAttachment(element.id, 'education_document', false) && !entrants.entrant.source === 'через ЕПГУ') entrants.errors.push({element: 'education_document_attachment', message: 'Необходимо прикрепить документ об образовании', level: 'red'});
+          if(!entrants.findAttachment(element.id, 'education_document', false) && !(entrants.entrant.source === 'через ЕПГУ')) entrants.errors.push({element: 'education_document_attachment', message: 'Необходимо прикрепить документ об образовании', level: 'red'});
         }));
       }
       if(tab == 'target' || tab == 'others' || tab == 'applications'){
@@ -661,7 +661,7 @@ var entrants = new Vue({
           if(element.issuer == '' && (entrants.entrant.questionnaire['benefit'] || entrants.entrant.questionnaire['special'])) {
             entrants.errors.push({element: 'benefit_document_issuer', message: 'Необходимо указать кем выдан документ, подтверждающий льготу', level: 'red'});
           };
-          if(!entrants.findAttachment(element.id, 'benefit_document', false) && (entrants.entrant.questionnaire['benefit'] || entrants.entrant.questionnaire['special']) && !entrants.entrant.source === 'через ЕПГУ') entrants.errors.push({element: 'benefit_document', message: 'Необходимо прикрепить копию документа, подтверждающего льготу', level: 'red'});
+          if(!entrants.findAttachment(element.id, 'benefit_document', false) && (entrants.entrant.questionnaire['benefit'] || entrants.entrant.questionnaire['special']) && !(entrants.entrant.source === 'через ЕПГУ')) entrants.errors.push({element: 'benefit_document', message: 'Необходимо прикрепить копию документа, подтверждающего льготу', level: 'red'});
         }));
         if(this.entrant.olympic_documents.find(function(element) {
           if(element.document_category == '' && entrants.entrant.questionnaire['olympionic']){
@@ -679,13 +679,13 @@ var entrants = new Vue({
           if(element.class_number == '' && entrants.entrant.questionnaire['olympionic']){
             entrants.errors.push({element: 'class_number', message: 'Необходимо указать в каком классе получен диплом олимпиады', level: 'red'});
           };
-          if(!entrants.findAttachment(element.id, 'olympic_document', false) && entrants.entrant.questionnaire['olympionic'] && !entrants.entrant.source === 'через ЕПГУ') entrants.errors.push({element: 'olympic_document', message: 'Необходимо прикрепить копию диплома олимпиады', level: 'red'});
+          if(!entrants.findAttachment(element.id, 'olympic_document', false) && entrants.entrant.questionnaire['olympionic'] && !(entrants.entrant.source === 'через ЕПГУ')) entrants.errors.push({element: 'olympic_document', message: 'Необходимо прикрепить копию диплома олимпиады', level: 'red'});
         }));
       }
       if(tab == 'competitions') {
         if(this.entrant.target_contracts.find(function(element) {
           if(element.competitive_group_id && element.date == null) entrants.errors.push({element: 'target_contract_date', message: 'Необходимо указать дату заключения договора', level: 'red'});
-          if(!entrants.findAttachment(element.id, 'target_contract', false) && element.competitive_group_id && !entrants.entrant.source === 'через ЕПГУ') entrants.errors.push({element: 'target_contract', message: 'Необходимо прикрепить копию целевого договора', level: 'red'});
+          if(!entrants.findAttachment(element.id, 'target_contract', false) && element.competitive_group_id && !(entrants.entrant.source === 'через ЕПГУ')) entrants.errors.push({element: 'target_contract', message: 'Необходимо прикрепить копию целевого договора', level: 'red'});
         }));
       }
       if(tab == 'others' || tab == 'applications'){
