@@ -54,7 +54,7 @@ section.panel#entrant
         = render partial: 'applications_form'
         = link_to 'Назад', '#', class: 'button tiny', '@click.prevent': 'setCurrentTab("others")'
         span &nbsp;
-        = link_to 'Отправить заявление', '#', class: 'button tiny', '@click.prevent': 'setCurrentTab("start")', 'v-if': 'entrant.stage == 0'
+        = link_to 'Отправить заявление', '#', class: 'button tiny', '@click.prevent': 'setCurrentTab("start")', 'v-if': 'entrant.stage < 4'
   . v-if="!entrant.id"
     h1 Идет загрузка...
 = javascript_include_tag 'entrants'

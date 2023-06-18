@@ -39,7 +39,7 @@ fieldset(v-bind:disabled = 'isDisabled')
         span Мобильный телефон
         = phone_field_tag :phone, nil, placeholder: '+79999999999', 'v-model.trim': 'entrant.contact_information.phone', class: 'error', 'v-on:change': "sendData('contact_information', entrant.contact_information)"
       small.error v-if="findErrorMessage('entrant.contact_information.phone')" == "{{ findErrorMessage('entrant.contact_information.phone') }}"
-fieldset
+fieldset(v-if="entrant.nationality == 'РОССИЯ'")
   legend Страховое свидетельство обязательного пенсионного страхования (СНИЛС)
   . v-for="(document, index) in entrant.snils"
     .row
