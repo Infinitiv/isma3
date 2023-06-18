@@ -1,12 +1,12 @@
 fieldset
-  p Прием по целевой квоте осуществляется при наличии договора о целевом обучении. Необходимо представить копию договора о целевом обучении (подписанного всеми сторонами). Вы можете выбрать ту специальность (специальности), по которой (которым) у Вас заключен договор о целевом обучении.
+  p Прием по целевой квоте осуществляется при наличии договора о целевом обучении. Необходимо представить копию договора о целевом обучении (подписанного всеми сторонами).
   legend Целевой договор
   .(v-for="(document, index) in entrant.target_contracts")
     .row
       .(v-show="entrant.target_contracts.indexOf(document) > 0") Следующий документ
       .large-12.small-12.columns
         label
-          span Конкурс
+          span Специальность и заказчик целевого обучения
         select.error#competitive_group_id(name="target_contracts[][competitive_group_id]" v-model='document.competitive_group_id' v-on:change="sendData('target_contract', document, index)" v-bind:disabled = "isDisabled && document.competitive_group_id != ''")
           option(value)
           option(v-for="competitive_group in api.dictionaries.campaign.competitive_groups" v-if="competitive_group.education_source == 'Целевая квота'" v-bind:value="competitive_group.id") {{ competitive_group.name }}
@@ -24,24 +24,24 @@ fieldset
     .row
       .large-12.small-12.columns
         = label_tag :target_contract_employer
-          span Наименование работодателя
+          span Наименование работодателя (если указано в договоре)
           = text_field_tag 'target_contracts[][employer]', nil, 'v-model.trim': 'document.employer', class: 'error', 'v-on:focusout': "sendData('target_contract', document, index)", 'v-bind:disabled': "entrant.stage == 4 && document.employer != null"
         small.error v-if="findErrorMessage('target_contract_employer')" == "{{ findErrorMessage('target_contract_employer') }}"
     .row
       .large-6.small-12.columns
         = label_tag :target_contract_employer_ogrn
-          span ОГРН работодателя
+          span ОГРН работодателя (если указано в договоре)
           = text_field_tag 'target_contracts[][employer_ogrn]', nil, 'v-model.trim': 'document.employer_ogrn', class: 'error', 'v-on:focusout': "sendData('target_contract', document, index)", 'v-bind:disabled': "entrant.stage == 4 && document.employer_ogrn != null"
         small.error v-if="findErrorMessage('target_contract_employer_ogrn')" == "{{ findErrorMessage('target_contract_employer_ogrn') }}"
       .large-6.small-12.columns
         = label_tag :target_contract_employer_kpp
-          span КПП работодателя
+          span КПП работодателя (если указано в договоре)
           = text_field_tag 'target_contracts[][employer_kpp]', nil, 'v-model.trim': 'document.employer_kpp', class: 'error', 'v-on:focusout': "sendData('target_contract', document, index)", 'v-bind:disabled': "entrant.stage == 4 && document.employer_kpp != null"
         small.error v-if="findErrorMessage('target_contract_employer_kpp')" == "{{ findErrorMessage('target_contract_employer_kpp') }}"
     .row
       .large-12.small-12.columns
         label
-          span Регион трудоустройства (нахождения работодателя)
+          span Регион трудоустройства (если работодатель определен заказчиком)
         select.error#employer_region(name="target_contracts[][employer_region]" v-model='document.employer_region' v-on:change="sendData('target_contract', document, index)" v-bind:disabled = "isDisabled && document.employer_region != ''")
           option(value)
           option(v-for="region in api.dictionaries.regions" v-bind:value="region.Name") {{ region.Name }}

@@ -291,7 +291,7 @@ var entrants = new Vue({
       if(competitiveGroup.education_source == 'По договору об оказании платных образовательных услуг' && competitiveGroup.entrance_category == 'Для иностранных граждан — обучение на английском языке' && this.entrant.nationality != 'РОССИЯ') {
         return true;
       };
-      if(competitiveGroup.education_source == 'Особая квота' && competitiveGroup.entrance_category == 'Отдельная квота' && this.entrant.questionnaire['special']) {
+      if(competitiveGroup.education_source == 'Отдельная квота' && competitiveGroup.entrance_category == null && this.entrant.questionnaire['special']) {
         return true;
       };
       if(competitiveGroup.education_source == 'Особая квота' && competitiveGroup.entrance_category == null && this.entrant.questionnaire['benefit']) {
@@ -391,6 +391,7 @@ var entrants = new Vue({
             this.entrant.marks[0].marks[index].id = response.data.mark.id;
           };
           if(sub == 'competitive_group_ids') {
+            this.entrant.questionnaire['priority'] = false
             this.entrant.entrant_applications = response.data.entrant_applications;
             this.entrant.competitive_groups = response.data.competitive_groups;
             this.entrant.priorities = response.data.priorities;
@@ -696,7 +697,6 @@ var entrants = new Vue({
         if(!this.entrant.contact_information.address) this.errors.push({element: 'address', message: 'Необходимо указать адрес', level: 'red'});
         if(this.entrant.questionnaire['special_entrant'] && !this.entrant.questionnaire['benefit']) this.errors.push({element: 'special_entrant', message: 'Указана необходимость создания специальных условий для сдачи вступительных испытаний, но не указано наличие льготы на вкладке Льготы', level: 'red'});
         if(this.entrant.questionnaire['special_entrant'] && this.entrant.special_conditions == null) this.errors.push({element: 'special_conditions', message: 'Указана необходимость создания специальных условий для сдачи вступительных испытаний, но не указан перечень условий', level: 'red'});
-        if(!entrants.findAttachment(this.entrant.id, 'medical_document', false) && entrants.entrant.campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет') entrants.errors.push({element: 'medical_document', message: 'Необходимо прикрепить копию копию медицинского заключения', level: 'red'});
       }
     },
     addIdentityDocument: function() {
@@ -722,7 +722,12 @@ var entrants = new Vue({
         document_type: 'target_contract',
         document_category: 'Договор о целевом обучении',
         competitive_group_id: '',
-        original: ''
+        date: '',
+        number: '',
+        employer: '',
+        employer_ogrn: '',
+        employer_kpp: '',
+        employer_region: ''
       });
     },
     deleteTargetContract: function() {
