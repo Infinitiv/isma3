@@ -55,6 +55,9 @@ var entrants = new Vue({
             name: "биология"
           },
           {
+            name: "физика"
+          },
+          {
             name: "русский язык"
           },
           {

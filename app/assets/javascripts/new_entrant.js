@@ -83,6 +83,9 @@ var entrants = new Vue({
           if(response.data.status == 'success'){
             this.entrant.resended = true;
           }
+          if(response.data.status == 'failed') {
+            this.entrant.resended = false;
+          }
         })
     },
     checkForm: function(e) {
