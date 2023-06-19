@@ -80,7 +80,7 @@ fieldset(v-if="checkPaidCompetitiveGroups")
       ul.no-bullet
         li(v-for="attachment in entrant.attachments" v-if="attachment.document_type == 'contract' && !attachment.template")
           a v-bind:href = "'/api/attachments/' + attachment.data_hash + '?filename=' + attachment.filename" target = '_blank' {{ attachment.filename }}
-fieldset(v-if="entrant.stage == 4")
+/fieldset(v-if="entrant.stage == 4")
   legend Действия с заявлениями
     h3 Отзыв пакета документов
     p Для отзыва документов из ИвГМА необходимо скачать, распечатать, подписать и прикрепить заявление об отзыве документов в соответствующее поле. Заявление будет обработано приемной комиссией, после чего Вы будете исключены из списков поступающих.
