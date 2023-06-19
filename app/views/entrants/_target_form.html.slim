@@ -59,4 +59,4 @@ fieldset
     .large-12.small-12.columns
       .button.tiny @click="addTargetContract" Указать данные другого договора
       span &nbsp;
-      .button.tiny(v-if="entrant.target_contracts.length > 1" @click="deleteTargetContract") Удалить договор
+      .button.tiny(v-if="entrant.target_contracts.length > 1 && entrant.stage == 0" @click="deleteTargetContract") Удалить договор
