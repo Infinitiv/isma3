@@ -4,7 +4,7 @@ fieldset(v-if="api.campaigns && api.campaigns.length > 1")
     .large-12.small-12.columns
       label
         span При поступлении на первый курс для получения диплома врача необходимо выбрать Специалитет,
-        br для последипломного обучения в ординатуре - Кадры высшей квалификации
+        br для последипломного обучения в ординатуре - Ординатура
         select.error#campaign_id(name="campaign_id" v-model='entrant.campaign_id' v-bind:disabled='entrant.email_confirmed')
           option(value = '')
           option(v-for="campaign_item in api.campaigns" v-bind:value="campaign_item.id") {{ campaign_item.name }}
