@@ -352,14 +352,16 @@ var entrants = new Vue({
       $('#contragent').foundation('reveal', 'close');
     },
     generateContract: function(competitive_group_id) {
-      $('#contract_button').addClass('hide');
+      $('.contract_button').addClass('hide');
       $('#contract_link').removeClass('hide');
       axios
       .put('/api/entrants/' + this.entrant.hash + '/generate_contracts', {id: this.entrant.id, competitive_group_id: competitive_group_id})
       .then(response => {
         console.log(response.data.message);
-        this.entrant.attachments = response.data.attachments
-      })
+        this.entrant.attachments = response.data.attachments;
+        $('#contract_link').addClass('hide');
+        $('.contract_button').removeClass('hide');
+      });
     },
     sendData: function(sub, subData, index) {
       let data = {};
@@ -437,17 +439,13 @@ var entrants = new Vue({
         this.files = this.$refs.recall_application.files;
         this.dataset = this.$refs.recall_application.dataset;
       }
-      if(this.$refs.consent_application && this.$refs.consent_application.files.length > 0) {
-        this.files = this.$refs.consent_application.files;
-        this.dataset = this.$refs.consent_application.dataset;
-      }
-      if(this.$refs.withdraw_application && this.$refs.withdraw_application.files.length > 0) {
-        this.files = this.$refs.withdraw_application.files;
-        this.dataset = this.$refs.withdraw_application.dataset;
-      }
-      if(this.$refs.contract && this.$refs.contract.files.length > 0) {
-        this.files = this.$refs.contract.files;
-        this.dataset = this.$refs.contract.dataset;
+      if(this.$refs.contract && this.$refs.contract.length > 0) {
+        for(var i = 0; i < this.$refs.contract.length; i++) {
+          if(this.$refs.contract[i].files.length > 0) {
+          this.files = this.$refs.contract[i].files;
+          this.dataset = this.$refs.contract[i].dataset;
+          }
+        }
       }
       if(this.$refs.data_processing_consent && this.$refs.data_processing_consent.files.length > 0) {
         this.files = this.$refs.data_processing_consent.files;
