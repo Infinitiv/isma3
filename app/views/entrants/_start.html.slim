@@ -50,25 +50,26 @@ fieldset(v-if="checkPaidCompetitiveGroups")
   p(v-if="!checkAge") Поскольку Вам еще нет 18 лет, то Вы не можете сами быть заказчиком по данному договору и оплачивать образовательные услуги. Чаще всего заказчиком выступает один из родителей, кто-то из родственников или любое дееспособное лицо, согласное оплачивать обучение.
   p Для заполнения бланка договора необходимо указать данные заказчика.
   =link_to 'Указать данные заказчика', '#', '@click.prevent': 'openContragentModal', class: 'button tiny'
-  / .row
-  /   .large-12.small-12.columns(v-if="entrant.contragent.id")
-  /     p Обязательным условием зачисления на конкурс с оплатой обучения, является подписание договора на оказание платных образовательных услуг.
-  /     p.hide#contract_link Формируется договор...
-  /     .(v-for="competitive_group in entrant.competitive_groups")
-  /       p= "{{ competitive_group.name }}"
-  /       .contract_button
-  /         =link_to 'Сформировать бланк договора', '#', class: 'button tiny', '@click.prevent': 'generateContract(competitive_group.id)'
-  /       p(v-if="findAttachment(competitive_group.id, 'contract', true)")
-  /         a v-bind:href = "'/api/attachments/' + findAttachment(competitive_group.id, 'contract', true).data_hash + '?filename=' + findAttachment(competitive_group.id, 'contract', true).filename" target = '_blank' Скачать бланк договора на платную образовательную услугу
-  /       p
-  /         = render partial: 'add_attachment', locals: { message: 'Загрузите подписанный договор на платную образовательную услугу.', document_type: 'contract', document_id: 'competitive_group.id', entrant_id: 'entrant.id', ref_name: 'contract', id: 'contract'}
-  / .row(v-for="competitive_group in entrant.competitive_groups")
-  /   .large-12.small-12.columns(v-if="findAttachment(competitive_group.id, 'contract', false)")
-  /     p
-  /       strong Загруженные договоры
-  /     ul.no-bullet
-  /       li(v-for="attachment in entrant.attachments" v-if="attachment.document_type == 'contract' && !attachment.template")
-  /         a v-bind:href = "'/api/attachments/' + attachment.data_hash + '?filename=' + attachment.filename" target = '_blank' {{ attachment.filename }}
+  .row
+    .large-12.small-12.columns(v-if="entrant.contragent.id")
+      p Обязательным условием зачисления на конкурс с оплатой обучения, является подписание договора на оказание платных образовательных услуг.
+      p.hide#contract_link Формируется договор...
+      .(v-for="competitive_group in entrant.competitive_groups" v-if="competitive_group.education_source == 'По договору об оказании платных образовательных услуг'")
+        p= "{{ competitive_group.name }}"
+        .contract_button
+          =link_to 'Сформировать бланк договора', '#', class: 'button tiny', '@click.prevent': 'generateContract(competitive_group.id)'
+        p(v-if="findAttachment(competitive_group.id, 'contract', true)")
+          a v-bind:href = "'/api/attachments/' + findAttachment(competitive_group.id, 'contract', true).data_hash + '?filename=' + findAttachment(competitive_group.id, 'contract', true).filename" target = '_blank' Скачать бланк договора на платную образовательную услугу
+        p
+          = render partial: 'add_attachment', locals: { message: 'Загрузите подписанный договор на платную образовательную услугу.', document_type: 'contract', document_id: 'competitive_group.id', entrant_id: 'entrant.id', ref_name: 'contract', id: 'contract'}
+        hr
+  .row(v-for="competitive_group in entrant.competitive_groups")
+    .large-12.small-12.columns(v-if="findAttachment(competitive_group.id, 'contract', false)")
+      p
+        strong Загруженные договоры
+      ul.no-bullet
+        li(v-for="attachment in entrant.attachments" v-if="attachment.document_type == 'contract' && !attachment.template")
+          a v-bind:href = "'/api/attachments/' + attachment.data_hash + '?filename=' + attachment.filename" target = '_blank' {{ attachment.filename }}
 fieldset(v-if="entrant.stage == 4")
   legend Действия с заявлениями
   h3 Отзыв пакета документов
