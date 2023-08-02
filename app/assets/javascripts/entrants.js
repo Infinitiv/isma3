@@ -439,9 +439,13 @@ var entrants = new Vue({
         this.files = this.$refs.recall_application.files;
         this.dataset = this.$refs.recall_application.dataset;
       }
-      if(this.$refs.withdraw_application && this.$refs.withdraw_application.files.length > 0) {
-        this.files = this.$refs.withdraw_application.files;
-        this.dataset = this.$refs.withdraw_application.dataset;
+      if(this.$refs.withdraw_application && this.$refs.withdraw_application.length > 0) {
+        for(var i = 0; i < this.$refs.withdraw_application.length; i++) {
+          if(this.$refs.withdraw_application[i].files.length > 0) {
+          this.files = this.$refs.withdraw_application[i].files;
+          this.dataset = this.$refs.withdraw_application[i].dataset;
+          }
+        }
       }
       if(this.$refs.contract && this.$refs.contract.length > 0) {
         for(var i = 0; i < this.$refs.contract.length; i++) {
