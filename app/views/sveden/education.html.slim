@@ -170,7 +170,7 @@ section.panel
       - @common_educational_programs.each do |educational_program|
         tr(itemprop="#{educational_program.adaptive ? 'eduAdOp' : 'eduOp'}")
           td(itemprop="eduCode", style="vertical-align: top;")= educational_program.code
-          td(itemprop="eduName", style="vertical-align: top;")= educational_program.full_name
+          td(itemprop="eduName", style="vertical-align: top;")= educational_program.name
           td(itemprop="eduLevel", style="vertical-align: top;")= educational_program.level
           td(itemprop='eduProf', style="vertical-align: top;")= educational_program.full_name
           td(itemprop="eduForm", style="vertical-align: top;")= educational_program.form
@@ -222,7 +222,7 @@ section.panel
       - @adaptive_educational_programs.each do |educational_program|
         tr(itemprop="#{educational_program.adaptive ? 'eduAdOp' : 'eduOp'}")
           td(itemprop="eduCode", style="vertical-align: top;")= educational_program.code
-          td(itemprop="eduName", style="vertical-align: top;")= educational_program.full_name
+          td(itemprop="eduName", style="vertical-align: top;")= educational_program.name
           td(itemprop="eduLevel", style="vertical-align: top;")= educational_program.level
           td(itemprop='eduProf', style="vertical-align: top;")= educational_program.full_name
           td(itemprop="eduForm", style="vertical-align: top;")= educational_program.form
