@@ -184,7 +184,7 @@ section.panel
             ul
               - educational_program.subjects.each do |subject|
                 - if subject.annotation_attachment
-                  li= link_to "Аннотации рабочей программы дисциплины #{subject.name}", subject.annotation_attachment, target: 'blank'
+                  li= link_to "Аннотации рабочих программ дисциплин #{subject.name}", subject.annotation_attachment, target: 'blank'
           td(itemprop='educationRpd', style="vertical-align: top;")
             ul
               - educational_program.subjects.each do |subject|
@@ -236,7 +236,7 @@ section.panel
             ul
               - educational_program.subjects.each do |subject|
                 - if subject.annotation_attachment
-                  li= link_to "Аннотации рабочей программы дисциплины #{subject.name}", subject.annotation_attachment, target: 'blank'
+                  li= link_to "Аннотации рабочих программ дисциплин #{subject.name}", subject.annotation_attachment, target: 'blank'
           td(itemprop='educationRpd', style="vertical-align: top;")
             ul
               - educational_program.subjects.each do |subject|
