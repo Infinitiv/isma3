@@ -1,4 +1,35 @@
 namespace :isma do
+
+  desc 'Transfer students from stage to stage'
+  task transfer_students: :environment do
+    division_names = ["%5 курса стомат%", "%группа 6 курса%", "Ординатура%2 год%", "Аспирантура%3 год%"]
+    division_names.each do |name|
+      users = User.joins(:divisions).where("divisions.name LIKE ?", name)
+      puts "Найдено #{users.count} обучащихся выпускного курса"
+      users.each do |user|
+        user.groups.delete(Group.find_by_name("students"))
+        user.groups.delete(Group.find_by_name("writers"))
+        user.groups << Group.find_by_name("graduates")
+      end
+      puts "Обучающиеся переведены в выпуск"
+      Division.where("divisions.name LIKE ?", name).destroy_all
+      puts "Выпускные группы удалены"
+    end
+
+    puts "Переименование студенческих групп"
+    (1..5).reverse_each do |i|
+      Division.where("name LIKE ?", "%группа #{i}%").update_all("name = replace(name, '#{i} курса', '#{i+1} курса')")
+    end
+    puts "Завершено"
+
+    puts "Переименование последипломных групп"
+    (1..2).reverse_each do |i|
+      Division.where("name LIKE ? AND name LIKE ?", "Ординатура%" , "%#{i} год%").update_all("name = replace(name, '#{i}', '#{i+1}')")
+      Division.where("name LIKE ? AND name LIKE ?", "Аспирантура%", "%#{i} год%").update_all("name = replace(name, '#{i}', '#{i+1}')")
+    end
+    puts "Завершено"
+  end
+
   desc "Convert attachments from db to filesystem"
   task convert_attachments: :environment do
     counter = 0

@@ -1,18 +1,3 @@
-fieldset
-  .row
-    .large-12.small-12.columns
-      p Непосредственно перед заполнением анкеты поступающего, необходимо скачать и заполнить согласие на обработку и распространение персональных данных.
-      p =link_to ' Бланк согласия на обработку и распространние персональных данных', '/attachments/61368', target: '_blank'
-fieldset
-  legend Прикрепите копию согласия на обработку персональных данных
-  .row
-    .large-12.small-12.columns
-      = render partial: 'add_attachment', locals: {document_type: 'data_processing_consent', message: 'Можно загрузить один или несколько файлов', document_id: 'entrant.id', entrant_id: 'entrant.id', ref_name: 'data_processing_consent', id: 'data_processing_consent'}
-  .row(v-for="attachment in entrant.attachments")
-    .large-12.small-12.columns
-      p(v-if="attachment.document_type == 'data_processing_consent'")
-        a v-bind:href = "'/api/attachments/' + attachment.data_hash + '?filename=' + attachment.filename" target = '_blank' {{ attachment.filename }}
-
 fieldset(v-bind:disabled = 'isDisabled')
   legend Персональные данные
   p Фамилию, имя и отчество следует писать в именительном падеже в строгом соответствии с паспортными данными. Особое внимание стоит обратить на наличие или отсутствие буквы Ё, вариантное написание имен типа НаталЬЯ/НаталИЯ и т.д. При наличии составных имени, фамилии или отчества также необходимо ориентироваться на написание в паспорте - поставить пробел или дефис. Перед дефисом и после него пробел не ставится.
@@ -54,7 +39,7 @@ fieldset(v-bind:disabled = 'isDisabled')
         span Мобильный телефон
         = phone_field_tag :phone, nil, placeholder: '+79999999999', 'v-model.trim': 'entrant.contact_information.phone', class: 'error', 'v-on:change': "sendData('contact_information', entrant.contact_information)"
       small.error v-if="findErrorMessage('entrant.contact_information.phone')" == "{{ findErrorMessage('entrant.contact_information.phone') }}"
-fieldset
+fieldset(v-if="entrant.nationality == 'РОССИЯ'")
   legend Страховое свидетельство обязательного пенсионного страхования (СНИЛС)
   . v-for="(document, index) in entrant.snils"
     .row
@@ -62,26 +47,22 @@ fieldset
         = label_tag :snils
           span Укажите только цифры без дефисов и пробелов
           = text_field_tag 'snils[][number]', nil, placeholder: '00000000000', 'v-model.trim': 'document.number', class: 'error', 'v-on:change': "sendData('snils', document, index)", 'v-bind:disabled': 'isDisabled'
+        small.error v-if="checkSNILS" == "{{ checkSNILS }}"
         small.error v-if="findErrorMessage('snils')" == "{{ findErrorMessage('snils') }}"
-    .row
-      .large-10.small-12.columns(v-if="document.id == null")
-        = label_tag :snils_absent
-          span или подтвердите отсутствие страхового свидетельства обязательного пенсионного страхования (СНИЛС)
-      .large-2.small-12.columns(v-if="document.id == null")
-        input#snils(type="checkbox" name="snils" v-bind:value="true" v-model="entrant.snils_absent" v-on:change="sendData('snils_absent', entrant.snils_absent)" v-bind:disabled = 'isDisabled')
-    .row
-      .large-12.small-12.columns
-        br
-        dd= render partial: 'add_attachment', locals: { message: 'Выберите и прикрепите файл(ы).', document_type: 'snils', document_id: 'document.id', entrant_id: 'entrant.id', ref_name: 'snils', id: 'snils'}
-    .row(v-for="attachment in entrant.attachments")
-      .large-12.small-12.columns
-        p(v-if="attachment.document_type == 'snils'")
-          a v-bind:href = "'/api/attachments/' + attachment.data_hash + '?filename=' + attachment.filename" target = '_blank' {{ attachment.filename }}
+    .(v-if="entrant.campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации'")
+      .row
+        .large-12.small-12.columns
+          br
+          dd= render partial: 'add_attachment', locals: { message: 'Выберите и прикрепите файл(ы).', document_type: 'snils', document_id: 'document.id', entrant_id: 'entrant.id', ref_name: 'snils', id: 'snils'}
+      .row(v-for="attachment in entrant.attachments")
+        .large-12.small-12.columns
+          p(v-if="attachment.document_type == 'snils'")
+            a v-bind:href = "'/api/attachments/' + attachment.data_hash + '?filename=' + attachment.filename" target = '_blank' {{ attachment.filename }}
 fieldset
   legend Документы, удостоверяющие личность
   p Указываются данные действующего документа, удостоверяющего личность.
-  p (v-if="entrant.current_campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'") Если паспорт меняли после сдачи ЕГЭ, то необходимо также указать данные ранее выданного паспорта, нажав на кнопку "Указать данные дополнительного документа". Эти сведения используются при проверке результатов ЕГЭ.
-  p (v-if="entrant.current_campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации'") Если сдавали аккредитацию и сменили паспорт после ее сдачи, то необходимо также указать данные ранее выданного паспорта, нажав на кнопку "Указать данные дополнительного документа". Эти сведения используются при проверке результатов теста.
+  p (v-if="entrant.campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'") Если паспорт меняли после сдачи ЕГЭ, то необходимо также указать данные ранее выданного паспорта, нажав на кнопку "Указать данные дополнительного документа". Эти сведения используются при проверке результатов ЕГЭ.
+  p (v-if="entrant.campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации'") Если сдавали аккредитацию и сменили паспорт после ее сдачи, то необходимо также указать данные ранее выданного паспорта, нажав на кнопку "Указать данные дополнительного документа". Эти сведения используются при проверке результатов теста.
   . v-for="(document, index) in entrant.identity_documents"
     .row
       .(v-show="entrant.identity_documents.indexOf(document) > 0") Предыдущий документ
@@ -90,7 +71,7 @@ fieldset
           span Вид документа
         select.error#category(name="identity_documents[][document_category]" v-model='document.document_category' v-on:change="sendData('identity_document', document, index)" v-bind:disabled = 'isDisabled')
           option(disabled value) Выберите вид документа
-          option(v-for="identity_document_category in api.dictionaries.identity_document_categories" v-bind:value="identity_document_category.Name") {{ identity_document_category.Name }}
+          option(v-for="identity_document_category in api.dictionaries.identity_document_categories" v-bind:value="identity_document_category.Name" v-if="identity_document_category.IdCategory == 1") {{ identity_document_category.Name }}
         small.error v-if="findErrorMessage('identity_document_category')" == "{{ findErrorMessage('identity_document_category') }}"
       .large-4.small-12.columns
         = label_tag :serie
@@ -116,7 +97,7 @@ fieldset
       .large-4.small-12.columns(v-show="entrant.identity_documents.indexOf(document) < 1")
         = label_tag :division_code
           span Код подразделения
-          = text_field_tag 'identity_documents[][division_code]', nil, placeholder: '000-00', 'v-model.trim': 'document.division_code', class: 'error', 'v-on:change': "sendData('identity_document', document, index)", 'v-bind:disabled': 'isDisabled'
+          = text_field_tag 'identity_documents[][division_code]', nil, placeholder: '000-000', 'v-model.trim': 'document.division_code', class: 'error', 'v-on:change': "sendData('identity_document', document, index)", 'v-bind:disabled': 'isDisabled'
         small.error v-if="findErrorMessage('identity_document_division_code')" == "{{ findErrorMessage('identity_document_division_code') }}"
       .large-8.small-12.columns(v-show="entrant.identity_documents.indexOf(document) < 1")
         = label_tag :birth_place
@@ -152,9 +133,9 @@ fieldset
       .button.tiny(v-if="entrant.identity_documents.length > 1" @click="deleteIdentityDocument") Удалить документ
 fieldset
   legend Документ об образовании
-  p (v-if="entrant.current_campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'") Сведения о документе об образовании — это данные того документа, который будет подан в приемную комиссию. При поступлении по результатам ЕГЭ обычно это аттестат, но при наличии у Вас нескольких документов об образовании (например, аттестата и диплома), Вы сами можете выбрать, какой из них подать.
+  p (v-if="entrant.campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'") Сведения о документе об образовании — это данные того документа, который будет подан в приемную комиссию. При поступлении по результатам ЕГЭ обычно это аттестат, но при наличии у Вас нескольких документов об образовании (например, аттестата и диплома), Вы сами можете выбрать, какой из них подать.
   . v-for="(document, index) in entrant.education_documents"
-    .row(v-if="entrant.current_campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
+    .row(v-if="entrant.campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
       .large-6.small-12.columns
         label
           span Вид документа
@@ -167,13 +148,13 @@ fieldset
           span Серия и номер документа
           = text_field_tag 'education_documents[][number]', nil, placeholder: 'Укажите серию и номер документа', 'v-model.trim': 'document.number', class: 'error', 'v-on:change': "sendData('education_document', document, index)", 'v-bind:disabled': 'isDisabled'
         small.error v-if="findErrorMessage('education_document_number')" == "{{ findErrorMessage('education_document_number') }}"
-    .row(v-if="entrant.current_campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации'")
+    .row(v-if="entrant.campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации'")
       .large-6.small-12.columns
         = label_tag :number
           span Серия и номер документа
           = text_field_tag 'education_documents[][number]', nil, placeholder: 'Укажите серию и номер документа', 'v-model.trim': 'document.number', class: 'error', 'v-on:change': "sendData('education_document', document, index)", 'v-bind:disabled': 'isDisabled'
         small.error v-if="findErrorMessage('education_document_number')" == "{{ findErrorMessage('education_document_number') }}"
-      .large-6.small-12.columns(v-if="entrant.current_campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации'")
+      .large-6.small-12.columns(v-if="entrant.campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации'")
         label
           span Специальность по диплому
         select.error#speciality(name="education_documents[][speciality]" v-model='document.speciality' v-on:change = "sendData('education_document', document, index)")
