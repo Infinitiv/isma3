@@ -31,6 +31,10 @@
     <%= f.text_field :language %>
   </div>
   <div class=field>
+    <%= f.label 'Год начала' %>
+    <%= f.number_field :year_start %>
+  </div>
+  <div class=field>
     <%= f.label 'Стандарт' %>
     <%= f.select :educational_standart_id, option_for_select = @educational_standarts.collect {|p| ["#{p.name} (#{p.level})", p.id]}, {:include_blank => ''} %>
   </div>

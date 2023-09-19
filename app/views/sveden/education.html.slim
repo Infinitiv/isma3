@@ -1,7 +1,10 @@
 section.panel
   h1 Образование
   p= autosub_details("&amp;[Навигация сведений об образовательной организации]").html_safe
-  p Ивановская государственная медицинская академия имеет право на осуществление образовательной деятельности в сфере высшего профессионального образования (лицензия Федеральной службы по надзору в сфере образования и науки № 0702 от 24 апреля 2013 года).
+  p 
+    span Ивановская государственная медицинская академия имеет право на осуществление образовательной деятельности в сфере высшего образования (
+    =link_to 'лицензия ', 'https://ivgma.ru/attachments/1015', target: '_blank'
+    span Федеральной службы по надзору в сфере образования и науки. Регистрационный номер лицензии: № Л035-00115-37/00118993 Дата предоставления лицензии: 08 июля 2016)
   table
     caption Информация о сроке действия государственной аккредитации образовательной программы, о языках, на которых осуществляется образование (обучение)
     thead
@@ -22,8 +25,8 @@ section.panel
         tr(itemprop='eduAccred', style="vertical-align: top;")
           td(itemprop='eduCode')=  educational_program.code
           - amp = educational_program.adaptive ? '*' : ''
-          td(itemprop='eduName')= educational_program.name if educational_program.name
-          td(itemprop='eduProf')= "#{educational_program.full_name}#{amp}" if educational_program.full_name
+          td(itemprop='eduName')= educational_program.name
+          td(itemprop='eduProf')= "#{educational_program.full_name}#{amp}"
           td(itemprop='eduLevel')= educational_program.level if educational_program.level
           td(itemprop='eduForm')= educational_program.form if educational_program.form
           td(itemprop='learningTerm')= educational_program.duration if educational_program.duration
@@ -32,12 +35,14 @@ section.panel
           td(itemprop='eduPred')
             ul.no-bullet
               - educational_program.subjects.each do |subject|
-                li= subject.name
+                li
+                  =link_to subject.name, subject.annotation_attachment, target: '_blank'
           td(itemprop='eduPrac')
             ul.no-bullet
-              - educational_program.practices.each do |practic|
-                li= practic.name
-          td(itemprop='eduEl')= educational_program.level == 'высшее образование - специалитет' ? 'Используется система электронной поддержки образовательного процесса' : '-'
+              - educational_program.practices.each do |practice|
+                li
+                  =link_to practice.name, practice.attachment, target: '_blank'
+          td(itemprop='eduEl')= educational_program.level == 'высшее образование - специалитет' ? 'Используется' : '-'
   p.sub * - адаптированная образовательная программа
   p(itemprop='languageEl')= link_to 'Информация о языках, на которых осуществляется образование (обучение)', '/attachments/73941', target: '_blank'
   table
@@ -77,7 +82,7 @@ section.panel
         - if educational_program_number
           tr(itemprop='eduChislen', style="vertical-align: top;")
             td(itemprop='eduCode')=  educational_program.code
-            td(itemprop='eduName')= educational_program.full_name if educational_program.full_name
+            td(itemprop='eduName')= educational_program.name
             td(itemprop='eduLevel')= educational_program.level if educational_program.level
             td(itemprop='eduForm')= educational_program.form if educational_program.form
             td(itemprop='numberBF')= educational_program_number.number_federal
@@ -110,7 +115,7 @@ section.panel
         - if educational_program_priem
           tr(itemprop='eduPriem')
             td(itemprop='eduCode')=  educational_program.code
-            td(itemprop='eduName')= link_to educational_program.full_name, educational_program if educational_program.full_name
+            td(itemprop='eduName')= educational_program.name
             td(itemprop='eduLevel')= educational_program.level if educational_program.level
             td(itemprop='eduForm')= educational_program.form if educational_program.form
             td(itemprop='numberBF')= educational_program_priem.number_federal
@@ -137,7 +142,7 @@ section.panel
         - if educational_program_perevod
           tr(itemprop='eduPerevod')
             td(itemprop='eduCode')=  educational_program.code
-            td(itemprop='eduName')= link_to educational_program.full_name, educational_program if educational_program.full_name
+            td(itemprop='eduName')= educational_program.name
             td(itemprop='eduLevel')= educational_program.level if educational_program.level
             td(itemprop='eduForm')= educational_program.form if educational_program.form
             td(itemprop='numberOut')= educational_program_perevod.number_out_perevod
@@ -167,7 +172,7 @@ section.panel
           td(itemprop="eduCode", style="vertical-align: top;")= educational_program.code
           td(itemprop="eduName", style="vertical-align: top;")= educational_program.name
           td(itemprop="eduLevel", style="vertical-align: top;")= educational_program.level
-          td(itemprop='eduProf')= "#{educational_program.full_name}" if educational_program.full_name
+          td(itemprop='eduProf', style="vertical-align: top;")= educational_program.full_name
           td(itemprop="eduForm", style="vertical-align: top;")= educational_program.form
           td(itemprop='opMain', style="vertical-align: top;")
             = link_to 'Описание образовательной программы', educational_program.attachment, target: 'blank' if educational_program.attachment
@@ -179,7 +184,7 @@ section.panel
             ul
               - educational_program.subjects.each do |subject|
                 - if subject.annotation_attachment
-                  li= link_to subject.name, subject.annotation_attachment, target: 'blank'
+                  li= link_to "Аннотация рабочей программы дисциплины #{subject.name}", subject.annotation_attachment, target: 'blank'
           td(itemprop='educationRpd', style="vertical-align: top;")
             ul
               - educational_program.subjects.each do |subject|
@@ -197,7 +202,7 @@ section.panel
             ul
               - educational_program.methodological_supports.each do |methodological_support|
                 li= link_to methodological_support.attachment.title_sen_dot, methodological_support.attachment, target: 'blank'
-    table
+  table
     caption Информация по адаптированным образовательным программам
     thead
       tr
@@ -219,7 +224,7 @@ section.panel
           td(itemprop="eduCode", style="vertical-align: top;")= educational_program.code
           td(itemprop="eduName", style="vertical-align: top;")= educational_program.name
           td(itemprop="eduLevel", style="vertical-align: top;")= educational_program.level
-          td(itemprop='eduProf')= "#{educational_program.full_name}" if educational_program.full_name
+          td(itemprop='eduProf', style="vertical-align: top;")= educational_program.full_name
           td(itemprop="eduForm", style="vertical-align: top;")= educational_program.form
           td(itemprop='opMain', style="vertical-align: top;")
             = link_to 'Описание образовательной программы', educational_program.attachment, target: 'blank' if educational_program.attachment
@@ -231,7 +236,7 @@ section.panel
             ul
               - educational_program.subjects.each do |subject|
                 - if subject.annotation_attachment
-                  li= link_to subject.name, subject.annotation_attachment, target: 'blank'
+                  li= link_to "Аннотация рабочей программы дисциплины #{subject.name}", subject.annotation_attachment, target: 'blank'
           td(itemprop='educationRpd', style="vertical-align: top;")
             ul
               - educational_program.subjects.each do |subject|
@@ -276,13 +281,13 @@ section.panel
         - educational_program_research = educational_program.educational_program_researches.sort_by(&:date).last
         - if educational_program_research
           tr(itemprop='eduNir')
-            td(itemprop='eduCode')=  educational_program.code
-            td(itemprop='eduName')= educational_program.name if educational_program.name
-            td(itemprop='perechenNir')= educational_program_research.perechen_nir
-            td(itemprop='eduProf')= "#{educational_program.full_name}" if educational_program.full_name
-            td(itemprop='eduLevel')= educational_program.level
-            td(itemprop='napravNir')
-            td(itemprop='resultNir')= educational_program_research.result_nir
-            td(itemprop='baseNir')= educational_program_research.base_nir
+            td(itemprop='eduCode', style="vertical-align: top;")=  educational_program.code
+            td(itemprop='eduName', style="vertical-align: top;")= educational_program.name if educational_program.name
+            td(itemprop='perechenNir', style="vertical-align: top;")= educational_program_research.perechen_nir
+            td(itemprop='eduProf', style="vertical-align: top;")= "#{educational_program.full_name}"
+            td(itemprop='eduLevel', style="vertical-align: top;")= educational_program.level
+            td(itemprop='napravNir', style="vertical-align: top;")
+            td(itemprop='resultNir', style="vertical-align: top;")= educational_program_research.result_nir
+            td(itemprop='baseNir', style="vertical-align: top;")= educational_program_research.base_nir
 
   p= autosub_details("&amp;[Копия лицензии на осуществление образовательной деятельности (с приложениями)]").html_safe

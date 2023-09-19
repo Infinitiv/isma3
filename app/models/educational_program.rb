@@ -16,10 +16,14 @@ class EducationalProgram < ActiveRecord::Base
   has_many :classrooms, through: :subjects
   has_many :marks
   
-  validates :name, :level, :form, :duration, :attachment_id, :language, presence: true
-  validates :attachment_id, numericality: { integer_only: true }
+  validates :name, :level, :form, :duration, :attachment_id, :language, :year_start, presence: true
+  validates :attachment_id, :year_start, numericality: { integer_only: true }
   
   def full_name
-    "Основная профессиональная образовательная программа высшего образования #{code} - #{name} (#{level}, #{form} форма обучения)"
+    if year_start < 2021
+      "Основная профессиональная образовательная программа высшего образования #{code} - #{name} (#{year_start}-#{year_start + duration.to_i})"
+    else
+      "Образовательная программа высшего образования #{code} - #{name} (#{year_start}-#{year_start + duration.to_i})"
+    end
   end
 end
