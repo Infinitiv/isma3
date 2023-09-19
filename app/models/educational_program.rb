@@ -20,10 +20,10 @@ class EducationalProgram < ActiveRecord::Base
   validates :attachment_id, :year_start, numericality: { integer_only: true }
   
   def full_name
-    if year_start < 2021
-      "Основная профессиональная образовательная программа высшего образования #{code} - #{name} (#{year_start}-#{year_start + duration.to_i})"
-    else
+    if year_start > 2020 && educational_level == 'специалитет'
       "Образовательная программа высшего образования #{code} - #{name} (#{year_start}-#{year_start + duration.to_i})"
+    else
+      "Основная профессиональная образовательная программа высшего образования #{code} - #{name} (#{year_start}-#{year_start + duration.to_i})"
     end
   end
 end

@@ -25,7 +25,7 @@ section.panel
         tr(itemprop='eduAccred', style="vertical-align: top;")
           td(itemprop='eduCode')=  educational_program.code
           - amp = educational_program.adaptive ? '*' : ''
-          td(itemprop='eduName')= educational_program.full_name
+          td(itemprop='eduName')= educational_program.name
           td(itemprop='eduProf')= "#{educational_program.full_name}#{amp}"
           td(itemprop='eduLevel')= educational_program.level if educational_program.level
           td(itemprop='eduForm')= educational_program.form if educational_program.form
@@ -42,7 +42,7 @@ section.panel
               - educational_program.practices.each do |practice|
                 li
                   =link_to practice.name, practice.attachment, target: '_blank'
-          td(itemprop='eduEl')= educational_program.level == 'высшее образование - специалитет' ? 'Используется' : '-'
+          td(itemprop='eduEl') Используется
   p.sub * - адаптированная образовательная программа
   p(itemprop='languageEl')= link_to 'Информация о языках, на которых осуществляется образование (обучение)', '/attachments/73941', target: '_blank'
   table
