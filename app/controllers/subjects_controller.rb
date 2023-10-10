@@ -5,7 +5,7 @@ class SubjectsController < ApplicationController
   before_action :options_for_select, only: [:new, :edit]
   
   def index
-    @subjects = Subject.order(:name).load
+    @subjects = Subject.includes(:educational_program).order(:name).where(educational_programs: {active: true})
   end
   
   def show

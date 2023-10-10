@@ -177,29 +177,29 @@ section.panel
           td(itemprop='opMain', style="vertical-align: top;")
             = link_to 'Описание образовательной программы', educational_program.attachment, target: 'blank' if educational_program.attachment
           td(itemprop='educationPlan', style="vertical-align: top;")
-            ul
+            ul.no-bullet
               - educational_program.academic_plans.each do |academic_plan|
                 li= link_to academic_plan.name, academic_plan.attachment, target: 'blank'
           td(itemprop='educationAnnotation', style="vertical-align: top;")
-            ul
+            ul.no-bullet
               - educational_program.subjects.each do |subject|
                 - if subject.annotation_attachment
                   li= link_to "Аннотации рабочих программ дисциплин #{subject.name}", subject.annotation_attachment, target: 'blank'
           td(itemprop='educationRpd', style="vertical-align: top;")
-            ul
+            ul.no-bullet
               - educational_program.subjects.each do |subject|
                 - if subject.full_text_attachment
                   li= link_to subject.name, subject.full_text_attachment, target: 'blank'
           td(itemprop='educationShedule', style="vertical-align: top;")
-            ul
+            ul.no-bullet
               - educational_program.academic_schedules.each do |academic_schedule|
                 li= link_to academic_schedule.name, academic_schedule.attachment, target: 'blank'
           td(itemprop='eduPr', style="vertical-align: top;")
-            ul
+            ul.no-bullet
               - educational_program.practices.each do |practic|
                 li= link_to practic.name, practic.attachment, target: 'blank'
           td(itemprop='methodology', style="vertical-align: top;")
-            ul
+            ul.no-bullet
               - educational_program.methodological_supports.each do |methodological_support|
                 li= link_to methodological_support.attachment.title_sen_dot, methodological_support.attachment, target: 'blank'
   table
@@ -279,7 +279,7 @@ section.panel
     tbody
       - @common_educational_programs.each do |educational_program|
         - educational_program_research = educational_program.educational_program_researches.sort_by(&:date).last
-        - if educational_program_research.present?
+        - if educational_program_research.present? && educational_program_research.base_nir.present?
           tr(itemprop='eduNir')
             td(itemprop='eduCode', style="vertical-align: top;")=  educational_program.code
             td(itemprop='eduName', style="vertical-align: top;")= educational_program.name
