@@ -279,7 +279,7 @@ section.panel
     tbody
       - @common_educational_programs.each do |educational_program|
         - educational_program_research = educational_program.educational_program_researches.sort_by(&:date).last
-        - if educational_program_research
+        - if educational_program_research.present?
           tr(itemprop='eduNir')
             td(itemprop='eduCode', style="vertical-align: top;")=  educational_program.code
             td(itemprop='eduName', style="vertical-align: top;")= educational_program.name
