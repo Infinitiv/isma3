@@ -46,6 +46,10 @@
     <%= f.label 'Ссылка на образовательную программу' %>
     <%= f.select :attachment_id, option_for_select = @attachments.collect {|p| ["#{p.title} (#{p.id})", p.id]}, {include_blank: ''} %>
   </div>
+    <div>
+    <%= f.label 'Ссылка на список сотрудников' %>
+    <%= f.select :employee_list_id, option_for_select = @nprs.collect {|p| ["#{p.title} (#{p.id})", p.id]}, {include_blank: ''} %>
+  </div>
   <div class=field>
     <%= f.label 'Действующая' %>
     <%= f.check_box :active %>

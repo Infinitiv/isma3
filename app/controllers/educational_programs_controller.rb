@@ -11,7 +11,15 @@ class EducationalProgramsController < ApplicationController
   end
   
   def show
-    @employees_educational_programs = Profile.includes([:user, :degree, :academic_title]).joins(:divisions, :educational_programs).where(divisions: {division_type_id: 3}, educational_programs: {id: @educational_program}).uniq
+    if @educational_program.employee_list_id.present?
+      @employees_educational_programs = nil
+    else
+      if @educational_program.level =~ /специалитет/
+        @employees_educational_programs = Profile.includes([:user, :degree, :academic_title]).joins(:divisions).where(divisions: {division_type_id: 3}).where.not("divisions.name LIKE ?", "%ИПО%").uniq
+      else
+        @employees_educational_programs = Profile.includes([:user, :degree, :academic_title]).joins(:divisions).where(divisions: {division_type_id: 3}).where("divisions.name LIKE ?", "%ИПО%").uniq
+      end
+    end
     @posts_hash = {}
     Post.includes(:profile, :division).joins(:profile, :division).where(profiles: {id: @employees_educational_programs}).where(divisions: {division_type_id: 3}).group_by(&:user_id).each do |k, v|
       @posts_hash[k] = {}
@@ -57,12 +65,13 @@ class EducationalProgramsController < ApplicationController
   end
   
   def educational_program_params
-    params.require(:educational_program).permit(:id, :name, :code, :level, :form, :duration, :educational_standart_id, :accreditation_id, :attachment_id, :active, :language, :adaptive, :year_start)
+    params.require(:educational_program).permit(:id, :name, :code, :level, :form, :duration, :educational_standart_id, :accreditation_id, :attachment_id, :active, :language, :adaptive, :year_start, :employee_list_id)
   end
   
   def options_for_select
     @educational_standarts = EducationalStandart.order(:level, :name).load
     @accreditations = Accreditation.order('date_of_issue DESC').load
     @attachments = Attachment.order(:title).select(:id, :title).select{|a| a.title =~ /pdf/}
+    @nprs = Attachment.order(:title).select(:id, :title).select{|a| a.title =~ /сведения по НПР/}
   end
 end
