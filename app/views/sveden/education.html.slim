@@ -35,12 +35,12 @@ section.panel
           td(itemprop='eduPred')
             ul.no-bullet
               - educational_program.subjects.each do |subject|
-                li= link_to "Аннотации рабочих программ дисциплин #{subject.name}", subject.annotation_attachment, target: 'blank'
+                li= link_to 'Аннотации рабочих программ дисциплин', subject.annotation_attachment, target: 'blank'
           td(itemprop='eduPrac')
             ul.no-bullet
               - educational_program.practices.each do |practice|
                 li
-                  =link_to practice.name, practice.attachment, target: '_blank'
+                  =link_to 'Перечень практик', practice.attachment, target: '_blank'
           td(itemprop='eduEl') Используется
   p.sub * - адаптированная образовательная программа
   p(itemprop='languageEl')= link_to 'Информация о языках, на которых осуществляется образование (обучение)', '/attachments/73941', target: '_blank'
