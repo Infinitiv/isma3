@@ -35,8 +35,7 @@ section.panel
           td(itemprop='eduPred')
             ul.no-bullet
               - educational_program.subjects.each do |subject|
-                li
-                  =link_to subject.name, subject.annotation_attachment, target: '_blank'
+                li= link_to "Аннотации рабочих программ дисциплин #{subject.name}", subject.annotation_attachment, target: 'blank'
           td(itemprop='eduPrac')
             ul.no-bullet
               - educational_program.practices.each do |practice|
