@@ -167,7 +167,7 @@ section.panel
         th Ссылка на методические и иные документы, разработанные ОО для обеспечения образовательного процесса, а также рабочие программы воспитания и календарные планы воспитательной работы, включаемых в ООП
     tbody
       - @common_educational_programs.each do |educational_program|
-        tr(itemprop="#{educational_program.adaptive ? 'eduAdOp' : 'eduOp'}")
+        tr(itemprop="eduOp")
           td(itemprop="eduCode", style="vertical-align: top;")= educational_program.code
           td(itemprop="eduName", style="vertical-align: top;")= educational_program.name
           td(itemprop="eduLevel", style="vertical-align: top;")= educational_program.level
@@ -219,7 +219,7 @@ section.panel
         th Ссылка на методические и иные документы, разработанные ОО для обеспечения образовательного процесса, а также рабочие программы воспитания и календарные планы воспитательной работы, включаемых в ООП
     tbody
       - @adaptive_educational_programs.each do |educational_program|
-        tr(itemprop="#{educational_program.adaptive ? 'eduAdOp' : 'eduOp'}")
+        tr(itemprop="eduAdOp")
           td(itemprop="eduCode", style="vertical-align: top;")= educational_program.code
           td(itemprop="eduName", style="vertical-align: top;")= educational_program.name
           td(itemprop="eduLevel", style="vertical-align: top;")= educational_program.level
