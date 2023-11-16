@@ -297,7 +297,14 @@
 	</div>
       </div>
     </footer>
-    <%= link_to 'Задать вопрос', feedbacks_path, id: 'feedback', class: 'button tiny', style: 'background-color: rgb(70,130,180);' %>
+    <%= link_to 'Открытый вопрос', feedbacks_path, id: 'feedback', class: 'button tiny', style: 'background-color: rgb(70,130,180);' %>
+    <%= link_to 'Вопрос ректору', '#', id: 'feedback_rector', class: 'button tiny', style: 'background-color: rgb(255,215,0);',  "data-reveal-id" => "rector"%>
+    <div class="reveal-modal medium" id="rector" data-reveal="true" align="center">
+      <script src="https://yastatic.net/s3/frontend/forms/_/embed.js"></script><iframe src="https://forms.yandex.ru/cloud/65550caf50569046dd88d302/?iframe=1" frameborder="0" name="ya-form-65550caf50569046dd88d302" width="650"></iframe>
+      <a class="close-reveal-modal">
+        <i class="fi-x"></i>
+      </a>
+    </div>
 </div>
 </div>
     <% if @administrator_permission %>

@@ -129,6 +129,12 @@ section.panel {
   bottom: -20px;
   right: 20px;
 }
+#feedback_rector {
+  position: fixed;
+  bottom: -20px;
+  right: 175px;
+  color: black;
+}
 .inline-list {
   margin-left: -0.5rem;
 }
