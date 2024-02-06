@@ -8,7 +8,12 @@ tr
   td class = ('pink' unless achievement.published)
     = achievement.achievement_result.name
   td class = ('pink' unless achievement.published)
-    = achievement.attachments.count > 0 ? "Да" : "Нет"
+    - if achievement.attachments.present? && @deansoffice_permission
+      ul.no-bullet
+        - achievement.attachments.each do |attachment|
+          li= link_to attachment.title.first(15), attachment, target: '_blank'
+    - else
+      = achievement.attachments.present? ? "Да" : "Нет"
   - if @administrator_permission || current_user == @user
     td class = ('pink' unless achievement.published)
       - if @administrator_permission

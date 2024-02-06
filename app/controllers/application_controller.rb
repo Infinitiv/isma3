@@ -79,6 +79,10 @@ class ApplicationController < ActionController::Base
   def current_user_administrator?
     current_user_groups.where(administrator: true).count > 0 unless current_user.nil?
   end
+
+  def current_user_deansoffice?
+    current_user_groups.map(&:name).include? 'deansoffice' unless current_user.nil?
+  end
   
   def current_user_isma?
     isma_group = Group.find_by_name('isma')
@@ -117,6 +121,7 @@ class ApplicationController < ActionController::Base
     @writer_permission = current_user_writer?
     @commentator_permission = current_user_commentator?
     @isma_permission = current_user_isma?
+    @deansoffice_permission = current_user_deansoffice?
   end
   
   def set_details
