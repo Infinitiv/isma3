@@ -6,11 +6,11 @@
     <% if Rails.env.production? %>
       <meta name='yandex-verification' content='5d4cdafa940771a6' />
     <% end %>
-    <title><%= content_for?(:title) ? yield(:title) : "ИвГМА" %></title>
+    <title><%= content_for?(:title) ? yield(:title) : "Ивановский ГМУ" %></title>
     <% if action_name == 'entrants' || action_name == 'show' %>
       <meta name="robots" content="noindex">
     <% end %>
-    <meta name="description" content="<%= content_for?(:description)? yield(:description) : "Официальный сайт Ивановской медицинской академии" %>">
+    <meta name="description" content="<%= content_for?(:description)? yield(:description) : "Официальный сайт Ивановского медицинского университета" %>">
     <%= favicon_link_tag 'favicon.ico' %>
     <%= stylesheet_link_tag "application" %>
     <%= csrf_meta_tags %>
@@ -23,7 +23,7 @@
 	<li class="name">
 	  <h1><%= link_to 'Главная', root_path, class: "show-for-medium-up", style: 'color: rgba(13,40,175,0.4)' %></h1>
 	  <%= link_to root_path, class: "show-for-small-only" do %>
-	    <span class="title-super">ИвГМА</span>
+	    <span class="title-super">Ивановский ГМУ</span>
 	  <% end %>
 	</li>
 	<li class="toggle-topbar menu-icon"><a href="#"><span>Меню</span></a></li>
@@ -210,7 +210,7 @@
     <div class="small-6 columns">
       <ul class="side-nav">
       <li> <%= link_to "Воспитательная работа", '/divisions/107' %>
-	<li><%= link_to "Клиника ИвГМА", '/divisions/126' %>
+	<li><%= link_to "Клиника Ивановского ГМУ", '/divisions/126' %>
 	<li><%= link_to "Новости", articles_path %>
       </ul>
     </div>
@@ -218,7 +218,7 @@
   <div class="row">
     <div class="large-10 columns show-for-medium-up">
     <%= image_tag('gerb.png', size: '48x48', class: "left", style: "padding-top: 7px;") %>
-          <h1 class="title" style="padding-top: 20px;" title="<%= @details_hash['Полное наименование академии'][:value].html_safe %>">Ивановская государственная медицинская академия</h1>
+          <h1 class="title" style="padding-top: 20px;" title="<%= @details_hash['Полное наименование академии'][:value].html_safe %>">Ивановский государственный медицинский университет</h1>
     </div>
     <div class="large-2 small-12 columns" style="padding-top: 20px;">
       <%= form_tag("/search", method: "get") do %>
