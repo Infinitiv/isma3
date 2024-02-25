@@ -4,7 +4,7 @@ section.panel.clearfix
   h1 Реквизиты и контакты
   dl
     .(itemscope itemtype="http://schema.org/Organization")
-      dt Наименование академии
+      dt Наименование университета
       dd
         strong полное: 
         span(itemprop="name")= @details_hash['Полное наименование академии'][:value].html_safe
@@ -69,12 +69,12 @@ section.panel.clearfix
           span= @details_hash['ОКТМО'][:value].html_safe
   table
     tr
-      td Оплатить предоставленные академией образовательные и иные услуги можно посредством электронного платежа через СБЕР
+      td Оплатить предоставленные университетом образовательные и иные услуги можно посредством электронного платежа через СБЕР
       td= link_to 'https://sberbank.com/sms/ppinv?reqId=1613967226603', target: '_blank' do
         = image_tag 'sber_button.svg', width: '100%'
   
 
-  h3 В академии устанавливаются следующие часы приема по личным вопросам сотрудников и студентов:
+  h3 В университете устанавливаются следующие часы приема по личным вопросам сотрудников и студентов:
   table.table
     thead
       tr
@@ -86,7 +86,7 @@ section.panel.clearfix
       tr
         td
           strong 1.   
-        td И.&nbsp;о.&nbsp;ректора академии
+        td И.&nbsp;о.&nbsp;ректора университета
         td четверг
         td 14.00&ndash;16.00
       tr
