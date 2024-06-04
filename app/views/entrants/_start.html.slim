@@ -7,7 +7,7 @@ fieldset
       .label.info(v-if="entrant.stage == 2") Ваши документы зарегистрированы и находятся на рассмотрении
       .label.success(v-if="entrant.stage == 4") Ваше заявление допущено к участию в конкурсе. Номер личного дела {{entrant.application_number}}.
       .label.alert(v-if="entrant.stage == 6") Ваше заявление отзвано
-  .row(v-if="entrant.campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
+  .row(v-if="entrant.campaign.campaign_type == 'Прием на обучение по ОП бакалавриата/специалитета'")
     .large-12.small-12.columns
       br
       / =link_to 'Список лиц, подавших документы', '/storage/data/entrants/current_entrants_spec.html', target: '_blank'

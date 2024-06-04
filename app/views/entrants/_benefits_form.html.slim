@@ -1,4 +1,4 @@
-fieldset(v-if="entrant.campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
+fieldset(v-if="entrant.campaign.campaign_type == 'Прием на обучение по ОП бакалавриата/специалитета'")
   .row
     .large-12.small-12.columns
       .row
@@ -78,7 +78,7 @@ fieldset(v-if="entrant.questionnaire['benefit'] || entrant.questionnaire['specia
         span &nbsp;
         .button.tiny(v-if="entrant.benefit_documents.length > 1" @click="deleteBenefitDocument") Удалить документ
 
-fieldset(v-if="entrant.campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
+fieldset(v-if="entrant.campaign.campaign_type == 'Прием на обучение по ОП бакалавриата/специалитета'")
   .row
     .large-1.small-1.columns
       input#olympionic(type="checkbox" name="olympionic" v-bind:value="true" v-model="entrant.questionnaire['olympionic']" v-on:change = "sendData('questionnaire', entrant.questionnaire)" v-bind:disabled = 'isDisabled')

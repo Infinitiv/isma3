@@ -18,7 +18,7 @@ fieldset
         span Адрес электронной почты
         = email_field_tag :email, nil, placeholder: 'user@domain.com', 'v-model.trim': 'entrant.contact_information.email', class: 'error', disabled: true
       small.error v-if="findErrorMessage('entrant.contact_information.email')" == "{{ findErrorMessage('entrant.contact_information.email') }}"
-fieldset(v-if="entrant.id && entrant.campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
+fieldset(v-if="entrant.id && entrant.campaign.campaign_type == 'Прием на обучение по ОП бакалавриата/специалитета'")
   legend Прикрепите копию медицинского заключения (при наличии. Например, справку по форме 086/у)
   .row
     .large-12.small-12.columns
@@ -29,7 +29,7 @@ fieldset(v-if="entrant.id && entrant.campaign.campaign_type == 'Прием на 
         a v-bind:href = "'/api/attachments/' + attachment.data_hash + '?filename=' + attachment.filename" target = '_blank' {{ attachment.filename }}
 fieldset
   legend Прочие документы
-  p(v-if="entrant.campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'") Можно указать реквизиты и прикрепить копии других документов, которые вы считаете необходимыми для передачи в приемную комиссию. Например, это может быть свидетельство о браке, если документ об образовании получен до смены фамилии.
+  p(v-if="entrant.campaign.campaign_type == 'Прием на обучение по ОП бакалавриата/специалитета'") Можно указать реквизиты и прикрепить копии других документов, которые вы считаете необходимыми для передачи в приемную комиссию. Например, это может быть свидетельство о браке, если документ об образовании получен до смены фамилии.
   p(v-if="entrant.campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации'") Необходимо указать данные дополнительных документов, таких как свидетельство об аккредитации специалиста, сертификат специалиста, военный билет (при их наличии).
   . v-for="(document, index) in entrant.other_documents"
     .row
@@ -40,7 +40,7 @@ fieldset
         select.error#other_document_name(name="other_documents[][document_category]" v-model='document.document_category' v-if="entrant.campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации'" v-on:change="sendData('other_document', document, index)" v-bind:disabled='isDisabled')
           option(disabled value) Выберите вид документа
           option(v-for="other_document_category in api.dictionaries.other_document_categories" v-bind:value="other_document_category") {{ other_document_category }}
-        = text_field_tag 'other_documents[][document_category]', nil, placeholder: 'Укажите название документа', 'v-model.trim': 'document.document_category', class: 'error', 'v-if': "entrant.campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'", 'v-on:change': "sendData('other_document', document, index)", 'v-bind:disabled': 'isDisabled'
+        = text_field_tag 'other_documents[][document_category]', nil, placeholder: 'Укажите название документа', 'v-model.trim': 'document.document_category', class: 'error', 'v-if': "entrant.campaign.campaign_type == 'Прием на обучение по ОП бакалавриата/специалитета'", 'v-on:change': "sendData('other_document', document, index)", 'v-bind:disabled': 'isDisabled'
         small.error v-if="findErrorMessage('document.other_document_category')" == "{{ findErrorMessage('document.other_document_category') }}"
       .large-4.small-12.columns
         = label_tag :other_document_series
@@ -77,7 +77,7 @@ fieldset
       .button.tiny @click="addOtherDocument" Добавить документ
       span &nbsp;
       .button.tiny(v-if="entrant.other_documents.length > 1" @click="deleteOtherDocument") Удалить документ
-fieldset(v-if="entrant.campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
+fieldset(v-if="entrant.campaign.campaign_type == 'Прием на обучение по ОП бакалавриата/специалитета'")
   legend Выбор иностранного языка, желаемого для изучения в вузе
   .row
     .large-12.small-12.columns
@@ -85,10 +85,10 @@ fieldset(v-if="entrant.campaign.campaign_type == 'Прием на обучени
         option(disabled value) Выберите язык
         option(v-for="language in api.dictionaries.languages" v-bind:value="language") {{ language }}
 fieldset
-  .row(v-if="entrant.campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
+  .row(v-if="entrant.campaign.campaign_type == 'Прием на обучение по ОП бакалавриата/специалитета'")
     .large-12.small-12.columns
       p Пункт "Согласен на передачу заявления на ЕПГУ" необходимо отметить, если у Вас имеется подтвержденная учетная запись на Едином портале государственных услуг и Вы желаете получить доступ к своему заявлению из личного кабинета на портале.
-  .row(v-if="entrant.campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
+  .row(v-if="entrant.campaign.campaign_type == 'Прием на обучение по ОП бакалавриата/специалитета'")
     .large-1.small-1.columns
       input#benefit(type="checkbox" name="epgu" v-bind:value="true" v-model="entrant.questionnaire['epgu']" v-on:change = "sendData('questionnaire', entrant.questionnaire)" v-bind:disabled = 'isDisabled')
     .large-11.small-11.columns
@@ -103,7 +103,7 @@ fieldset
     .large-11.small-11.columns
       label
         span Нуждаюсь в предоставлении общежития на период обучения
-  .row(v-if="entrant.campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет'")
+  .row(v-if="entrant.campaign.campaign_type == 'Прием на обучение по ОП бакалавриата/специалитета'")
     .large-12.small-12.columns
       p Если Вы отметите нижеследующий пункт, Вам будет необходимо прикрепить на вкладке Льготы копию документа, подтверждающего инвалидность или ограниченные возможности здоровья, требующие создания специальных условий.
     .large-1.small-1.columns
