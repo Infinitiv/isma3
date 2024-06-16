@@ -851,7 +851,7 @@ var entrants = new Vue({
           division_code: '',
           birth_place: ''
         });
-        if(this.entrant.education_documents.length == 0 && this.entrant.campaign.campaign_type == 'Прием на обучение на бакалавриат/специалитет') this.entrant.education_documents.push({
+        if(this.entrant.education_documents.length == 0 && this.entrant.campaign.campaign_type == 'Прием на обучение по ОП бакалавриата/специалитета') this.entrant.education_documents.push({
           id: null,
           document_type: 'education_document',
           document_category: '',
