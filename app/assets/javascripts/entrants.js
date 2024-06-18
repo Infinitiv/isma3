@@ -924,6 +924,10 @@ var entrants = new Vue({
           issuer: '',
           original: ''
         });
+        if(this.entrant.target_offers.length == 0) this.entrant.target_offers.push({
+          id: null,
+          offer_id: null
+        });
         if(this.entrant.target_contracts.length == 0) this.entrant.target_contracts.push({
           id: null,
           document_type: 'target_contract',
