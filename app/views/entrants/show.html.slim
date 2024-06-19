@@ -16,7 +16,7 @@ section.panel#entrant
       li.tab-title v-bind:class = "[api.current_tab == 'tickets' ? 'active' : '']"= link_to 'Переписка по заявлению', '#', '@click.prevent': 'setCurrentTab("tickets")', 'v-if': 'entrant.stage != 0'
       li.tab-title v-bind:class = "[api.current_tab == 'common' ? 'active' : '']"= link_to 'Общие сведения', '#', '@click.prevent': 'setCurrentTab("common")'
       li.tab-title v-bind:class = "[api.current_tab == 'benefits' ? 'active' : '']"= link_to 'Льготы', '#', '@click.prevent': 'setCurrentTab("benefits")', 'v-if': 'entrant.campaign.campaign_type == "Прием на обучение по ОП бакалавриата/специалитета"'
-      li.tab-title v-bind:class = "[api.current_tab == 'target' ? 'active' : '']"= link_to 'Целевой прием', '#', '@click.prevent': 'setCurrentTab("target")'
+      / li.tab-title v-bind:class = "[api.current_tab == 'target' ? 'active' : '']"= link_to 'Целевой прием', '#', '@click.prevent': 'setCurrentTab("target")'
       li.tab-title v-bind:class = "[api.current_tab == 'competitions' ? 'active' : '']"= link_to 'Условия поступления', '#', '@click.prevent': 'setCurrentTab("competitions")'
       li.tab-title v-bind:class = "[api.current_tab == 'others' ? 'active' : '']"= link_to 'Прочие сведения', '#', '@click.prevent': 'setCurrentTab("others")'
       li.tab-title v-bind:class = "[api.current_tab == 'applications' ? 'active' : '']"= link_to 'Заявления', '#', '@click.prevent': 'setCurrentTab("applications")'
@@ -33,7 +33,7 @@ section.panel#entrant
         = render partial: 'benefits_form'
         = link_to 'Назад', '#', class: 'button tiny', '@click.prevent': 'setCurrentTab("common")'
         span &nbsp;
-        = link_to 'Далее', '#', class: 'button tiny', '@click.prevent': 'setCurrentTab("target")'
+        = link_to 'Далее', '#', class: 'button tiny', '@click.prevent': 'setCurrentTab("competitions")'
       .content#target v-bind:class = "[api.current_tab == 'target' ? 'active' : '']"
         = render partial: 'target_form'
         = link_to 'Назад', '#', class: 'button tiny', '@click.prevent': 'setCurrentTab("benefits")', 'v-if': 'entrant.campaign.campaign_type == "Прием на обучение по ОП бакалавриата/специалитета"'
@@ -42,7 +42,7 @@ section.panel#entrant
         = link_to 'Далее', '#', class: 'button tiny', '@click.prevent': 'setCurrentTab("competitions")'
       .content#competitions v-bind:class = "[api.current_tab == 'competitions' ? 'active' : '']"
         = render partial: 'competitions_form'
-        = link_to 'Назад', '#', class: 'button tiny', '@click.prevent': 'setCurrentTab("target")'
+        = link_to 'Назад', '#', class: 'button tiny', '@click.prevent': 'setCurrentTab("benefits")'
         span &nbsp;
         = link_to 'Далее', '#', class: 'button tiny', '@click.prevent': 'setCurrentTab("others")'
       .content#others v-bind:class = "[api.current_tab == 'others' ? 'active' : '']"

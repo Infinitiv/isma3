@@ -310,10 +310,14 @@ var entrants = new Vue({
         return true;
       };
       if(competitiveGroup.education_source == 'Целевая квота') {
-        for( var i = 0; i < this.entrant.target_contracts.length; i++ ) {
-          if(competitiveGroup.id == this.entrant.target_contracts[i].competitive_group_id){
+        if(this.entrant.competitive_groups.filter(function(group) { return group.education_source == 'Целевая квота'; }).length > 0) {
+          if(this.findCompetitiveGroup(competitiveGroup.id)) {
             return true;
+          } else {
+            return false;
           };
+        } else {
+          return true;
         };
       };
       return false;
@@ -391,6 +395,10 @@ var entrants = new Vue({
           if(sub == 'target_contract') {
             this.entrant.target_contracts[index].id = response.data.target_contract.id;
             this.entrant.stage = response.data.entrant.stage;
+          };
+          if(sub == 'target_offer_id') {
+            this.entrant.target_offer_ids = response.data.target_offer_ids;
+            this.entrant.target_offer_id = null;
           };
           if(sub == 'other_document') {
             this.entrant.other_documents[index].id = response.data.other_document.id;
@@ -924,10 +932,7 @@ var entrants = new Vue({
           issuer: '',
           original: ''
         });
-        if(this.entrant.target_offers.length == 0) this.entrant.target_offers.push({
-          id: null,
-          offer_id: null
-        });
+        if(this.entrant.target_offer_ids.length > 0) this.entrant.target_offer_id = this.entrant.target_offer_ids[0];
         if(this.entrant.target_contracts.length == 0) this.entrant.target_contracts.push({
           id: null,
           document_type: 'target_contract',
