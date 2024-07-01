@@ -309,8 +309,9 @@ var entrants = new Vue({
       if(competitiveGroup.education_source == 'Основные места в рамках КЦП' || (competitiveGroup.education_source == 'По договору об оказании платных образовательных услуг' && competitiveGroup.entrance_category == null)) {
         return true;
       };
-      if(competitiveGroup.education_source == 'Целевая квота') {
-        if(this.entrant.competitive_groups.filter(function(group) { return group.education_source == 'Целевая квота'; }).length > 0) {
+      if(competitiveGroup.education_source == 'Целевая квота' && this.entrant.campaign.campaign_type === 'Прием на подготовку кадров высшей квалификации') {
+        var max = 1;
+        if(this.entrant.competitive_groups.filter(function(group) { return group.education_source == 'Целевая квота'; }).length > max) {
           if(this.findCompetitiveGroup(competitiveGroup.id)) {
             return true;
           } else {
