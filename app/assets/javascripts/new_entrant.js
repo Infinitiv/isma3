@@ -48,7 +48,7 @@ var entrants = new Vue({
     checkEmail: function() {
       this.entrant.errors = [];
       axios
-        .post('/api/entrants/check_email', {email: this.entrant.email})
+        .post('/api/entrants/check_email', {email: this.entrant.email, campaign_id: this.current_campaign.id})
         .then(response => {
           if(response.data.status == 'failed') {
             this.entrant.errors.push({element: 'email', message: 'Адрес электронной почты уже зарегистрирован в системе', level: 'red'});
