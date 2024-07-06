@@ -350,6 +350,11 @@ var entrants = new Vue({
       });
       return findCompetitiveGroup;
     },
+    findTargetOfferIndex: function(competitive_group_id) {
+      return this.entrant.target_offer_ids.findIndex(function(target_offer_id){
+        return target_offer_id.competitive_group_id == competitive_group_id
+      });
+    },
     openContragentModal: function(){
       $('#contragent').foundation('reveal', 'open');
     },
@@ -399,7 +404,6 @@ var entrants = new Vue({
           };
           if(sub == 'target_offer_id') {
             this.entrant.target_offer_ids = response.data.target_offer_ids;
-            this.entrant.target_offer_id = null;
           };
           if(sub == 'other_document') {
             this.entrant.other_documents[index].id = response.data.other_document.id;
@@ -933,7 +937,6 @@ var entrants = new Vue({
           issuer: '',
           original: ''
         });
-        if(this.entrant.target_offer_ids.length > 0) this.entrant.target_offer_id = this.entrant.target_offer_ids[0];
         if(this.entrant.target_contracts.length == 0) this.entrant.target_contracts.push({
           id: null,
           document_type: 'target_contract',
