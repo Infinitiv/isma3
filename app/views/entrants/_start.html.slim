@@ -10,11 +10,11 @@ fieldset
   .row(v-if="entrant.campaign.campaign_type == 'Прием на обучение по ОП бакалавриата/специалитета'")
     .large-12.small-12.columns
       br
-      / =link_to 'Список лиц, подавших документы', '/storage/data/entrants/current_entrants_spec.html', target: '_blank'
-      =link_to 'Конкурсный список', '/storage/data/competitions/current_competitions_spec.html', target: '_blank'
+      =link_to 'Список лиц, подавших документы', '/storage/data/entrants/current_entrants_spec.html', target: '_blank'
+      / =link_to 'Конкурсный список', '/storage/data/competitions/current_competitions_spec.html', target: '_blank'
     .large-12.small-12.columns
-      / p= "(обновляется не реже, чем 1 раз в сутки)"
-      p= "(обновляется не реже, чем 5 раз в сутки)"
+      p= "(обновляется не реже, чем 1 раз в сутки)"
+      / p= "(обновляется не реже, чем 5 раз в сутки)"
   .row(v-if="entrant.campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации'")
     .large-12.small-12.columns
       br
@@ -35,15 +35,20 @@ fieldset
 fieldset
   legend Конкурсные баллы
   .row
-    .large-4.small-12.columns
-      strong= "Конкурсная сумма {{ entrant.full_sum }}"
-    .large-8.small-12.columns
-      strong= "Сумма балллов за вступительные испытания {{ entrant.sum }}"
-  .row
     .large-12.small-12.columns(v-for="entrance_test in entrant.entrance_tests")
       .(v-for="item in entrant.marks" v-if="item.subject == entrance_test && item.marks[0].value > 0")
         span= "{{ entrance_test }} {{ item.marks[0].value }}"
         sup= "{{ item.marks[0].test_type }}"
+  .row(v-if="entrant.achievement_sum > 0")
+    .large-12.small-12.columns
+      strong= "Сумма баллов за индивидуальные достижения  {{ entrant.achivement_sum }}"
+  hr
+  .row
+    .large-12.small-12.columns
+      p(v-for="competitive_group in entrant.competitive_groups")
+        span= "Общая сумма {{ competitive_group.name}}:"
+        span &nbsp;
+        strong= "{{ competitive_group.full_sum }}"
 fieldset(v-if="checkPaidCompetitiveGroups")
   p Вы подали документы на внебюджетный конкурс. Для зачисления Вам необходимо заполнить со своей стороны договор об оказании платных образовательных услуг. Если Вы поступите на бюджетное место, данный договор не вступит в силу и оплата обучения не потребуется. Если Вы поступите на внебюджетное место и будете зачислены в вуз, договор вступит в силу с момента начала обучения. Оплата по договору должна быть произведена до 25 сентября (за семестр или за учебный год). То есть заранее (до зачисления) Вы платить не обязаны.
   p(v-if="checkAge") Поскольку Вам уже есть 18 лет, то Вы можете сами быть заказчиком по данному договору и оплачивать образовательные услуги. Однако, это может быть и иное дееспособное лицо. Чаще всего заказчиком выступает один из родителей или кто-то из родственников. Учите, что согласно законодательству Российской Федерации в некоторых случаях, заказчик может получить налоговый вычет за оплату образовательных услуг или использовать материнский капитал, поэтому подумайте, кто может выступить заказчиком Вашего обучения.
