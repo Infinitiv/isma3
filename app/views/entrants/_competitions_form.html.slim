@@ -32,19 +32,20 @@ fieldset
 fieldset(v-if="entrant.competitive_group_ids.length > 0")
   legend Расстановка приоритетов
   p Перетаскиванием блоков расположите их в порядке убывания значимости
-  h3 Бюджетные конкурсы
-  draggable(v-model="entrant.priorities.budget_priorities" v-bind="dragOptions" :move="checkMove" @end="entrant.questionnaire['priority'] = false; fillPriority(entrant.priorities.budget_priorities)")
-    transition-group(type="transition")
-      .(v-for="(priority, index) in entrant.priorities.budget_priorities" :key="priority.index")
-          .panel.callout
-            i.fi-list-thumbnails
-            span &nbsp;
-            span= "{{ priority.direction }}."
-            span &nbsp;
-            span(v-if="priority.target") Целевые места:
-            span(v-else) Иные места:
-            span &nbsp;
-            span= "приоритет - {{ priority.priority }}"
+  .(v-if="entrant.campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации'")
+    h3 Бюджетные конкурсы
+    draggable(v-model="entrant.priorities.budget_priorities" v-bind="dragOptions" :move="checkMove" @end="entrant.questionnaire['priority'] = false; fillPriority(entrant.priorities.budget_priorities)")
+      transition-group(type="transition")
+        .(v-for="(priority, index) in entrant.priorities.budget_priorities" :key="priority.index")
+            .panel.callout
+              i.fi-list-thumbnails
+              span &nbsp;
+              span= "{{ priority.direction }}."
+              span &nbsp;
+              span(v-if="priority.target") Целевые места:
+              span(v-else) Иные места:
+              span &nbsp;
+              span= "приоритет - {{ priority.priority }}"
   h3 Платные конкурсы
   draggable(v-model="entrant.priorities.paid_priorities" v-bind="dragOptions" :move="checkMove" @end="entrant.questionnaire['priority'] = false; fillPriority(entrant.priorities.paid_priorities)")
     transition-group
