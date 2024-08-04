@@ -32,7 +32,7 @@ fieldset
 fieldset(v-if="entrant.competitive_group_ids.length > 0")
   legend Расстановка приоритетов
   p Перетаскиванием блоков расположите их в порядке убывания значимости
-  .(v-if="entrant.campaign.campaign_type == 'Прием на подготовку кадров высшей квалификации'")
+  .(v-if="false")
     h3 Бюджетные конкурсы
     draggable(v-model="entrant.priorities.budget_priorities" v-bind="dragOptions" :move="checkMove" @end="entrant.questionnaire['priority'] = false; fillPriority(entrant.priorities.budget_priorities)")
       transition-group(type="transition")
@@ -46,25 +46,26 @@ fieldset(v-if="entrant.competitive_group_ids.length > 0")
               span(v-else) Иные места:
               span &nbsp;
               span= "приоритет - {{ priority.priority }}"
-  h3 Платные конкурсы
-  draggable(v-model="entrant.priorities.paid_priorities" v-bind="dragOptions" :move="checkMove" @end="entrant.questionnaire['priority'] = false; fillPriority(entrant.priorities.paid_priorities)")
-    transition-group
-      .(v-for="(priority, index) in entrant.priorities.paid_priorities" :key="priority.index")
-        .panel.callout.radius
-          i.fi-list-thumbnails
-          span &nbsp;
-          span= "{{ priority.direction }}."
-          span &nbsp;
-          span(v-if="priority.target") Целевые места:
-          span(v-else) Иные места:
-          span &nbsp;
-          span= "приоритет - {{ priority.priority }}"
-  .row
-      .large-1.small-1.columns
-        input#exam(type="checkbox" name="priority" v-bind:value="true" v-model="entrant.questionnaire['priority']" v-on:change = "sendData('questionnaire', entrant.questionnaire); sendData('priorities', entrant.priorities)")
-      .large-11.small-11.columns
-        label
-          span Подтверждаю, что приоритеты указаны мною верно.
+  .(v-if="entrant.campaign.campaign_type == 'Прием на обучение по ОП бакалавриата/специалитета'")
+    h3 Платные конкурсы
+    draggable(v-model="entrant.priorities.paid_priorities" v-bind="dragOptions" :move="checkMove" @end="entrant.questionnaire['priority'] = false; fillPriority(entrant.priorities.paid_priorities)")
+      transition-group
+        .(v-for="(priority, index) in entrant.priorities.paid_priorities" :key="priority.index")
+          .panel.callout.radius
+            i.fi-list-thumbnails
+            span &nbsp;
+            span= "{{ priority.direction }}."
+            span &nbsp;
+            span(v-if="priority.target") Целевые места:
+            span(v-else) Иные места:
+            span &nbsp;
+            span= "приоритет - {{ priority.priority }}"
+    .row
+        .large-1.small-1.columns
+          input#exam(type="checkbox" name="priority" v-bind:value="true" v-model="entrant.questionnaire['priority']" v-on:change = "sendData('questionnaire', entrant.questionnaire); sendData('priorities', entrant.priorities)")
+        .large-11.small-11.columns
+          label
+            span Подтверждаю, что приоритеты указаны мною верно.
 fieldset
   legend Вступительные испытания
   .(v-if="entrant.campaign.campaign_type == 'Прием на обучение по ОП бакалавриата/специалитета'")
