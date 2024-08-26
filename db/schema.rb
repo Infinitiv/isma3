@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20231016085819) do
+ActiveRecord::Schema.define(version: 20240825163857) do
 
   create_table "academic_plans", force: :cascade do |t|
     t.string   "name",                   limit: 255
@@ -168,6 +168,18 @@ ActiveRecord::Schema.define(version: 20231016085819) do
 
   add_index "comments", ["article_id"], name: "index_comments_on_article_id", using: :btree
   add_index "comments", ["user_id"], name: "index_comments_on_user_id", using: :btree
+
+  create_table "criteria", force: :cascade do |t|
+    t.string   "chapter",        limit: 255
+    t.string   "point",          limit: 255
+    t.integer  "min",            limit: 4
+    t.integer  "max",            limit: 4
+    t.text     "comment",        limit: 65535
+    t.string   "criterium_type", limit: 255
+    t.boolean  "actual",                       default: false
+    t.datetime "created_at",                                   null: false
+    t.datetime "updated_at",                                   null: false
+  end
 
   create_table "degrees", force: :cascade do |t|
     t.string   "name",       limit: 255, default: "", null: false

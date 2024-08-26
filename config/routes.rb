@@ -80,6 +80,12 @@ Isma::Application.routes.draw do
       post :import
     end
   end
+
+  resources :criteria, only: [:index, :destroy] do
+    collection do
+      post :import
+    end
+  end
   
   resources :articles do
     resources :comments do
