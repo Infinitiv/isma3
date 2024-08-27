@@ -1,4 +1,5 @@
 class Criterium < ActiveRecord::Base
+  has_many :efficients
 
   def self.import(file)
     # загружаем список критериев эффективного контракта

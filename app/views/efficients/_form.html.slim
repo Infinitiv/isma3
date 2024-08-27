@@ -1,0 +1,51 @@
+h2 Эффективный контракт
+= form_for @efficient do |f|
+  - if @efficient.errors.any?
+    ul
+      - @efficient.errors.full_messages.each do |msg|
+        li= msg
+  p 
+    span Выберите категорию, затем укажиет конкретный критерий эффективного контракта. С полной таблицей критериев можно ознакомиться
+    span &nbsp;
+    span= link_to 'здесь.', '/attachments/53197', target: '_blank'
+  p
+    span После выбора категории и критерия Вам будут доступны поля для подтверждающей ссылки и/или документа. Документы необходимо прикреплять в формате pdf одним файлом.
+    span Для конвертации графических файлов в pdf и объединения файлов в 1 рекомендуем использовать сайт
+    span &nbsp;
+    span= link_to 'iLovePDF.', 'https://www.ilovepdf.com/ru', target: '_blank'
+  p
+    span Указанные Вами подтверждающие документы будут просмотрены членами комиссии и по результатам Вам будут начислены баллы, которые Вы увидите ниже в таблице.
+  p 
+    span В случае обнаружения ошибок, сообщить Марковнину В. Р.
+  .row
+    .large-12.small-12.columns
+      label 
+        span Категория
+        select.error#chapter(name="chapter" v-model="efficient.chapter")
+          option(value = '')
+          option(v-for="chapter in chapters" v-bind:value="chapter") {{ chapter }}
+  br
+  .row
+    .large-12.small-12.columns
+      label 
+        span Критерий
+        select.error#chapter(name="criterium_id" v-model="efficient.point")
+          option(value = '')
+          option(v-for="point in points" v-bind:value="point.id" v-if="point.chapter == efficient.chapter") {{ point.point }}
+  .row 
+    .large-12.small-12.columns
+      br
+      h3(v-if="efficient.point") Что требуется указать для подтверждения критерия
+      p(v-if="efficient.point") {{ findPoint(efficient.point).comment }}
+      / p(v-if="efficient.point") {{ findPoint(efficient.point).min }}
+  .row 
+    .large-12.small-12.columns
+      h3 (v-if="findPoint(efficient.point).criterium_type == 'link' || findPoint(efficient.point).criterium_type == 'both'") Указать ссылку
+      input.error#link(type="text" v-model="efficient.link" v-if="findPoint(efficient.point).criterium_type == 'link' || findPoint(efficient.point).criterium_type == 'both'" name='link')
+      br
+      h3 (v-if="findPoint(efficient.point).criterium_type == 'file' || findPoint(efficient.point).criterium_type == 'both'") Прикрепить скан документа
+      .filefield (v-if="findPoint(efficient.point).criterium_type == 'file' || findPoint(efficient.point).criterium_type == 'both'")
+        = f.file_field :file, name: 'attachment[files][]', id: :files, multiple: true, 'v-on:change': 'handleFileUpload($event)'
+  br
+  .actions(v-if="efficient.point && (efficient.link || efficient.file)")
+    = f.submit 'Добавить', class: 'button tiny'

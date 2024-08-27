@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20240825163857) do
+ActiveRecord::Schema.define(version: 20240826181947) do
 
   create_table "academic_plans", force: :cascade do |t|
     t.string   "name",                   limit: 255
@@ -137,6 +137,11 @@ ActiveRecord::Schema.define(version: 20240825163857) do
 
   create_table "attachments_divisions", id: false, force: :cascade do |t|
     t.integer "division_id",   limit: 4, null: false
+    t.integer "attachment_id", limit: 4, null: false
+  end
+
+  create_table "attachments_efficients", id: false, force: :cascade do |t|
+    t.integer "efficient_id",  limit: 4, null: false
     t.integer "attachment_id", limit: 4, null: false
   end
 
@@ -327,6 +332,19 @@ ActiveRecord::Schema.define(version: 20240825163857) do
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
   end
+
+  create_table "efficients", force: :cascade do |t|
+    t.integer  "criterium_id", limit: 4
+    t.integer  "user_id",      limit: 4
+    t.string   "link",         limit: 255
+    t.float    "value",        limit: 24
+    t.boolean  "checked",                  default: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+  end
+
+  add_index "efficients", ["criterium_id"], name: "index_efficients_on_criterium_id", using: :btree
+  add_index "efficients", ["user_id"], name: "index_efficients_on_user_id", using: :btree
 
   create_table "feedbacks", force: :cascade do |t|
     t.integer  "to",         limit: 4,                     null: false
@@ -534,6 +552,8 @@ ActiveRecord::Schema.define(version: 20240825163857) do
   add_foreign_key "educational_programs", "accreditations"
   add_foreign_key "educational_programs", "attachments"
   add_foreign_key "educational_programs", "educational_standarts"
+  add_foreign_key "efficients", "criteria"
+  add_foreign_key "efficients", "users"
   add_foreign_key "marks", "educational_programs"
   add_foreign_key "marks", "users"
   add_foreign_key "methodological_supports", "attachments"

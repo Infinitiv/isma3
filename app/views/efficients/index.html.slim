@@ -1,0 +1,32 @@
+= javascript_include_tag 'axios.min.js'
+- if Rails.env == 'production'
+  = javascript_include_tag 'vue@2.7.14.js'
+- else
+  = javascript_include_tag 'vue.js'
+section.panel#efficient
+  = render partial: 'form'
+  - if @efficients.present?
+    table.table 
+      thead 
+        th Название пункта
+        th Ссылки
+        th Файлы
+        th Баллы
+        th Действия
+      tbody
+      - @efficients.each do |efficient|
+        tr 
+          td 
+            = efficient.criterium.point
+          td 
+            - if efficient.link.present?
+              = link_to efficient.link, efficient.link, target: '_blank'
+          td 
+            ul.no-bullet
+              - efficient.attachments.each do |attachment|
+                li= link_to attachment.title_sen_dot, attachment_path(attachment), target: '_blank'
+          td 
+            = efficient.value 
+          td 
+            = link_to 'Удалить', efficient_path(efficient), method: :delete
+= javascript_include_tag 'efficient'

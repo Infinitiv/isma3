@@ -1,6 +1,7 @@
 Isma::Application.routes.draw do
 
   namespace :api, defaults: {format: 'json'}, path: '/api' do
+    resources :criteria, only: [:index]
     resources :entrants, only: [:show, :create, :update] do
       collection do
         post 'check_email'
@@ -86,6 +87,8 @@ Isma::Application.routes.draw do
       post :import
     end
   end
+
+  resources :efficients, only: [:index, :create, :update, :destroy]
   
   resources :articles do
     resources :comments do

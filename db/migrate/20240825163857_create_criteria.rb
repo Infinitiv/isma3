@@ -2,7 +2,7 @@ class CreateCriteria < ActiveRecord::Migration
   def change
     create_table :criteria do |t|
       t.string :chapter
-      t.string :point
+      t.text :point
       t.integer :min
       t.integer :max
       t.text :comment
