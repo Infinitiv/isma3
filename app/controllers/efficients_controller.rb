@@ -30,7 +30,7 @@ class EfficientsController < ApplicationController
   end
   
   def destroy
-    @efficient.attachments.destroy_all
+    @efficient.attachments.delete_all
     @efficient.destroy
     redirect_to :back
   end

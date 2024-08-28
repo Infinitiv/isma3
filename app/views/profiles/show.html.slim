@@ -99,11 +99,11 @@
                         - 'отлично'
                       - else
                         - 'нет оценки'
-                    tr
-                      td
-                        = "#{mark.subject}"
-                      td
-                        = "#{mark_text}"
+                      tr
+                        td
+                          = "#{mark.subject}"
+                        td
+                          = "#{mark_text}"
           - else
             = mean_string
   - if !@achievements.empty? || current_user == @user
