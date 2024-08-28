@@ -78,32 +78,32 @@
               dd
                 = link_to("#marks-#{educational_program.id}") do
                   = mean_string
-                  .content(id= "marks-#{educational_program.id}")
-                table.table
-                  thead
-                    tr
-                      th Дисциплина
-                      th Результат освоения
-                  tbody
-                    - values[:marks].each do |mark|
-                      - mark_text = case mark.value
-                      - when 1
-                        - 'зачтено'
-                      - when 2
-                        - 'неудовлетворительно'
-                      - when 3
-                        - 'удовлетворительно'
-                      - when 4
-                        - 'хорошо'
-                      - when 5
-                        - 'отлично'
-                      - else
-                        - 'нет оценки'
+                .content(id= "marks-#{educational_program.id}")
+                  table.table
+                    thead
                       tr
-                        td
-                          = "#{mark.subject}"
-                        td
-                          = "#{mark_text}"
+                        th Дисциплина
+                        th Результат освоения
+                    tbody
+                      - values[:marks].each do |mark|
+                        - mark_text = case mark.value
+                        - when 1
+                          - 'зачтено'
+                        - when 2
+                          - 'неудовлетворительно'
+                        - when 3
+                          - 'удовлетворительно'
+                        - when 4
+                          - 'хорошо'
+                        - when 5
+                          - 'отлично'
+                        - else
+                          - 'нет оценки'
+                        tr
+                          td
+                            = "#{mark.subject}"
+                          td
+                            = "#{mark_text}"
           - else
             = mean_string
   - if !@achievements.empty? || current_user == @user
