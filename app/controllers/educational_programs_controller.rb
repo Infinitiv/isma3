@@ -71,7 +71,7 @@ class EducationalProgramsController < ApplicationController
   def options_for_select
     @educational_standarts = EducationalStandart.order(:level, :name).load
     @accreditations = Accreditation.order('date_of_issue DESC').load
-    @attachments = Attachment.order(:title).select(:id, :title).select{|a| a.title =~ /pdf/}
+    @attachments = Attachment.order(:title).select(:id, :title).select{|a| a.title =~ /ОП ВО/}
     @nprs = Attachment.order(:title).select(:id, :title).select{|a| a.title =~ /сведения по НПР/}
   end
 end
