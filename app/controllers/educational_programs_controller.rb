@@ -14,11 +14,7 @@ class EducationalProgramsController < ApplicationController
     if @educational_program.employee_list_id.present?
       @employees_educational_programs = nil
     else
-      if @educational_program.level =~ /специалитет/
-        @employees_educational_programs = Profile.includes([:user, :degree, :academic_title]).joins(:divisions).where(divisions: {division_type_id: 3}).where.not("divisions.name LIKE ?", "%ИПО%").uniq
-      else
-        @employees_educational_programs = Profile.includes([:user, :degree, :academic_title]).joins(:divisions).where(divisions: {division_type_id: 3}).where("divisions.name LIKE ?", "%ИПО%").uniq
-      end
+      @employees_educational_programs = Profile.includes([:user, :degree, :academic_title]).joins(:divisions).where(divisions: {division_type_id: 3})
     end
     @posts_hash = {}
     Post.includes(:profile, :division).joins(:profile, :division).where(profiles: {id: @employees_educational_programs}).where(divisions: {division_type_id: 3}).group_by(&:user_id).each do |k, v|
