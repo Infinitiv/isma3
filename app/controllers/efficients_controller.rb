@@ -1,9 +1,28 @@
 class EfficientsController < ApplicationController
-  before_action :set_efficient, only: [:update, :destroy, :efficient_owner?]
+  before_action :set_efficient, only: [:update, :destroy, :efficient_owner?, :uncheck]
   before_action :can, only: [:update, :destroy]
 
   def index
-    @efficients = Efficient.order(:updated_at).where(user_id: current_user.id)
+    if @efficient_writer_permission
+      case true
+      when current_user.posts.map(&:title).include?('проректор по образовательной деятельности')
+        @all_efficients = Efficient.includes(:profile, :divisions, :posts).joins(:criterium).where(criteria: {chapter: '1. Образовательная деятельность'}).order([:checked, :updated_at])
+      when current_user.posts.map(&:title).include?('проректор по научно-исследовательской и международной деятельности')
+        @all_efficients = Efficient.includes(:profile, :divisions, :posts).joins(:criterium).where(criteria: {chapter: '2. Научно-исследовательская деятельность'}).order([:checked, :updated_at])
+      when current_user.posts.map(&:title).include?('проректор по развитию регионального здравоохранения')
+        @all_efficients = Efficient.includes(:profile, :divisions, :posts).joins(:criterium).where(criteria: {chapter: ['4. Клиническая работа', '5. Развитие регионального здравоохранения']}).order([:checked, :updated_at])
+      when current_user.posts.map(&:title).include?('проректор по воспитательной работе и молодежной политике')
+        @all_efficients = Efficient.includes(:profile, :divisions, :posts).joins(:criterium).where(criteria: {chapter: '3. Воспитательная, внеучебная работа'}).order([:checked, :updated_at])
+      else
+        @all_efficients = Efficient.includes(:profile, :divisions, :posts).order([:checked, :created_at])
+      end
+    end
+
+    if @efficient_reader_permission || @administrator_permission
+      @all_efficients = Efficient.includes(:profile, :divisions, :posts).order([:checked, :created_at])
+    end
+
+    @efficients = Efficient.order(:created_at).where(user_id: current_user.id)
     @efficient = Efficient.new(user_id: current_user.id)
   end
   
@@ -26,6 +45,15 @@ class EfficientsController < ApplicationController
   end
 
   def update
+    @efficient.value = params[:value]
+    @efficient.comment = params[:comment]
+    @efficient.checked = true
+    @efficient.save
+    redirect_to :back
+  end
+
+  def uncheck
+    @efficient.update(value: nil, checked: false)
     redirect_to :back
   end
   
@@ -42,7 +70,7 @@ class EfficientsController < ApplicationController
   end
   
   def efficient_params
-    params.permit(:id, :criterium_id, :user_id, :link, :value, :checked)
+    params.permit(:id, :criterium_id, :user_id, :link, :value, :checked, :comment)
   end
   
   def attachment_params

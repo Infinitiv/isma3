@@ -4,29 +4,66 @@
 - else
   = javascript_include_tag 'vue.js'
 section.panel#efficient
-  = render partial: 'form'
-  - if @efficients.present?
-    table.table 
-      thead 
-        th Название пункта
-        th Ссылки
-        th Файлы
-        th Баллы
-        th Действия
-      tbody
-      - @efficients.each do |efficient|
-        tr 
-          td 
-            = efficient.criterium.point
-          td 
-            - if efficient.link.present?
-              = link_to efficient.link, efficient.link, target: '_blank'
-          td 
-            ul.no-bullet
-              - efficient.attachments.each do |attachment|
-                li= link_to attachment.title_sen_dot, attachment_path(attachment), target: '_blank'
-          td 
-            = efficient.value 
-          td 
-            = link_to 'Удалить', efficient_path(efficient), method: :delete
+  - if @efficient_writer_permission || @efficient_reader_permission || @administrator_permission
+    ul.tabs[data-tab role="tablist"]
+      li.tab-title.active[role="presentation"]
+        a[href="#member" role="tab" tabindex="0" aria-selected="true" aria-controls="member"] Член коммиссии
+      li.tab-title[role="presentation"]
+        a[href="#person" role="tab" tabindex="0" aria-selected="false" aria-controls="person"] Преподаватель
+    div.tabs-content
+      section[role="tabpanel" aria-hidden="false" class="content active" id="member"]
+        .row 
+          .large-4.columns
+            h3 
+              = "Всего пунктов #{@all_efficients.count}"
+          .large-4.columns
+            h3 
+              = "Не проверено #{@all_efficients.where(checked: false).count}"
+          .large-4.columns
+        - if @all_efficients.present?
+          - @all_efficients.each do |efficient|
+            - criterium = efficient.criterium
+            .panel.callout
+              - if efficient.checked
+                span.label.success.rounded.right Проверено
+              h3= criterium.point
+              p
+                strong= link_to efficient.profile.full_name, user_path(efficient.user), target: '_blank'
+              p= "Подтверждающий документ: #{criterium.comment}"
+              p= criterium.max == 0 ? "Баллы за критерий: #{criterium.min}" : "Баллы за критерий: от #{criterium.min} до #{criterium.max}"
+              - if efficient.link.present?
+                .row
+                  .large-1.columns
+                    p Ссылка:
+                  .large-11.columns
+                    p
+                      = link_to efficient.link, efficient.link, target: '_blank'
+              - if efficient.attachments.present?
+                .row
+                  .large-1.columns
+                    p Файлы:
+                  .large-11.columns
+                    ul.no-bullet
+                      - efficient.attachments.each do |attachment|
+                        li
+                          p= link_to attachment.title_sen_dot, attachment_path(attachment), target: '_blank'
+              - if efficient.checked
+                .row
+                  .large-4.columns
+                    p= "Начисленно баллов: #{efficient.value }"
+                  .large-8.columns
+                    p= "Комментарий: #{efficient.comment.present? ? efficient.comment : 'нет'}"
+                .row 
+                  .large-12.columns 
+                    =link_to 'Отправить на проверку', uncheck_efficient_path(efficient), method: :put, class: 'button tiny'
+              - else
+                = render partial: 'update_form', locals: { efficient: efficient }
+      section[role="tabpanel" aria-hidden="true" class="content" id="person"]
+        = render partial: 'form'
+        - if @efficients.present?
+          = render partial: 'efficients_table'
+  - else
+    = render partial: 'form'
+    - if @efficients.present?
+      = render partial: 'efficients_table'
 = javascript_include_tag 'efficient'

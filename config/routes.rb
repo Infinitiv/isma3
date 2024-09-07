@@ -88,7 +88,11 @@ Isma::Application.routes.draw do
     end
   end
 
-  resources :efficients, only: [:index, :create, :update, :destroy]
+  resources :efficients, only: [:index, :create, :update, :destroy] do
+    member do
+      put :uncheck
+    end
+  end
   
   resources :articles do
     resources :comments do

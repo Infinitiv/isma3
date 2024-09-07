@@ -1,0 +1,11 @@
+= form_tag efficient_path(efficient), method: :put do
+  .row 
+    .large-2.columns
+      = label_tag :value, 'Балл'
+      = number_field_tag :value, efficient.value, in: 0..100, step: 1, value: 0, class: 'form-control'
+    .large-10.columns
+      = label_tag :comment, 'Комментарий, если необходимо'
+      = text_area_tag :comment, efficient.comment, class: 'form-control'
+  .row
+    .large-4.columns
+      = submit_tag 'Сохранить', class: 'button tiny'

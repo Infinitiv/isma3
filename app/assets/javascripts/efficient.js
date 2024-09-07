@@ -6,6 +6,7 @@ var efficient = new Vue({
       point: null,
       file: null,
       link: null,
+      search: null,
     },
     chapters: [
       '1. Образовательная деятельность',

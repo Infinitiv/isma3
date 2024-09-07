@@ -83,6 +83,14 @@ class ApplicationController < ActionController::Base
   def current_user_deansoffice?
     current_user_groups.map(&:name).include? 'deansoffice' unless current_user.nil?
   end
+
+  def current_user_efficient_writer?
+    current_user_groups.map(&:name).include? 'efficient_writer' unless current_user.nil?
+  end
+
+  def current_user_efficient_reader?
+    current_user_groups.map(&:name).include? 'efficient_reader' unless current_user.nil?
+  end
   
   def current_user_isma?
     isma_group = Group.find_by_name('isma')
@@ -122,6 +130,8 @@ class ApplicationController < ActionController::Base
     @commentator_permission = current_user_commentator?
     @isma_permission = current_user_isma?
     @deansoffice_permission = current_user_deansoffice?
+    @efficient_writer_permission = current_user_efficient_writer?
+    @efficient_reader_permission = current_user_efficient_reader?
   end
   
   def set_details

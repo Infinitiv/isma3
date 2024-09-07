@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20240826181947) do
+ActiveRecord::Schema.define(version: 20240907170435) do
 
   create_table "academic_plans", force: :cascade do |t|
     t.string   "name",                   limit: 255
@@ -176,14 +176,14 @@ ActiveRecord::Schema.define(version: 20240826181947) do
 
   create_table "criteria", force: :cascade do |t|
     t.string   "chapter",        limit: 255
-    t.string   "point",          limit: 255
+    t.text     "point",          limit: 16777215
     t.integer  "min",            limit: 4
     t.integer  "max",            limit: 4
-    t.text     "comment",        limit: 65535
+    t.text     "comment",        limit: 16777215
     t.string   "criterium_type", limit: 255
-    t.boolean  "actual",                       default: false
-    t.datetime "created_at",                                   null: false
-    t.datetime "updated_at",                                   null: false
+    t.boolean  "actual",                          default: false
+    t.datetime "created_at",                                      null: false
+    t.datetime "updated_at",                                      null: false
   end
 
   create_table "degrees", force: :cascade do |t|
@@ -336,11 +336,12 @@ ActiveRecord::Schema.define(version: 20240826181947) do
   create_table "efficients", force: :cascade do |t|
     t.integer  "criterium_id", limit: 4
     t.integer  "user_id",      limit: 4
-    t.string   "link",         limit: 255
+    t.text     "link",         limit: 65535
     t.float    "value",        limit: 24
-    t.boolean  "checked",                  default: false
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
+    t.boolean  "checked",                    default: false
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
+    t.text     "comment",      limit: 65535
   end
 
   add_index "efficients", ["criterium_id"], name: "index_efficients_on_criterium_id", using: :btree
