@@ -22,4 +22,5 @@ table.table
       td(style="width: 10%;") 
         = efficient.value 
       td(style="width: 10%;") 
-        = link_to 'Удалить', efficient_path(efficient), method: :delete
+        - unless efficient.checked
+          = link_to 'Удалить', efficient_path(efficient), method: :delete 
