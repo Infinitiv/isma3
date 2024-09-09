@@ -1,6 +1,6 @@
 class EfficientsController < ApplicationController
   before_action :set_efficient, only: [:update, :destroy, :efficient_owner?, :uncheck]
-  before_action :can, only: [:update, :destroy]
+  before_action :can, only: [:destroy]
 
   def index
     if @efficient_writer_permission
