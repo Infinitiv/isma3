@@ -55,7 +55,7 @@ class EfficientsController < ApplicationController
   end
 
   def uncheck
-    @efficient.update(value: nil, checked: false)
+    @efficient.update(value: nil, checked: false, comment: nil)
     redirect_to :back
   end
   
