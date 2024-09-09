@@ -5,15 +5,15 @@ class EfficientsController < ApplicationController
   def index
     if @efficient_writer_permission
       case true
-      when current_user.posts.map(&:title).include?('проректор по образовательной деятельности')
+      when current_user.posts.map(&:name).include?('проректор по образовательной деятельности')
         @all_efficients = Efficient.includes(:profile, :divisions, :posts).joins(:criterium).where(criteria: {chapter: '1. Образовательная деятельность'}).order([:checked, :updated_at])
-      when current_user.posts.map(&:title).include?('проректор по научно-исследовательской и международной деятельности')
+      when current_user.posts.map(&:name).include?('проректор по научно-исследовательской и международной деятельности')
         @all_efficients = Efficient.includes(:profile, :divisions, :posts).joins(:criterium).where(criteria: {chapter: '2. Научно-исследовательская деятельность'}).order([:checked, :updated_at])
-      when current_user.posts.map(&:title).include?('проректор по развитию регионального здравоохранения')
+      when current_user.posts.map(&:name).include?('проректор по развитию регионального здравоохранения')
         @all_efficients = Efficient.includes(:profile, :divisions, :posts).joins(:criterium).where(criteria: {chapter: ['4. Клиническая работа', '5. Развитие регионального здравоохранения']}).order([:checked, :updated_at])
-      when current_user.posts.map(&:title).include?('проректор по воспитательной работе и молодежной политике')
+      when current_user.posts.map(&:name).include?('проректор по воспитательной работе и молодежной политике')
         @all_efficients = Efficient.includes(:profile, :divisions, :posts).joins(:criterium).where(criteria: {chapter: '3. Воспитательная, внеучебная работа'}).order([:checked, :updated_at])
-      when current_user.posts.map(&:title).include?('ведущий специалист')
+      when current_user.posts.map(&:name).include?('ведущий специалист')
         @all_efficients = Efficient.includes(:profile, :divisions, :posts).joins(:criterium).where(criteria: {chapter: '6. Менеджмент качества'}).order([:checked, :updated_at])
       else
         @all_efficients = Efficient.includes(:profile, :divisions, :posts).order([:checked, :created_at])
