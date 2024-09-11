@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20240907170435) do
+ActiveRecord::Schema.define(version: 20240911074418) do
 
   create_table "academic_plans", force: :cascade do |t|
     t.string   "name",                   limit: 255
@@ -75,6 +75,7 @@ ActiveRecord::Schema.define(version: 20240907170435) do
     t.boolean  "published",                                default: false
     t.datetime "created_at",                                               null: false
     t.datetime "updated_at",                                               null: false
+    t.boolean  "grant",                                    default: false
   end
 
   add_index "achievements", ["achievement_category_id"], name: "index_achievements_on_achievement_category_id", using: :btree

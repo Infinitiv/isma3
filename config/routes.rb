@@ -219,6 +219,7 @@ Isma::Application.routes.draw do
     end
     member do
       put :published_toggle
+      put :grant_toggle
     end
   end
 
