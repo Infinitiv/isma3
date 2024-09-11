@@ -1,5 +1,5 @@
 class AchievementsController < ApplicationController
-  before_action :require_administrator, only: [:index, :published_toggle, :report]
+  before_action :require_administrator, only: [:index, :published_toggle, :report, :approve_all]
   before_action :set_achievement, only: [:edit, :update, :published_toggle, :grant_toggle, :destroy, :achievement_owner?]
   before_action :set_selects, only: [:edit, :new, :update, :create]
   before_action :can, only: [:edit, :update, :destroy, :grant_toggle]
@@ -66,6 +66,11 @@ class AchievementsController < ApplicationController
 
   def grant_toggle
     @achievement.toggle!(:grant)
+    redirect_to :back
+  end
+
+  def approve_all
+    Achievement.where(published: false).update_all(published: true)
     redirect_to :back
   end
   
