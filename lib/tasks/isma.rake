@@ -1,5 +1,40 @@
 namespace :isma do
 
+  desc 'Download grants'
+  task download_grants: :environment do
+    grants = Achievement.includes(:achievement_category, :achievement_result, :user => :posts).where(grant: true, event_date: Date.new(2023, 9, 1)..Date.new(2024, 8, 31))
+    students = User.joins(:achievements).where(achievements: {id: grants.pluck(:id)}).uniq
+    require 'csv'
+
+    CSV.open("grants_export.csv", "wb") do |csv|
+      csv << ["Название ИД", "Категория", "Результат", "Дата", "ФИО", "Студент"]
+      
+      grants.each do |grant|
+        csv << [
+          grant.event_name,
+          grant.achievement_category&.name,
+          grant.achievement_result&.name,
+          grant.event_date,
+          grant.user&.profile.full_name,
+          grant.user&.divisions&.where(division_type_id: 6).pluck(:name)&.join("; ")
+        ]
+      end
+    end
+
+    CSV.open("grant_students_export.csv", "wb") do |csv|
+      csv << ["ФИО", "Студент"]
+      
+      students.each do |student|
+        csv << [
+          student.profile&.full_name,
+          student.divisions&.where(division_type_id: 6).pluck(:name)&.join("; ")
+        ]
+      end
+    end
+
+    puts "Grants exported to grants_export.csv"
+  end
+
   desc 'Transfer students from stage to stage'
   task transfer_students: :environment do
     division_names = ["%5 курса стомат%", "%группа 6 курса%", "Ординатура%2 год%", "Аспирантура%3 год%"]
