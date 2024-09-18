@@ -41,7 +41,7 @@ namespace :isma do
     require 'csv'
 
     CSV.open("efficients_export.csv", "wb") do |csv|
-      csv << ["Категория", "Критерий", "Балл", "ФИО", "Кафедра"]
+      csv << ["Категория", "Критерий", "Балл", "ФИО", "Кафедра", "Комментарий"]
       
       efficients.each do |efficient|
         csv << [
@@ -49,7 +49,8 @@ namespace :isma do
           efficient.criterium&.point,
           efficient.value,
           efficient.user&.profile.full_name,
-          efficient.user&.divisions&.where(division_type_id: 3).pluck(:name)&.join("; ")
+          efficient.user&.divisions&.where(division_type_id: 3).pluck(:name)&.join("; "),
+          efficient.comment
         ]
       end
     end
