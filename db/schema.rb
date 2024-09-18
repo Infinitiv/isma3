@@ -177,14 +177,14 @@ ActiveRecord::Schema.define(version: 20240911074418) do
 
   create_table "criteria", force: :cascade do |t|
     t.string   "chapter",        limit: 255
-    t.text     "point",          limit: 16777215
+    t.text     "point",          limit: 65535
     t.integer  "min",            limit: 4
     t.integer  "max",            limit: 4
-    t.text     "comment",        limit: 16777215
+    t.text     "comment",        limit: 65535
     t.string   "criterium_type", limit: 255
-    t.boolean  "actual",                          default: false
-    t.datetime "created_at",                                      null: false
-    t.datetime "updated_at",                                      null: false
+    t.boolean  "actual",                       default: false
+    t.datetime "created_at",                                   null: false
+    t.datetime "updated_at",                                   null: false
   end
 
   create_table "degrees", force: :cascade do |t|
@@ -337,7 +337,7 @@ ActiveRecord::Schema.define(version: 20240911074418) do
   create_table "efficients", force: :cascade do |t|
     t.integer  "criterium_id", limit: 4
     t.integer  "user_id",      limit: 4
-    t.text     "link",         limit: 65535
+    t.string   "link",         limit: 255
     t.float    "value",        limit: 24
     t.boolean  "checked",                    default: false
     t.datetime "created_at",                                 null: false

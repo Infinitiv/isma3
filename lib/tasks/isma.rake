@@ -35,6 +35,28 @@ namespace :isma do
     puts "Grants exported to grants_export.csv"
   end
 
+  desc 'Download efficients'
+  task download_efficients: :environment do
+    efficients = Efficient.includes(:criterium, :user => :posts)
+    require 'csv'
+
+    CSV.open("efficients_export.csv", "wb") do |csv|
+      csv << ["Категория", "Критерий", "Балл", "ФИО", "Кафедра"]
+      
+      efficients.each do |efficient|
+        csv << [
+          efficient.criterium&.chapter,
+          efficient.criterium&.point,
+          efficient.value,
+          efficient.user&.profile.full_name,
+          efficient.user&.divisions&.where(division_type_id: 3).pluck(:name)&.join("; ")
+        ]
+      end
+    end
+
+    puts "Efficients exported to efficients_export.csv"
+  end
+
   desc 'Transfer students from stage to stage'
   task transfer_students: :environment do
     division_names = ["%5 курса стомат%", "%группа 6 курса%", "Ординатура%2 год%", "Аспирантура%3 год%"]
