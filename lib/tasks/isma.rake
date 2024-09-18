@@ -50,7 +50,8 @@ namespace :isma do
           efficient.value,
           efficient.user&.profile.full_name,
           efficient.user&.divisions&.where(division_type_id: 3).pluck(:name)&.join("; "),
-          efficient.comment
+          efficient.comment,
+          efficient.checked ? 'Проверено' : 'Не проверено'
         ]
       end
     end
