@@ -4,7 +4,6 @@ section.panel
   h1 Структура и органы управления образовательной организацией
   p= autosub_details("&amp;[Навигация сведений об образовательной организации]").html_safe
   h2 Структура образовательной организации
-  = link_to 'Графическое представление структуры Ивановского ГМУ', "/attachments/71400", target: 'blank'
   - @divisions.each do |type, divisions|
     - unless type == 'обучающиеся'
       = content_tag(:a, '', name: type, style: 'padding-top: 45px;')
