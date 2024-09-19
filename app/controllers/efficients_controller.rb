@@ -13,7 +13,7 @@ class EfficientsController < ApplicationController
         @all_efficients = Efficient.includes(:profile, :divisions, :posts).joins(:criterium).where(criteria: {chapter: ['4. Клиническая работа', '5. Развитие регионального здравоохранения']}).order([:checked, :updated_at])
       when current_user.posts.map(&:name).include?('проректор по воспитательной работе и молодежной политике')
         @all_efficients = Efficient.includes(:profile, :divisions, :posts).joins(:criterium).where(criteria: {chapter: '3. Воспитательная, внеучебная работа'}).order([:checked, :updated_at])
-      when current_user.posts.map(&:name).include?('ведущий специалист')
+      when current_user.posts.map(&:name).include?('сотрудник')
         @all_efficients = Efficient.includes(:profile, :divisions, :posts).joins(:criterium).where(criteria: {chapter: '6. Менеджмент качества'}).order([:checked, :updated_at])
       else
         @all_efficients = Efficient.includes(:profile, :divisions, :posts).order([:checked, :created_at])
