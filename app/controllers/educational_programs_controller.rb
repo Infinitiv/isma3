@@ -25,7 +25,7 @@ class EducationalProgramsController < ApplicationController
     @methodological_supports = @educational_program.methodological_supports.includes(:attachment).sort_by{|ms| ms.attachment.title}
     @subjects = @educational_program.subjects.order(:name)
     @methodological_support = MethodologicalSupport.new
-    @attachments = Attachment.order(:title).select(:id, :title).select{|a| a.title =~ /методические материалы|методические рекомендации|календарный план/i}
+    @attachments = Attachment.order(:title).select(:id, :title).select{|a| a.title =~ /методические материалы|методические рекомендации|календарный план|программа воспитания/i}
   end
   
   def new
