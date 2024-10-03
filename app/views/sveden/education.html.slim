@@ -1,3 +1,5 @@
+- content_for :title do
+  'Образование
 section.panel
   h1 Образование
   p= autosub_details("&amp;[Навигация сведений об образовательной организации]").html_safe
@@ -15,11 +17,8 @@ section.panel
         th Уровень образования
         th Формы обучения
         th Нормативный срок обучения
-        th Срок действия государственной аккредитации (дата окончания действия свидетельства о государственной аккредитации)
-        th Языки, на которых осуществляется образование (обучение)
         th Учебные предметы, курсы, дисциплины (модули), предусмотренные соответствующей образовательной программой
         th Практики, предусмотренные соответствующей образовательной программой
-        th Информация об использовании при реализации образовательных программ электронного обучения и дистанционных образовательных технологий
     tbody
       - @educational_programs.each do |educational_program|
         tr(itemprop='eduAccred', style="vertical-align: top;")
@@ -30,8 +29,6 @@ section.panel
           td(itemprop='eduLevel')= educational_program.level if educational_program.level
           td(itemprop='eduForm')= educational_program.form if educational_program.form
           td(itemprop='learningTerm')= educational_program.duration if educational_program.duration
-          td(itemprop='dateEnd')= (educational_program.accreditation.expiration_date ? educational_program.accreditation.expiration_date.strftime("%d.%m.%Y") : 'бессрочно') if educational_program.accreditation
-          td(itemprop='language')= educational_program.language
           td(itemprop='eduPred')
             ul.no-bullet
               - educational_program.subjects.each do |subject|
@@ -41,113 +38,11 @@ section.panel
               - educational_program.practices.each do |practice|
                 li
                   =link_to 'Перечень практик', practice.attachment, target: '_blank'
-          td(itemprop='eduEl') Используется
   p.sub * - адаптированная образовательная программа
   p(itemprop='languageEl')= link_to 'Информация о языках, на которых осуществляется образование (обучение)', '/attachments/73941', target: '_blank'
-  table
-    caption Информация о профессионально-общественной аккредитации образовательной программы
-    thead
-      tr
-        th Код
-        th Наименование профессии, специальности, направления подготовки
-        th Наименование аккредитующей организации
-        th Срок действия профессионально-общественной аккредитации (дата окончания действия свидетельства о профессионально-общественной аккредитации) 
-    tbody
-      tr(itemprop='eduPOAccred')
-        td(itemprop='eduCode') отсутствует
-        td(itemprop='eduName') отсутствует
-        td(itemprop='orgName') отсутствует
-        td(itemprop='dateEnd') отсутствует
-  table
-    caption Информация о численности обучающихся
-    thead
-      tr
-        th Код, шифр
-        th Наименование профессии, специальности, направления подготовки, наименование группы научных специальностей
-        th Уровень образования
-        th Формы обучения
-        th Сведения о численности обучающихся за счёт бюджетных ассигнований федерального бюджета
-        th Из них численность обучающихся, являющихся иностранными гражданами
-        th Сведения о численности обучающихся за счѐт бюджетов субъектов Российской Федерации
-        th Из них численность обучающихся, являющихся иностранными гражданами
-        th Сведения о численности обучающихся за счёт местных бюджетов
-        th Из них численность обучающихся, являющихся иностранными гражданами
-        th Сведения о численности обучающихся за счёт средств физическихи (или) юридических лиц
-        th Из них численность обучающихся, являющихся иностранными гражданами
-        th Общая численность обучающихся
-    tbody
-      - @educational_programs.each do |educational_program|
-        - educational_program_number = educational_program.educational_program_numbers.sort_by(&:date).last
-        - if educational_program_number
-          tr(itemprop='eduChislen', style="vertical-align: top;")
-            td(itemprop='eduCode')=  educational_program.code
-            td(itemprop='eduName')= educational_program.name
-            td(itemprop='eduLevel')= educational_program.level if educational_program.level
-            td(itemprop='eduForm')= educational_program.form if educational_program.form
-            td(itemprop='numberBF')= educational_program_number.number_federal
-            td(itemprop='numberBFF')= educational_program_number.number_foreign_budget
-            td(itemprop='numberBR')= educational_program_number.number_regional
-            td(itemprop='numberBRF')= educational_program_number.number_regional
-            td(itemprop='numberBM')= educational_program_number.number_local
-            td(itemprop='numberBMF')= educational_program_number.number_local
-            td(itemprop='numberP')= educational_program_number.number_personal
-            td(itemprop='numberPF')= educational_program_number.number_foreign_paid
-            td(itemprop='numberAll')= [educational_program_number.number_federal, educational_program_number.number_regional, educational_program_number.number_local, educational_program_number.number_personal].compact.sum
   p(itemprop='eduChislenEl')= link_to 'Информация о численности обучающихся по программам специалитета', '/attachments/1188', target: '_blank'
   p(itemprop='eduChislenEl')= link_to 'Информация о численности обучающихся по программам подготовки кадров высшей квалификации', '/attachments/6208', target: '_blank'
-  table
-    caption Информация о результатах приема
-    thead
-      tr
-        th Код, шифр
-        th Наименование профессии, специальности, направления подготовки, наименование группы научных специальностей
-        th Уровень образования
-        th Формы обучения
-        th Сведения о численности обучающихся за счёт бюджетных ассигнований федерального бюджета
-        th Сведения о численности обучающихся за счёт бюджетов субъектов Российской Федерации
-        th Сведения о численности обучающихся за счёт местных бюджетов
-        th Сведения о численности обучающихся за счёт средств физических и (или) юридических лиц
-        th Средняя сумма набранных баллов по всем вступительным испытаниям
-    tbody
-      - @educational_programs.each do |educational_program|
-        - educational_program_priem = educational_program.educational_program_priems.sort_by(&:date).last
-        - if educational_program_priem
-          tr(itemprop='eduPriem')
-            td(itemprop='eduCode')=  educational_program.code
-            td(itemprop='eduName')= educational_program.name
-            td(itemprop='eduLevel')= educational_program.level if educational_program.level
-            td(itemprop='eduForm')= educational_program.form if educational_program.form
-            td(itemprop='numberBF')= educational_program_priem.number_federal
-            td(itemprop='numberBR')= educational_program_priem.number_regional
-            td(itemprop='numberBM')= educational_program_priem.number_local
-            td(itemprop='numberP')= educational_program_priem.number_personal
-            td(itemprop='score')= educational_program_priem.summa
   p(itemprop='eduPriemEl')= link_to 'Информация о результатах приема по каждой специальности высшего образования, каждой научной специальности с различными условиями приема с указанием средней суммы набранных баллов по всем вступительным испытаниям', '/attachments/73942', target: '_blank'
-  table
-    caption Информация о результатах перевода, восстановления и отчисления
-    thead
-      tr
-        th Код, шифр
-        th Наименование профессии, специальности, направления подготовки, наименование группы научных специальностей
-        th Уровень образования
-        th Форма обучения
-        th Численность обучающихся, переведенных в другие образовательные организации
-        th Численность обучающихся, переведенных из других образовательных организаций
-        th Численность восстановленных обучающихся
-        th Численность отчисленных обучающихся
-    tbody
-      - @educational_programs.each do |educational_program|
-        - educational_program_perevod = educational_program.educational_program_perevods.sort_by(&:date).last
-        - if educational_program_perevod
-          tr(itemprop='eduPerevod')
-            td(itemprop='eduCode')=  educational_program.code
-            td(itemprop='eduName')= educational_program.name
-            td(itemprop='eduLevel')= educational_program.level if educational_program.level
-            td(itemprop='eduForm')= educational_program.form if educational_program.form
-            td(itemprop='numberOut')= educational_program_perevod.number_out_perevod
-            td(itemprop='numberTo')= educational_program_perevod.number_to_perevod
-            td(itemprop='numberRes')= educational_program_perevod.number_res_perevod
-            td(itemprop='numberExp')= educational_program_perevod.number_exp_perevod
   p(itemprop='eduPerevodEl')= link_to 'Информация о результатах перевода, восстановления и отчисления, размещенная в форме электронного документа, подписанного электронной подписью', '/attachments/73943', target: '_blank'
   table
     caption Информация по образовательным программам
@@ -157,10 +52,9 @@ section.panel
         th Наименование профессии, специальности, направления подготовки, наименование группы научных специальностей
         th Уровень образования
         th Образовательная программа, направленность, профиль, шифр и наименование научной специальности
-        th Реализуемые формы обучения
+        th Реализуемые фор  мы обучения
         th Ссылка на описание образовательной программы с приложением ее копии
         th Ссылка на учебный план
-        th Ссылка на аннотации к рабочим программам дисциплин (по каждой дисциплине в составе образовательной программы)
         th Ссылки на рабочие программы (по каждой дисциплине в составе образовательной программы)
         th Ссылка на календарный учебный график
         th Ссылка на рабочие программы практик, предусмотренных соответствующей образовательной программой
@@ -179,11 +73,6 @@ section.panel
             ul.no-bullet
               - educational_program.academic_plans.each do |academic_plan|
                 li= link_to academic_plan.name, academic_plan.attachment, target: 'blank'
-          td(itemprop='educationAnnotation', style="vertical-align: top;")
-            ul.no-bullet
-              - educational_program.subjects.each do |subject|
-                - if subject.annotation_attachment
-                  li= link_to "Аннотации рабочих программ дисциплин #{subject.name}", subject.annotation_attachment, target: 'blank'
           td(itemprop='educationRpd', style="vertical-align: top;")
             ul.no-bullet
               - educational_program.subjects.each do |subject|
@@ -212,7 +101,6 @@ section.panel
         th Реализуемые формы обучения
         th Ссылка на описание образовательной программы с приложением ее копии
         th Ссылка на учебный план
-        th Ссылка на аннотации к рабочим программам дисциплин (по каждой дисциплине в составе образовательной программы)
         th Ссылки на рабочие программы (по каждой дисциплине в составе образовательной программы)
         th Ссылка на календарный учебный график
         th Ссылка на рабочие программы практик, предусмотренных соответствующей образовательной программой
@@ -231,11 +119,6 @@ section.panel
             ul
               - educational_program.academic_plans.each do |academic_plan|
                 li= link_to academic_plan.name, academic_plan.attachment, target: 'blank'
-          td(itemprop='educationAnnotation', style="vertical-align: top;")
-            ul
-              - educational_program.subjects.each do |subject|
-                - if subject.annotation_attachment
-                  li= link_to "Аннотации рабочих программ дисциплин #{subject.name}", subject.annotation_attachment, target: 'blank'
           td(itemprop='educationRpd', style="vertical-align: top;")
             ul
               - educational_program.subjects.each do |subject|
@@ -253,16 +136,6 @@ section.panel
             ul
               - educational_program.methodological_supports.each do |methodological_support|
                 li= link_to methodological_support.attachment.title_sen_dot, methodological_support.attachment, target: 'blank'
-  table
-    caption Информация об общественной аккредитации образовательной организации
-    thead
-      tr
-        th Наименование аккредитующей организации
-        th Срок действия общественной аккредитации 
-    tbody
-      tr(itemprop='eduOAccred')
-        td(itemprop='orgName') отсутствует
-        td(itemprop='dateEnd') отсутствует
   table
     caption Информация о направлениях и результатах научной (научно-исследовательской) деятельности
     thead
@@ -288,5 +161,36 @@ section.panel
             td(itemprop='napravNir', style="vertical-align: top;")
             td(itemprop='resultNir', style="vertical-align: top;")= educational_program_research.result_nir
             td(itemprop='baseNir', style="vertical-align: top;")= educational_program_research.base_nir
-
-  p= autosub_details("&amp;[Копия лицензии на осуществление образовательной деятельности (с приложениями)]").html_safe
+  
+  table
+    caption Информация о трудоустройстве выпускников образовательной организации за прошлый учебный год
+    tr
+      th Код, шифр
+      th Наименование профессии, специальности, направления подготовки наименование группы научных специальностей
+      th Образовательная программа, направленность, профиль, шифр и наименование научной специальности
+      th Количество выпускников
+      th Количество трудоустроенных выпускников
+    tr(itemprop='graduateJob')
+      td(itemprop='eduCode') 31.05.01
+      td(itemprop='eduName') Лечебное дело
+      td(itemprop='eduProf') Лечебное дело
+      td(itemprop='v1') 182
+      td(itemprop='t1') 179
+    tr
+      td(itemprop='eduCode') 31.05.02
+      td(itemprop='eduName') Педиатрия
+      td(itemprop='eduProf') Педиатрия
+      td(itemprop='v1') 97
+      td(itemprop='t1') 88
+    tr
+      td(itemprop='eduCode') 31.05.03
+      td(itemprop='eduName') Стоматология
+      td(itemprop='eduProf') Стоматология
+      td(itemprop='v1') 29
+      td(itemprop='t1') 26
+    tr
+      td(itemprop='eduCode')
+      td(itemprop='eduName') Ординатура
+      td(itemprop='eduProf') Ординатура
+      td(itemprop='v1') 67
+      td(itemprop='t1') 67

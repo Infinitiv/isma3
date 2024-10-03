@@ -11,14 +11,14 @@ section.panel
         tr(itemprop='eduAccred')
           - amp = educational_program.adaptive ? '*' : ''
           td= "#{educational_program.full_name}#{amp}"
-          - standart_level = educational_program.educational_standart.level == 'ФГОС' ? 'eduFedDoc' : 'eduStandartDoc'
+          - case educational_program.educational_standart.level
+          - when 'ФГОС' 
+            - standart_level = 'eduFedDoc'
+          - when 'ГОС'
+            - standart_level = 'eduStandartDoc'
+          - when 'ФГТ'
+            - standart_level = 'eduFedTreb'
           td(itemprop="#{standart_level}")= link_to "#{educational_program.educational_standart.name}", educational_program.educational_standart.url, target: :blank if educational_program.educational_standart
-      tr(itemprop='eduStandartDoc')
-        td образовательных стандартов нет
-        td образовательных стандартов нет
-      tr(itemprop='eduFedTreb')
-        td федеральных государственных требований нет
-        td федеральных государственных требований нет
       tr(itemprop='eduStandartTreb')
         td самостоятельно устанавливаемых требований нет
         td самостоятельно устанавливаемых требований нет
