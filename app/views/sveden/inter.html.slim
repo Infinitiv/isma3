@@ -1,3 +1,5 @@
+- content_for :title do
+  |  Сведения об образовательной организации. Международное сотрудничество.
 section.panel
   h1 Международное сотрудничество
   p= autosub_details("&amp;[Навигация сведений об образовательной организации]").html_safe
@@ -26,17 +28,3 @@ section.panel
           td(itemprop='dogReg')= international_contract.dog_reg
           - if @moderator_permission
             td= link_to 'Удалить', international_contract, method: :delete
-  table
-    caption Информация о международной аккредитации
-    thead
-      tr
-        th Код
-        th Наименование профессии, специальности, направления подготовки 
-        th Наименование аккредитующей организации
-        th Срок действия международной аккредитации (дата окончания действия свидетельства о международной аккредитации) 
-    tbody
-      tr(itemprop='internationalAccr')
-        td(itemprop='eduCode') отсутствует
-        td(itemprop='eduName') отсутствует
-        td(itemprop='orgName') отсутствует
-        td(itemprop='dateEnd') отсутствует

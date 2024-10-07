@@ -1,7 +1,7 @@
+- content_for :title do
+  |  Сведения об образовательной организации. Финансово-хозяйственная деятельность.
 section.panel
-  h1.right Финансово-хозяйственная деятельность
-  br
-  h2 Финансово-хозяйственная деятельность
+  h1 Финансово-хозяйственная деятельность
   p= autosub_details("&amp;[Навигация сведений об образовательной организации]").html_safe
   - if @financial_activities
     - last_financial_activity = @financial_activities.last
