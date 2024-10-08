@@ -22,6 +22,12 @@ section.panel
             - standart_level = 'eduFedTreb'
           td(itemprop="#{standart_level}")= link_to "#{educational_program.educational_standart.name}", educational_program.educational_standart.url, target: :blank if educational_program.educational_standart
       tr(itemprop='eduStandartTreb')
-        td самостоятельно устанавливаемых требований нет
-        td самостоятельно устанавливаемых требований нет
+        td -
+        td -
+      tr(itemprop='eduStandartDoc')
+        td -
+        td -
+      tr(itemprop='eduFedDoc')
+        td -
+        td -
   p.sub * - адаптированная образовательная программа

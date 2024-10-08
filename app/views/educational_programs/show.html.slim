@@ -94,7 +94,6 @@ section.panel
           th Учёное звание педагогического работника (при наличии)
           th Наименование направления подготовки и (или) специальности педагогического работника
           th Сведения о повышении квалификации и (или) профессиональной переподготовке педагогического работника (при наличии)
-          th Общий стаж работы
           th Стаж работы педагогического работника по специальности
           th Наименование образовательных программ, в реализации которых участвует педагогический работник
       tbody
@@ -107,8 +106,7 @@ section.panel
               td itemprop='teachingQual'= employee.qualification
               td itemprop='degree'= employee.degree ? employee.degree.name : 'нет'
               td itemprop='academStat'= employee.academic_title ? employee.academic_title.name : 'нет'
-              td itemprop='employeeQualification'= employee.employee_qualification
+              td itemprop='qualification'= employee.employee_qualification
               td itemprop='profDevelopment'= employee.development
-              td itemprop='genExperience'= employee.general_experience
               td itemprop='specExperience'= employee.special_experience
               td itemprop='teachingOp'= @educational_program.name
