@@ -14,7 +14,7 @@ class SvedenController < ApplicationController
   end
   
   def document
-    redirect_to article_path(1144)
+    redirect_to article_path(8822)
   end
   
   def education
