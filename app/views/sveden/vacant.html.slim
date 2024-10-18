@@ -16,19 +16,31 @@ section.panel
         th Количество вакантных мест для приема (перевода) на места, финансируемые за счет бюджетов субъектов Российской Федерации
         th Количество вакантных мест для приема (перевода) на места, финансируемые за счет местных бюджетов
         th Количество вакантных мест для приема (перевода) за счёт средств физических и (или) юридических лиц
+    / tbody
+    /   - @educational_programs.each do |educational_program|
+    /     - educational_program.educational_program_vacants.group_by(&:stage).each do |stage, vacants|
+    /       - educational_program_vacant = vacants.sort_by(&:date).last
+    /       - if educational_program_vacant
+    /         tr
+    /           td(itemprop='eduCode')=  educational_program.code
+    /           td(itemprop='eduName')= educational_program.name if educational_program.name
+    /           td(itemprop='eduLevel')= educational_program.level if educational_program.level
+    /           td(itemprop='eduProf')= educational_program.name if educational_program.name
+    /           td(itemprop='eduCourse')= educational_program_vacant.stage
+    /           td(itemprop='eduForm')= educational_program.form if educational_program.form
+    /           td(itemprop='numberBFVacant')= educational_program_vacant.number_federal
+    /           td(itemprop='numberBRVacant')= educational_program_vacant.number_regional
+    /           td(itemprop='numberBMVacant')= educational_program_vacant.number_local
+    /           td(itemprop='numberPVacant')= educational_program_vacant.number_personal
     tbody
-      - @educational_programs.each do |educational_program|
-        - educational_program.educational_program_vacants.group_by(&:stage).each do |stage, vacants|
-          - educational_program_vacant = vacants.sort_by(&:date).last
-          - if educational_program_vacant
-            tr
-              td(itemprop='eduCode')=  educational_program.code
-              td(itemprop='eduName')= educational_program.name if educational_program.name
-              td(itemprop='eduLevel')= educational_program.level if educational_program.level
-              td(itemprop='eduProf')= educational_program.name if educational_program.name
-              td(itemprop='eduCourse')= educational_program_vacant.stage
-              td(itemprop='eduForm')= educational_program.form if educational_program.form
-              td(itemprop='numberBFVacant')= educational_program_vacant.number_federal
-              td(itemprop='numberBRVacant')= educational_program_vacant.number_regional
-              td(itemprop='numberBMVacant')= educational_program_vacant.number_local
-              td(itemprop='numberPVacant')= educational_program_vacant.number_personal
+      tr
+        td(itemprop='eduCode')=  '-'
+        td(itemprop='eduName')= '-'
+        td(itemprop='eduLevel')= '-'
+        td(itemprop='eduProf')= '-'
+        td(itemprop='eduCourse')= '-'
+        td(itemprop='eduForm')= '-'
+        td(itemprop='numberBFVacant')= '-'
+        td(itemprop='numberBRVacant')= '-'
+        td(itemprop='numberBMVacant')= '-'
+        td(itemprop='numberPVacant')= '-'
