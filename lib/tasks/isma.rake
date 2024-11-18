@@ -392,7 +392,6 @@ namespace :isma do
         puts "обрабатываем запись #{i} из #{students_1c.last_row - 1}"
         logins = student_login(row)
         student = nil
-        openldap_entry = nil
         logins.each do |login|
           student ||= students.find_by_login(login)
         end
@@ -403,6 +402,10 @@ namespace :isma do
                                     'педиатрический факультет'
                                   when 'Стоматология'
                                     'стоматологический факультет'
+                                  when 'Клиническая психология'
+                                    'факультет клинической психологии'
+                                  when 'Сестринское дело'
+                                    'факультет сестринского дела'
                                   else
                                     'ординатура'
                                   end
