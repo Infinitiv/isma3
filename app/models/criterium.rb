@@ -23,6 +23,7 @@ class Criterium < ActiveRecord::Base
                           nil
                         end
       criterium.actual = true
+      criterium.acceptor_type = row['Получатель']
       criterium.save!
     end
   end
