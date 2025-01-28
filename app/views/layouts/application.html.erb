@@ -149,7 +149,12 @@
 		<% end %>
 		  <li><%= link_to 'Инструкция по работе с сайтом', '/articles/303' %></li>
 		  <li><%= link_to 'Мой профиль', user_profile_path(current_user) %></li>
+    <% if @employee_permission %>
       <li><%= link_to 'Эффективный контракт', efficients_path %></li>
+    <% end %>
+    <% if @student_permission %>
+      <li><%= link_to 'Повышенная стипендия', efficients_path %></li>
+    <% end %>
 	      </ul>
 	    </li>
 	  <% end %>

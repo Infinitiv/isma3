@@ -96,6 +96,14 @@ class ApplicationController < ActionController::Base
     isma_group = Group.find_by_name('isma')
     current_user_groups.where(parent: isma_group).count > 0 unless current_user.nil?
   end
+
+  def current_user_employee?
+    current_user_groups.map(&:name).include? 'employees' unless current_user.nil?
+  end
+
+  def current_user_student?
+    current_user_groups.map(&:name).include? 'students' unless current_user.nil?
+  end
   
   def set_menus
     if current_user_administrator? 
@@ -132,6 +140,8 @@ class ApplicationController < ActionController::Base
     @deansoffice_permission = current_user_deansoffice?
     @efficient_writer_permission = current_user_efficient_writer?
     @efficient_reader_permission = current_user_efficient_reader?
+    @employee_permission = current_user_employee?
+    @student_permission = current_user_student?
   end
   
   def set_details
