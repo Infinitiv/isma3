@@ -21,12 +21,12 @@ class EfficientsController < ApplicationController
 
     if @deansoffice_permission
       case true
-      when current_user.divisions.map(&:name).grep(/леч/).present?
-        @all_efficients = @all_efficients.where("divisions.name like ?", "%леч%")
-      when current_user.divisions.map(&:name).grep(/пед/).present?
-        @all_efficients = @all_efficients.where("divisions.name like ?", "%пед%")
-      when current_user.divisions.map(&:name).grep(/стомат/).present?
-        @all_efficients = @all_efficients.where("divisions.name like ?", "%стомат%")
+      when current_user.divisions.where(division_type_id: 2).map(&:name).grep(/леч/).present?
+        @all_efficients = @all_efficients.where("divisions.name like ? AND divisions.division_type_id = ?", "%леч%", 6)
+      when current_user.divisions.where(division_type_id: 2).map(&:name).grep(/пед/).present?
+        @all_efficients = @all_efficients.where("divisions.name like ? AND divisions.division_type_id = ?", "%пед%", 6)
+      when current_user.divisions.where(division_type_id: 2).map(&:name).grep(/стомат/).present?
+        @all_efficients = @all_efficients.where("divisions.name like ? AND divisions.division_type_id = ?", "%стомат%", 6)
       end
     end
 

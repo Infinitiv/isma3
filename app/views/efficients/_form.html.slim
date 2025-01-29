@@ -1,4 +1,7 @@
-h2 Эффективный контракт
+- if @teacher_permission
+  h2 Эффективный контракт
+- if @student_permission
+  h2 Повышенная стипендия
 = form_for @efficient do |f|
   - if @efficient.errors.any?
     ul
