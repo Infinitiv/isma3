@@ -63,6 +63,10 @@ class ApplicationController < ActionController::Base
   def current_user_groups
     current_user.groups unless current_user.nil?
   end
+
+  def current_user_divisions
+    current_user.divisions
+  end
   
   def current_user_writer?
     current_user_groups.where(writer: true).count > 0 unless current_user.nil?
@@ -97,8 +101,8 @@ class ApplicationController < ActionController::Base
     current_user_groups.where(parent: isma_group).count > 0 unless current_user.nil?
   end
 
-  def current_user_employee?
-    current_user_groups.map(&:name).include? 'employees' unless current_user.nil?
+  def current_user_teacher?
+    current_user_groups.map(&:name).include?('employees') && current_user_divisions.map(&:division_type_id).uniq.include?(3) unless current_user.nil?
   end
 
   def current_user_student?
@@ -140,7 +144,7 @@ class ApplicationController < ActionController::Base
     @deansoffice_permission = current_user_deansoffice?
     @efficient_writer_permission = current_user_efficient_writer?
     @efficient_reader_permission = current_user_efficient_reader?
-    @employee_permission = current_user_employee?
+    @teacher_permission = current_user_teacher?
     @student_permission = current_user_student?
   end
   

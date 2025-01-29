@@ -8,14 +8,7 @@ var efficient = new Vue({
       link: null,
       search: null,
     },
-    chapters: [
-      '1. Образовательная деятельность',
-      '2. Научно-исследовательская деятельность',
-      '3. Воспитательная, внеучебная работа',
-      '4. Клиническая работа',
-      '5. Развитие регионального здравоохранения',
-      '6. Менеджмент качества'
-    ],
+    chapters: [],
     points: []
   },
   computed: {
@@ -41,7 +34,10 @@ var efficient = new Vue({
   created: function() {
     axios
     .get('/api/criteria')
-    .then(response => (this.points = response.data.array));
+    .then(response => {
+      this.points = response.data.array;
+      this.chapters = [...new Set(this.points.map(item => item.chapter))];
+    });
     },
   mounted: function () {
     
