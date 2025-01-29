@@ -9,7 +9,7 @@
 - if @student_permission
   - data_acceptor_type = 'student'
 section.panel#efficient[data-acceptor-type=data_acceptor_type]
-  - if @efficient_writer_permission || @efficient_reader_permission || @administrator_permission
+  - if @efficient_writer_permission || @deansoffice_permission || @administrator_permission
     ul.tabs[data-tab role="tablist"]
       li.tab-title.active[role="presentation"]
         a[href="#member" role="tab" tabindex="0" aria-selected="true" aria-controls="member"] Член комиссии

@@ -3,29 +3,31 @@ class EfficientsController < ApplicationController
   before_action :can, only: [:destroy]
 
   def index
+    @all_efficients = Efficient.includes(:profile, :divisions, :posts).joins(:criterium, :divisions).where(archived: false).order([:checked, :updated_at])
     if @efficient_writer_permission
       case true
       when current_user.posts.map(&:name).include?('проректор по образовательной деятельности')
-        @all_efficients = Efficient.includes(:profile, :divisions, :posts).joins(:criterium).where(criteria: {chapter: '1. Образовательная деятельность'}, archived: false).order([:checked, :updated_at])
+        @all_efficients = @all_efficients.where(criteria: {chapter: '1. Образовательная деятельность'})
       when current_user.posts.map(&:name).include?('проректор по научно-исследовательской и международной деятельности')
-        @all_efficients = Efficient.includes(:profile, :divisions, :posts).joins(:criterium).where(criteria: {chapter: '2. Научно-исследовательская деятельность'}, archived: false).order([:checked, :updated_at])
+        @all_efficients = @all_efficients.where(criteria: {chapter: '2. Научно-исследовательская деятельность'})
       when current_user.posts.map(&:name).include?('проректор по развитию регионального здравоохранения')
-        @all_efficients = Efficient.includes(:profile, :divisions, :posts).joins(:criterium).where(criteria: {chapter: ['4. Клиническая работа', '5. Развитие регионального здравоохранения']}, archived: false).order([:checked, :updated_at])
+        @all_efficients = @all_efficients.where(criteria: {chapter: ['4. Клиническая работа', '5. Развитие регионального здравоохранения']})
       when current_user.posts.map(&:name).include?('проректор по воспитательной работе и молодежной политике')
-        @all_efficients = Efficient.includes(:profile, :divisions, :posts).joins(:criterium).where(criteria: {chapter: '3. Воспитательная, внеучебная работа'}, archived: false).order([:checked, :updated_at])
+        @all_efficients = @all_efficients.where(criteria: {chapter: '3. Воспитательная, внеучебная работа'})
       when current_user.posts.map(&:name).include?('сотрудник')
-        @all_efficients = Efficient.includes(:profile, :divisions, :posts).joins(:criterium).where(criteria: {chapter: '6. Менеджмент качества'}, archived: false).order([:checked, :updated_at])
-      else
-        @all_efficients = Efficient.includes(:profile, :divisions, :posts).order([:checked, :created_at]).where(archived: false)
+        @all_efficients = @all_efficients.where(criteria: {chapter: '6. Менеджмент качества'})
       end
     end
 
     if @deansoffice_permission
-      @all_efficients = Efficient.includes(:profile, :divisions, :posts).order([:checked, :created_at]).where(archived: false)
-    end
-
-    if @efficient_reader_permission || @administrator_permission
-      @all_efficients = Efficient.includes(:profile, :divisions, :posts).order([:checked, :created_at]).where(archived: false)
+      case true
+      when current_user.divisions.map(&:name).grep(/леч/).present?
+        @all_efficients = @all_efficients.where("divisions.name like ?", "%леч%")
+      when current_user.divisions.map(&:name).grep(/пед/).present?
+        @all_efficients = @all_efficients.where("divisions.name like ?", "%пед%")
+      when current_user.divisions.map(&:name).grep(/стомат/).present?
+        @all_efficients = @all_efficients.where("divisions.name like ?", "%стомат%")
+      end
     end
 
     @efficients = Efficient.order(:created_at).where(user_id: current_user.id, archived: false)
