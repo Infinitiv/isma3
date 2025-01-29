@@ -35,7 +35,11 @@ section.panel
               = 'Ссылка'
             - when 'both'
               = 'Файл и ссылка'
+            - when 'none' 
+              = 'Текстовое поле'
           td
             = criterium.actual 
+          td 
+            = criterium.acceptor_type
           td 
             = link_to 'Удалить', criterium_path(criterium), method: :delete, data: { confirm: 'Are you sure?' }

@@ -3,6 +3,7 @@ class Api::CriteriaController < ApplicationController
   skip_before_action :verify_authenticity_token
 
   def index
-    @criteria = Criterium.joins(:efficients).order(:chapter, :point).where(efficients: {archived: true}).uniq
+    acceptor_type = params[:acceptor_type]
+    @criteria = Criterium.order(:chapter, :point).where(actual: true, acceptor_type: acceptor_type)
   end
 end

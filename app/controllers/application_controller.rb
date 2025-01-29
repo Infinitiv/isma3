@@ -106,7 +106,7 @@ class ApplicationController < ActionController::Base
   end
 
   def current_user_student?
-    current_user_groups.map(&:name).include? 'students' unless current_user.nil?
+    current_user_groups.map(&:name).include?('students') && current_user_divisions.map(&:name).grep(/группа/).present? unless current_user.nil?
   end
   
   def set_menus

@@ -1,12 +1,12 @@
 table.table 
   thead 
     th(style="width: 40%;") Название пункта
-    th(style="width: 20%;") Ссылки
+    th(style="width: 20%;") Ссылки/текст
     th(style="width: 20%;") Файлы
     th(style="width: 10%;") Баллы
     th(style="width: 10%;") Действия
   tbody
-  - @efficients.each do |efficient|
+  - efficients.each do |efficient|
     tr 
       td(style="width: 40%;") 
         p= efficient.criterium.point
@@ -14,7 +14,10 @@ table.table
           .label.alert.rounded= efficient.comment
       td(style="width: 20%;") 
         - if efficient.link.present?
-          = link_to efficient.link, efficient.link, target: '_blank'
+          - if efficient.criterium.criterium_type == 'none'
+            = efficient.link
+          - else 
+            = link_to efficient.link, efficient.link, target: '_blank'
       td(style="width: 20%;") 
         ul.no-bullet
           - efficient.attachments.each do |attachment|

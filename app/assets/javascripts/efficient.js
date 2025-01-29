@@ -7,6 +7,7 @@ var efficient = new Vue({
       file: null,
       link: null,
       search: null,
+      acceptorType: '',
     },
     chapters: [],
     points: []
@@ -32,14 +33,14 @@ var efficient = new Vue({
     },
   },
   created: function() {
+  },
+  mounted: function () {
+    this.acceptorType = document.getElementById('efficient').dataset.acceptorType;
     axios
-    .get('/api/criteria')
+    .get('/api/criteria?acceptor_type=' + this.acceptorType)
     .then(response => {
       this.points = response.data.array;
       this.chapters = [...new Set(this.points.map(item => item.chapter))];
     });
-    },
-  mounted: function () {
-    
   },
 })

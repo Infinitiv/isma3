@@ -3,7 +3,12 @@
   = javascript_include_tag 'vue@2.7.14.js'
 - else
   = javascript_include_tag 'vue.js'
-section.panel#efficient
+- data_acceptor_type = ''
+- if @teacher_permission
+  - data_acceptor_type = 'teacher'
+- if @student_permission
+  - data_acceptor_type = 'student'
+section.panel#efficient[data-acceptor-type=data_acceptor_type]
   - if @efficient_writer_permission || @efficient_reader_permission || @administrator_permission
     ul.tabs[data-tab role="tablist"]
       li.tab-title.active[role="presentation"]
@@ -65,5 +70,9 @@ section.panel#efficient
   - else
     = render partial: 'form'
     - if @efficients.present?
-      = render partial: 'efficients_table'
+      h3 Текущий сбор
+      = render partial: 'efficients_table', locals: { efficients: @efficients }
+    - if @archived_efficients.present?
+      h3 Предыдущие сборы
+      = render partial: 'efficients_table', locals: { efficients: @archived_efficients }
 = javascript_include_tag 'efficient'

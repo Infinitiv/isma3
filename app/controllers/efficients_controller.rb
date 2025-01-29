@@ -6,25 +6,30 @@ class EfficientsController < ApplicationController
     if @efficient_writer_permission
       case true
       when current_user.posts.map(&:name).include?('проректор по образовательной деятельности')
-        @all_efficients = Efficient.includes(:profile, :divisions, :posts).joins(:criterium).where(criteria: {chapter: '1. Образовательная деятельность'}).order([:checked, :updated_at])
+        @all_efficients = Efficient.includes(:profile, :divisions, :posts).joins(:criterium).where(criteria: {chapter: '1. Образовательная деятельность'}, archived: false).order([:checked, :updated_at])
       when current_user.posts.map(&:name).include?('проректор по научно-исследовательской и международной деятельности')
-        @all_efficients = Efficient.includes(:profile, :divisions, :posts).joins(:criterium).where(criteria: {chapter: '2. Научно-исследовательская деятельность'}).order([:checked, :updated_at])
+        @all_efficients = Efficient.includes(:profile, :divisions, :posts).joins(:criterium).where(criteria: {chapter: '2. Научно-исследовательская деятельность'}, archived: false).order([:checked, :updated_at])
       when current_user.posts.map(&:name).include?('проректор по развитию регионального здравоохранения')
-        @all_efficients = Efficient.includes(:profile, :divisions, :posts).joins(:criterium).where(criteria: {chapter: ['4. Клиническая работа', '5. Развитие регионального здравоохранения']}).order([:checked, :updated_at])
+        @all_efficients = Efficient.includes(:profile, :divisions, :posts).joins(:criterium).where(criteria: {chapter: ['4. Клиническая работа', '5. Развитие регионального здравоохранения']}, archived: false).order([:checked, :updated_at])
       when current_user.posts.map(&:name).include?('проректор по воспитательной работе и молодежной политике')
-        @all_efficients = Efficient.includes(:profile, :divisions, :posts).joins(:criterium).where(criteria: {chapter: '3. Воспитательная, внеучебная работа'}).order([:checked, :updated_at])
+        @all_efficients = Efficient.includes(:profile, :divisions, :posts).joins(:criterium).where(criteria: {chapter: '3. Воспитательная, внеучебная работа'}, archived: false).order([:checked, :updated_at])
       when current_user.posts.map(&:name).include?('сотрудник')
-        @all_efficients = Efficient.includes(:profile, :divisions, :posts).joins(:criterium).where(criteria: {chapter: '6. Менеджмент качества'}).order([:checked, :updated_at])
+        @all_efficients = Efficient.includes(:profile, :divisions, :posts).joins(:criterium).where(criteria: {chapter: '6. Менеджмент качества'}, archived: false).order([:checked, :updated_at])
       else
-        @all_efficients = Efficient.includes(:profile, :divisions, :posts).order([:checked, :created_at])
+        @all_efficients = Efficient.includes(:profile, :divisions, :posts).order([:checked, :created_at]).where(archived: false)
       end
     end
 
-    if @efficient_reader_permission || @administrator_permission
-      @all_efficients = Efficient.includes(:profile, :divisions, :posts).order([:checked, :created_at])
+    if @deansoffice_permission
+      @all_efficients = Efficient.includes(:profile, :divisions, :posts).order([:checked, :created_at]).where(archived: false)
     end
 
-    @efficients = Efficient.order(:created_at).where(user_id: current_user.id)
+    if @efficient_reader_permission || @administrator_permission
+      @all_efficients = Efficient.includes(:profile, :divisions, :posts).order([:checked, :created_at]).where(archived: false)
+    end
+
+    @efficients = Efficient.order(:created_at).where(user_id: current_user.id, archived: false)
+    @archived_efficients = Efficient.order(:created_at).where(user_id: current_user.id, archived: true)
     @efficient = Efficient.new(user_id: current_user.id)
   end
   

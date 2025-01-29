@@ -20,7 +20,7 @@ class Criterium < ActiveRecord::Base
                         when row['Комментарий'] =~ /Ссылка|ссылка/
                           'link'
                         else
-                          nil
+                          'none'
                         end
       criterium.actual = true
       criterium.acceptor_type = row['Получатель']
