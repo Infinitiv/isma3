@@ -62,7 +62,7 @@ section.panel#efficient[data-acceptor-type=data_acceptor_type]
                   .large-12.columns 
                     =link_to 'Отправить на проверку', uncheck_efficient_path(efficient), method: :put, class: 'button tiny'
               - else
-                = render partial: 'update_form', locals: { efficient: efficient }
+                = render partial: 'update_form', locals: { efficient: efficient, criterium: criterium }
       section[role="tabpanel" aria-hidden="true" class="content" id="person"]
         = render partial: 'form'
         - if @efficients.present?
