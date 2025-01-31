@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20250124122656) do
+ActiveRecord::Schema.define(version: 20250131084759) do
 
   create_table "academic_plans", force: :cascade do |t|
     t.string   "name",                   limit: 255
@@ -339,7 +339,7 @@ ActiveRecord::Schema.define(version: 20250124122656) do
     t.integer  "criterium_id", limit: 4
     t.integer  "user_id",      limit: 4
     t.text     "link",         limit: 65535
-    t.float    "value",        limit: 24
+    t.float    "value",        limit: 24,    default: 0.0
     t.boolean  "checked",                    default: false
     t.datetime "created_at",                                 null: false
     t.datetime "updated_at",                                 null: false
