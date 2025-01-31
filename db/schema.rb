@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20250131084759) do
+ActiveRecord::Schema.define(version: 20250131091615) do
 
   create_table "academic_plans", force: :cascade do |t|
     t.string   "name",                   limit: 255
@@ -178,8 +178,8 @@ ActiveRecord::Schema.define(version: 20250131084759) do
   create_table "criteria", force: :cascade do |t|
     t.string   "chapter",        limit: 255
     t.text     "point",          limit: 16777215
-    t.integer  "min",            limit: 4
-    t.integer  "max",            limit: 4
+    t.float    "min",            limit: 24,       default: 0.0
+    t.float    "max",            limit: 24,       default: 0.0
     t.text     "comment",        limit: 16777215
     t.string   "criterium_type", limit: 255
     t.boolean  "actual",                          default: false

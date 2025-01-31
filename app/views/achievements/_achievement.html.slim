@@ -7,8 +7,8 @@ tr
     = time_tag achievement.event_date, :pubdate => true, :format => '%e.%m.%Y'
   td class = ('pink' unless achievement.published)
     = achievement.achievement_result.name
-  td class = ('pink' unless achievement.published)
-    = achievement.grant ? 'Да' : ''
+  / td class = ('pink' unless achievement.published)
+  /   = achievement.grant ? 'Да' : ''
   td class = ('pink' unless achievement.published)
     - if achievement.attachments.present? && @deansoffice_permission
       ul.no-bullet

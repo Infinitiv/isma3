@@ -9,8 +9,8 @@ class Criterium < ActiveRecord::Base
     (2..file.last_row).to_a.each do |i|
       row = Hash[[header, file.row(i)].transpose]
       criterium = Criterium.find_or_create_by(chapter: row['Раздел'], point: row['Название критерия'])
-      criterium.min = row['Минимальный балл'].to_i
-      criterium.max = row['Максимальный балл'].to_i
+      criterium.min = row['Минимальный балл'].to_f
+      criterium.max = row['Максимальный балл'].to_f
       criterium.comment = row['Комментарий']
       criterium.criterium_type = case
                         when row['Комментарий'] =~ /Скан|скан/ && row['Комментарий'] =~ /Ссылка|ссылка/
