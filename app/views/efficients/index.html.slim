@@ -33,7 +33,7 @@ section.panel#efficient[data-acceptor-type=data_acceptor_type]
                 span.label.success.rounded.right Проверено
               h3= criterium.point
               p
-                strong= link_to "#{efficient.profile.full_name} (#{efficient.divisions.where(division_type_id: [3, 6]).map(&:name).join(" ")})", user_path(efficient.user), target: '_blank'
+                strong= link_to "#{efficient.profile.full_name} (#{efficient.divisions.where(division_type_id: [3, 6]).map(&:name).join(", ")})", user_path(efficient.user), target: '_blank'
               p= "Подтверждающий документ: #{criterium.comment}"
               p= criterium.max == 0 ? "Баллы за критерий: #{criterium.min}" : "Баллы за критерий: от #{criterium.min} до #{criterium.max}"
               - if efficient.link.present?
