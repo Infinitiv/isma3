@@ -1,39 +1,39 @@
 namespace :isma do
 
-  desc 'Download grants'
-  task download_grants: :environment do
-    grants = Achievement.includes(:achievement_category, :achievement_result, :user => :posts).where(grant: true, event_date: Date.new(2023, 9, 1)..Date.new(2024, 8, 31))
-    students = User.joins(:achievements).where(achievements: {id: grants.pluck(:id)}).uniq
-    require 'csv'
+  # desc 'Download grants'
+  # task download_grants: :environment do
+  #   grants = Achievement.includes(:achievement_category, :achievement_result, :user => :posts).where(grant: true, event_date: Date.new(2023, 9, 1)..Date.new(2024, 8, 31))
+  #   students = User.joins(:achievements).where(achievements: {id: grants.pluck(:id)}).uniq
+  #   require 'csv'
 
-    CSV.open("grants_export.csv", "wb") do |csv|
-      csv << ["Название ИД", "Категория", "Результат", "Дата", "ФИО", "Студент"]
+  #   CSV.open("grants_export.csv", "wb") do |csv|
+  #     csv << ["Название ИД", "Категория", "Результат", "Дата", "ФИО", "Студент"]
       
-      grants.each do |grant|
-        csv << [
-          grant.event_name,
-          grant.achievement_category&.name,
-          grant.achievement_result&.name,
-          grant.event_date,
-          grant.user&.profile.full_name,
-          grant.user&.divisions&.where(division_type_id: 6).pluck(:name)&.join("; ")
-        ]
-      end
-    end
+  #     grants.each do |grant|
+  #       csv << [
+  #         grant.event_name,
+  #         grant.achievement_category&.name,
+  #         grant.achievement_result&.name,
+  #         grant.event_date,
+  #         grant.user&.profile.full_name,
+  #         grant.user&.divisions&.where(division_type_id: 6).pluck(:name)&.join("; ")
+  #       ]
+  #     end
+  #   end
 
-    CSV.open("grant_students_export.csv", "wb") do |csv|
-      csv << ["ФИО", "Студент"]
+  #   CSV.open("grant_students_export.csv", "wb") do |csv|
+  #     csv << ["ФИО", "Студент"]
       
-      students.each do |student|
-        csv << [
-          student.profile&.full_name,
-          student.divisions&.where(division_type_id: 6).pluck(:name)&.join("; ")
-        ]
-      end
-    end
+  #     students.each do |student|
+  #       csv << [
+  #         student.profile&.full_name,
+  #         student.divisions&.where(division_type_id: 6).pluck(:name)&.join("; ")
+  #       ]
+  #     end
+  #   end
 
-    puts "Grants exported to grants_export.csv"
-  end
+  #   puts "Grants exported to grants_export.csv"
+  # end
 
   desc 'Download efficients'
   task download_efficients: :environment do
@@ -56,21 +56,43 @@ namespace :isma do
       end
     end
 
-    desc 'Download grants'
+    puts "Efficients exported to grants_export.csv"
+  end
+
+  desc 'Download grants'
   task download_grants: :environment do
-    grants = Efficient.includes(:criterium, :user => :posts).where(acceptor_type: 'student')
+    efficients = Efficient.includes(:criterium, :user => :posts).joins(:criterium).where(criteria: {acceptor_type: 'student'})
     require 'csv'
 
     CSV.open("grants_export.csv", "wb") do |csv|
-      csv << ["Категория", "Критерий", "Балл", "ФИО", "Курс и группа", "Комментарий"]
+      csv << ["Специальность", "Категория", "Критерий", "Балл", "ФИО", "Курс", "Группа", "Комментарий", "Статус"]
       
       efficients.each do |efficient|
+        divisions = efficient.user&.divisions&.where(division_type_id: 6).pluck(:name)&.join("; ")
+        group_number = divisions[/\d+(?=\sгруппа)/]
+        grade_number = divisions[/\d+(?=\sкурса)/]
+        spec_name = case true 
+                    when divisions.include?('лечебн')
+                      'Лечебное дело'
+                    when divisions.match?(/педиатр/)
+                      'Педиатрия'
+                    when divisions.match?(/стомат/)
+                      'Стоматология'
+                    when divisions.match?(/клин/)
+                      'Клиническая психология'
+                    when divisions.match?(/сестрин/)
+                      'Сестринское дело'
+                    else
+                      'Неизвестная специальность'
+                    end
         csv << [
+          spec_name,
           efficient.criterium&.chapter,
           efficient.criterium&.point,
           efficient.value,
           efficient.user&.profile.full_name,
-          efficient.user&.divisions&.where(division_type_id: 3).pluck(:name)&.join("; "),
+          grade_number,
+          group_number,
           efficient.comment,
           efficient.checked ? 'Проверено' : 'Не проверено'
         ]
