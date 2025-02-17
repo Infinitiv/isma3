@@ -51,7 +51,7 @@ class Attachment < ActiveRecord::Base
   end
   
   def pdf2text(data)
-    `pdftotext #{data} -`
+    `pdftotext -enc UTF-8 #{data} -`
   end
   
   def copy_file(file_path, temp_file)
