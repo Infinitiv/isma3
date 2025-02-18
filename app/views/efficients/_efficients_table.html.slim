@@ -1,10 +1,11 @@
 table.table(style="width: 100%")
   thead 
-    th(style="width: 40%;") Название пункта
-    th(style="width: 20%;") Ссылки/текст
-    th(style="width: 20%;") Файлы
-    th(style="width: 10%;") Баллы
-    th(style="width: 10%;") Действия
+    tr
+      th(style="width: 40%;") Название пункта
+      th(style="width: 20%;") Ссылки/текст
+      th(style="width: 20%;") Файлы
+      th(style="width: 10%;") Баллы
+      th(style="width: 10%;") Действия
   tbody
     - efficients.each do |efficient|
       tr 
