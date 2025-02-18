@@ -1,4 +1,4 @@
-table.table(style="width: 100%")
+table.table(style="width: 100%; table-layout: fixed;")
   thead 
     tr
       th(style="width: 40%;") Название пункта
@@ -13,7 +13,7 @@ table.table(style="width: 100%")
           p= efficient.criterium.point
           - if efficient.comment.present?
             .label.alert.rounded= efficient.comment
-        td
+        td(style="word-wrap: break-word; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;")
           - if efficient.link.present?
             - if efficient.criterium.criterium_type == 'none'
               = efficient.link
