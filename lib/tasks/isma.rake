@@ -37,11 +37,11 @@ namespace :isma do
 
   desc 'Download efficients'
   task download_efficients: :environment do
-    efficients = Efficient.includes(:criterium, :user => :posts)
+    efficients = Efficient.includes(:criterium, :user => :posts).joins(:criterium).where(criteria: {acceptor_type: 'teacher'}, archived: false)
     require 'csv'
 
     CSV.open("efficients_export.csv", "wb") do |csv|
-      csv << ["Категория", "Критерий", "Балл", "ФИО", "Кафедра", "Комментарий"]
+      csv << ["Категория", "Критерий", "Балл", "ФИО", "Кафедра", "Комментарий", 'Статус']
       
       efficients.each do |efficient|
         csv << [

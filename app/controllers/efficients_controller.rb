@@ -7,15 +7,15 @@ class EfficientsController < ApplicationController
     if @efficient_writer_permission
       case true
       when current_user.posts.map(&:name).include?('проректор по образовательной деятельности')
-        @all_efficients = @all_efficients.where(criteria: {chapter: '1. Образовательная деятельность'})
+        @all_efficients = @all_efficients.where(criteria: {acceptor_type: 'teacher', chapter: '1. Образовательная деятельность'})
       when current_user.posts.map(&:name).include?('проректор по научно-исследовательской и международной деятельности')
-        @all_efficients = @all_efficients.where(criteria: {chapter: '2. Научно-исследовательская деятельность'})
+        @all_efficients = @all_efficients.where(criteria: {acceptor_type: 'teacher', chapter: '2. Научно-исследовательская деятельность'})
       when current_user.posts.map(&:name).include?('проректор по развитию регионального здравоохранения')
-        @all_efficients = @all_efficients.where(criteria: {chapter: ['4. Клиническая работа', '5. Развитие регионального здравоохранения']})
+        @all_efficients = @all_efficients.where(criteria: {acceptor_type: 'teacher', chapter: ['4. Клиническая работа', '5. Развитие регионального здравоохранения']})
       when current_user.posts.map(&:name).include?('проректор по воспитательной работе и молодежной политике')
-        @all_efficients = @all_efficients.where(criteria: {chapter: '3. Воспитательная, внеучебная работа'})
+        @all_efficients = @all_efficients.where(criteria: {acceptor_type: 'teacher', chapter: '3. Воспитательная, внеучебная работа'})
       when current_user.posts.map(&:name).include?('сотрудник')
-        @all_efficients = @all_efficients.where(criteria: {chapter: '6. Менеджмент качества'})
+        @all_efficients = @all_efficients.where(criteria: {acceptor_type: 'teacher', chapter: '6. Менеджмент качества'})
       end
     end
 
