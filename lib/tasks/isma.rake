@@ -56,7 +56,7 @@ namespace :isma do
       end
     end
 
-    puts "Efficients exported to grants_export.csv"
+    puts "Efficients exported to efficients_export.csv"
   end
 
   desc 'Download grants'
